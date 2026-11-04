@@ -141,6 +141,14 @@
   background: #f0907f;
 }
 
+.status[data-state="unverified"] {
+  color: #e9b949;
+}
+
+.status[data-state="unverified"] i {
+  background: #e9b949;
+}
+
 .status[data-state="loading"] i {
   animation: blink 1s steps(2) infinite;
 }

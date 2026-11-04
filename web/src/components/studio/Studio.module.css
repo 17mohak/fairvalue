@@ -67,6 +67,14 @@
   background: var(--error);
 }
 
+.service[data-state="unverified"] {
+  color: var(--flood);
+}
+
+.service[data-state="unverified"] .dot {
+  background: var(--flood);
+}
+
 .service[data-state="checking"] .dot {
   animation: pulse 1.2s ease-in-out infinite;
 }

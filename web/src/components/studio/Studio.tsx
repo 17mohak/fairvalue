@@ -5,7 +5,8 @@ import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/Button";
 import { SelectField } from "@/components/ui/Field";
 import { Segmented } from "@/components/ui/Segmented";
-import { ApiError, explain, health, predict } from "@/lib/api/client";
+import { ApiError, explain, predict } from "@/lib/api/client";
+import { checkService, useServiceStatus } from "@/lib/api/service";
 import type { PlayerField } from "@/lib/api/types";
 import { MODEL_LABELS, SUB_POSITIONS, type ModelId, type Position } from "@/lib/football";
 import { formatEur } from "@/lib/format";
@@ -24,7 +25,6 @@ import { ResultPanel, type StudioResult } from "./ResultPanel";
 import styles from "./Studio.module.css";
 
 type Status = "idle" | "loading" | "done" | "error";
-type Service = "checking" | "online" | "offline";
 
 function asApiError(e: unknown): ApiError {
   return e instanceof ApiError ? e : new ApiError("server", "Something went wrong while valuing this profile.", 0);
@@ -41,30 +41,27 @@ export function Studio() {
   const [result, setResult] = useState<StudioResult | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
   const [submittedKey, setSubmittedKey] = useState<string | null>(null);
-  const [service, setService] = useState<Service>("checking");
+  const { state: service, reason: serviceReason } = useServiceStatus();
   const fieldRefs = useRef<Partial<Record<PlayerField, HTMLElement | null>>>({});
   const resultRef = useRef<HTMLDivElement>(null);
   const runId = useRef(0);
 
-  // Check the service once; if it is up, value the starting profile straight away so the
-  // studio opens on a live result rather than an empty scale.
+  // Check the service once; if it is verified, value the starting profile straight away so the
+  // studio opens on a live result rather than an empty scale. Never against an unverified service.
   const autoRan = useRef(false);
   const touched = useRef(false);
   useEffect(() => {
     let live = true;
-    health()
-      .then((h) => {
+    void checkService().then((s) => {
         if (!live) return;
-        const ok = h.status === "ok";
-        setService(ok ? "online" : "offline");
+        const ok = s.state === "online";
         // Skip if the user has already edited, switched or valued something themselves.
         if (ok && !autoRan.current && !touched.current && runId.current === 0) {
           autoRan.current = true;
           // The initial render's run() already holds the starting profile and Model A.
           void run(undefined, undefined, { quiet: true });
         }
-      })
-      .catch(() => live && setService("offline"));
+      });
     return () => {
       live = false;
     };
@@ -135,14 +132,11 @@ export function Studio() {
         setErrors(mapped.fieldErrors);
         setFormErrors(mapped.formErrors);
         focusFirstError(mapped.fieldErrors);
-      } else {
-        setService("offline");
       }
       setError(err);
       setStatus("error");
       return;
     }
-    setService("online");
     setResult({
       primary: primary.value,
       explanation: why.status === "fulfilled" ? why.value : null,
@@ -186,9 +180,15 @@ export function Studio() {
       <div className={styles.controls}>
         <div className={styles.paneHead}>
           <p className={styles.paneTitle}>Profile</p>
-          <p className={styles.service} data-state={service}>
+          <p className={styles.service} data-state={service} title={serviceReason}>
             <span className={styles.dot} aria-hidden="true" />
-            {service === "checking" ? "Checking the model service" : service === "online" ? "Model service online" : "Model service offline"}
+            {service === "checking"
+              ? "Checking the model service"
+              : service === "online"
+                ? "Model service online"
+                : service === "unverified"
+                  ? "Model service unverified"
+                  : "Model service offline"}
           </p>
         </div>
         <div className={styles.topline}>

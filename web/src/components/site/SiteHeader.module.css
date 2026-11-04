@@ -135,6 +135,17 @@
   background: #f0907f;
 }
 
+/* Something answers, but not the registered models: amber, never the "online" green. */
+[data-state="unverified"] .dot {
+  background: #e9b949;
+  box-shadow: 0 0 0 3px rgb(233 185 73 / 0.18);
+}
+
+.status[data-state="unverified"] {
+  border-color: rgb(233 185 73 / 0.45);
+  color: #e9b949;
+}
+
 [data-state="checking"] .dot {
   animation: blink 1s steps(2) infinite;
 }

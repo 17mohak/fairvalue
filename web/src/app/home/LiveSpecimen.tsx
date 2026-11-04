@@ -5,6 +5,7 @@ import { fetchUpstream } from "@/lib/api/upstream";
 import { leagueName, TIER_NAMES } from "@/lib/football";
 import { decimal, formatEur, integer, percent } from "@/lib/format";
 import { DEFAULT_PLAYER } from "@/lib/profile";
+import { research } from "@/lib/research";
 import styles from "./LiveSpecimen.module.css";
 
 const p = DEFAULT_PLAYER;
@@ -66,11 +67,13 @@ export async function LiveSpecimen() {
   }
 
   const value = res.predicted_value_eur;
+  // "Live" means the registered research model answered; anything else is labelled as such.
+  const verified = res.model_version?.regressor === research.models.registry.regressor_A.version;
   return (
-    <article className={styles.card} aria-label={`Live valuation: ${formatEur(value)}, ${res.predicted_tier} tier`}>
+    <article className={styles.card} data-state={verified ? undefined : "unverified"} aria-label={`${verified ? "Live" : "Unverified"} valuation: ${formatEur(value)}, ${res.predicted_tier} tier`}>
       <header className={styles.head}>
         <span className={styles.live}>
-          <i aria-hidden="true" /> Live valuation
+          <i aria-hidden="true" /> {verified ? "Live valuation" : "Unverified service"}
         </span>
         <span className={styles.model}>Model A</span>
       </header>

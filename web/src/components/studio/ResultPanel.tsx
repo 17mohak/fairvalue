@@ -8,6 +8,7 @@ import { ValueRuler } from "@/components/charts/ValueRuler";
 import { Button } from "@/components/ui/Button";
 import { Tabs } from "@/components/ui/Tabs";
 import type { ApiError } from "@/lib/api/client";
+import { useServiceStatus } from "@/lib/api/service";
 import type { ExplainResponse, PlayerFeatures, PredictResponse } from "@/lib/api/types";
 import { MODEL_LABELS, TIER_NAMES, featureLabel, leagueName, type ModelId } from "@/lib/football";
 import { decimal, formatEur, formatEurExact, percent } from "@/lib/format";
@@ -33,6 +34,7 @@ interface Props {
 
 export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
   const reduce = useReducedMotion();
+  const service = useServiceStatus();
   const loading = status === "loading";
 
   if (!result) {
@@ -251,6 +253,11 @@ export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
               {Math.round(Math.expm1(research.headline.A.signed_gap_league_stratified.estimate) * 100)}% on average.
             </li>
           </ul>
+          {service.state === "unverified" && (
+            <p className={styles.unverified} role="note">
+              <strong>Unverified service.</strong> {service.reason} This answer may not come from the models the research describes.
+            </p>
+          )}
           <dl className={styles.versions}>
             <div>
               <dt>Regressor</dt>

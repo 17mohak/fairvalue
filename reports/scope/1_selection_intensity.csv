@@ -1,0 +1,5 @@
+audit_group,eligible,n,median_value_percentile
+UEFA,False,6071,37.6
+UEFA,True,4324,73.8
+non-UEFA,False,7473,43.9
+non-UEFA,True,1496,82.3

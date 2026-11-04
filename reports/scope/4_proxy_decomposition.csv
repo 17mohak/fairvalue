@@ -1,0 +1,23 @@
+population,features,model,auc_mean,auc_sd,auc_min,auc_max
+14-league eligible,league identity,logistic,0.601,0.016,0.571,0.629
+14-league eligible,club strength (club_ppg),logistic,0.503,0.022,0.452,0.532
+14-league eligible,club identity (one-hot),logistic,0.605,0.014,0.57,0.631
+14-league eligible,age,logistic,0.515,0.016,0.485,0.544
+14-league eligible,position + sub_position,logistic,0.589,0.019,0.552,0.637
+14-league eligible,height + foot,logistic,0.568,0.019,0.526,0.606
+14-league eligible,match statistics,logistic,0.596,0.015,0.575,0.628
+14-league eligible,Model B (all performance/profile),logistic,0.643,0.019,0.612,0.682
+14-league eligible,Model A (B + league + club_ppg),logistic,0.671,0.019,0.634,0.718
+14-league eligible,Model B (all performance/profile),gradient boosting,0.633,0.016,0.61,0.662
+14-league eligible,Model A (B + league + club_ppg),gradient boosting,0.667,0.016,0.645,0.694
+14-league eligible,Model A minus league identity,logistic,0.643,0.02,0.612,0.683
+14-league eligible,Model A minus club strength (club_ppg),logistic,0.67,0.019,0.634,0.716
+14-league eligible,Model A minus age,logistic,0.671,0.019,0.635,0.717
+14-league eligible,Model A minus position + sub_position,logistic,0.652,0.018,0.625,0.691
+14-league eligible,Model A minus height + foot,logistic,0.657,0.018,0.632,0.689
+14-league eligible,Model A minus match statistics,logistic,0.651,0.019,0.611,0.692
+14-league eligible,"Model A, SHUFFLED labels (control)",logistic,0.507,0.017,0.479,0.546
+14-league eligible,"profile only (age, height, position, foot)",logistic,0.614,0.021,0.57,0.652
+14-league eligible,profile + league identity,logistic,0.651,0.019,0.61,0.692
+all current-valued players,"profile only (age, height, position, foot)",logistic,0.667,0.007,0.654,0.679
+all current-valued players,profile + league identity,logistic,0.859,0.005,0.849,0.867

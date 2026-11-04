@@ -1,0 +1,7 @@
+group,status,n,age_median,value_p25,value_median,value_p75,value_p90,pct_any_match_data,pct_attack,pct_midfield,pct_defender,pct_goalkeeper
+UEFA,"excluded: covered league, < 450 min",1212,22.5,100000.0,300000.0,700000.0,2000000.0,74.4,25.0,26.1,23.9,24.8
+UEFA,excluded: league not covered,4859,25.6,200000.0,400000.0,800000.0,2000000.0,43.1,24.6,31.2,32.3,11.8
+UEFA,retained,4324,26.4,600000.0,2000000.0,6500000.0,20000000.0,100.0,24.3,29.9,36.0,9.8
+non-UEFA,"excluded: covered league, < 450 min",346,22.4,200000.0,500000.0,1000000.0,3500000.0,81.2,43.1,23.4,25.4,8.1
+non-UEFA,excluded: league not covered,7127,26.4,200000.0,400000.0,1000000.0,2500000.0,12.1,29.3,27.6,33.1,9.8
+non-UEFA,retained,1496,26.3,900000.0,2500000.0,8000000.0,20000000.0,100.0,35.6,26.4,34.0,4.1

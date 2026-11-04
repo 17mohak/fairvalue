@@ -1,0 +1,5 @@
+minutes_band,players,goal_contrib_p90_split_half_r,goal_contrib_p90_spearman_brown,yellow_p90_split_half_r,yellow_p90_spearman_brown
+90-449,760,0.102,0.185,-0.003,-0.006
+450-899,692,0.268,0.422,0.128,0.228
+900-1799,1223,0.459,0.629,0.191,0.321
+1800+,3905,0.758,0.862,0.419,0.59

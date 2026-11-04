@@ -162,6 +162,16 @@ export function fairnessData() {
     },
     proxyAuc: research.population.proxy_auc,
     icc: research.robustness.residual_icc,
+    // Mean signed SHAP, non-UEFA minus UEFA, per input (served models). The rows add up to the
+    // difference in the groups' mean predicted log value (src/fairness/explain_shap.py).
+    shapGap: Object.fromEntries(
+      (["A", "B"] as const).map((m) => [
+        m,
+        [...research.shap_global[m]]
+          .map((r) => ({ feature: r.feature, gap: r.gap_non_uefa_minus_uefa }))
+          .sort((a, b) => Math.abs(b.gap) - Math.abs(a.gap)),
+      ]),
+    ) as Record<ModelId, { feature: string; gap: number }[]>,
   };
 }
 

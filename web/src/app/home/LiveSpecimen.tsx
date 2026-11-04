@@ -1,7 +1,9 @@
 import { ValueRuler } from "@/components/charts/ValueRuler";
 import { RoomLink } from "@/components/site/RoomLink";
 import type { PredictResponse } from "@/lib/api/types";
-import { fetchUpstream } from "@/lib/api/upstream";
+import { EXPECTED_SERVICE } from "@/lib/api/expected";
+import { fetchUpstream, upstreamHealth } from "@/lib/api/upstream";
+import { verifyHealth } from "@/lib/api/verify";
 import { leagueName, TIER_NAMES } from "@/lib/football";
 import { decimal, formatEur, integer, percent } from "@/lib/format";
 import { DEFAULT_PLAYER } from "@/lib/profile";
@@ -41,14 +43,15 @@ function Profile() {
 
 /** The landing page's live example: one real call to POST /predict for an illustrative profile. */
 export async function LiveSpecimen() {
-  const res = await fetchUpstream<PredictResponse>("/predict", { player: DEFAULT_PLAYER, model: "A" });
+  const [res, health] = await Promise.all([fetchUpstream<PredictResponse>("/predict", { player: DEFAULT_PLAYER, model: "A" }), upstreamHealth()]);
+  const verdict = verifyHealth(health.status, health.body, EXPECTED_SERVICE);
 
   if (!res) {
     return (
-      <article className={styles.card} data-state="offline" aria-label="Live valuation unavailable">
+      <article className={styles.card} data-state="offline" aria-label="Valuation unavailable">
         <header className={styles.head}>
           <span className={styles.live}>
-            <i aria-hidden="true" /> Live valuation
+            <i aria-hidden="true" /> Model offline
           </span>
           <span className={styles.model}>Model A</span>
         </header>
@@ -67,8 +70,9 @@ export async function LiveSpecimen() {
   }
 
   const value = res.predicted_value_eur;
-  // "Live" means the registered research model answered; anything else is labelled as such.
-  const verified = res.model_version?.regressor === research.models.registry.regressor_A.version;
+  // "Live" means the verified model service answered (D-036). A response's own version string is
+  // not enough: a replay of a real response would carry it too.
+  const verified = verdict.state === "online" && res.model_version?.regressor === research.models.registry.regressor_A.version;
   return (
     <article className={styles.card} data-state={verified ? undefined : "unverified"} aria-label={`${verified ? "Live" : "Unverified"} valuation: ${formatEur(value)}, ${res.predicted_tier} tier`}>
       <header className={styles.head}>
@@ -111,10 +115,10 @@ export async function LiveSpecimen() {
 
 export function SpecimenSkeleton() {
   return (
-    <article className={styles.card} data-state="loading" aria-busy="true" aria-label="Loading live valuation">
+    <article className={styles.card} data-state="loading" aria-busy="true" aria-label="Checking the model service">
       <header className={styles.head}>
         <span className={styles.live}>
-          <i aria-hidden="true" /> Live valuation
+          <i aria-hidden="true" /> Checking model
         </span>
         <span className={styles.model}>Model A</span>
       </header>

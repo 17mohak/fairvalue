@@ -1,13 +1,8 @@
-import { verifyHealth } from "@/lib/api/verify";
+import { EXPECTED_SERVICE as EXPECTED } from "@/lib/api/expected";
 import { apiBaseUrl } from "@/lib/api/upstream";
-import { research } from "@/lib/research";
+import { verifyHealth } from "@/lib/api/verify";
 
 export const dynamic = "force-dynamic";
-
-const EXPECTED = {
-  versions: Object.fromEntries(Object.entries(research.models.registry).map(([k, v]) => [k, v.version])),
-  dataset_sha256_16: research.models.dataset_sha256_16,
-};
 
 /**
  * Proxies FastAPI GET /health and adds a verdict: "online" only when the loaded models and the

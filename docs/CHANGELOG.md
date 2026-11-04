@@ -1,5 +1,27 @@
 # Development changelog
 
+## 2026-11-05: Product-design correction (branch `feat/multipage-experience`, not pushed)
+- **Direction (D-037):** a scouting-console language replaces the editorial hero-and-sections
+  pattern in the analytical rooms. Compact title bars, panel grids and source badges; far smaller
+  display type.
+- **Players:**
+  - The profile is a dossier: one header card holds the frame, identity, valuation and record strip.
+    Panels for A vs B, traits, history, SHAP and audit sit in a grid.
+  - The board is a database of comparable cards, with a table view.
+  - A monogram frame replaces the silhouette.
+- **Studio:** a workstation with designed ready, loading, live, offline and cached states. The eight
+  research players are presets whose published results show, labelled cached, when the API is down.
+- **Observatory:**
+  - A headline-gaps strip (A, B, A−B, MAE gap).
+  - A multi-chart stage per view, including the new SHAP group-gap chart, league sample sizes,
+    accuracy against direction, and largest-error shares.
+- **Overview:** a compact hero with three pathways and key figures. The market-vs-model spectrum of
+  real players links to their dossiers, and room tiles carry real previews.
+- **Fixes:**
+  - The landing card no longer says "Live" unless the health verdict is online.
+  - A CSS-module guard test found five more dead `.num`/`.prose` rules.
+- **Tests:** web 69, Python 124 (11 skipped without data).
+
 ## 2026-11-05: Completing the player experience (branch `feat/multipage-experience`, not pushed)
 - **Service status (D-036):**
   - `/api/health` verifies the upstream against the research registry and returns a verdict:

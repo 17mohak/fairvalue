@@ -1,11 +1,14 @@
 import { Suspense } from "react";
-import { room } from "@/lib/rooms";
 import { GapGlyph } from "@/components/charts/GapGlyph";
 import { RoomLink } from "@/components/site/RoomLink";
 import { RoomTransition } from "@/components/site/RoomTransition";
 import { ButtonLink } from "@/components/ui/Button";
-import { decimal, integer, logGapAsPercent, signed } from "@/lib/format";
+import { leagueName, TIER_BOUNDARIES_EUR, TIER_NAMES } from "@/lib/football";
+import { decimal, formatEur, integer, logGapAsPercent, signed } from "@/lib/format";
+import { summary } from "@/lib/players";
+import { playerSet } from "@/lib/players.server";
 import { heldOutLogR2, research } from "@/lib/research";
+import { room } from "@/lib/rooms";
 import { LiveSpecimen, SpecimenSkeleton } from "./home/LiveSpecimen";
 import styles from "./page.module.css";
 
@@ -16,11 +19,25 @@ export const dynamic = "force-dynamic";
 const h = research.headline;
 const funnel = research.population.funnel;
 const population = funnel[funnel.length - 1]!;
-const proxyAuc = research.population.proxy_auc.find((p) => p.feature_set === "Model A features") ?? research.population.proxy_auc[0]!;
 const gapA = h.A.signed_gap_league_stratified;
 const gapB = h.B.signed_gap_league_stratified;
 
+// Spectrum axis: log scale, €200k to €80M, wide enough for every showcase player.
+const LO = Math.log(200_000);
+const HI = Math.log(80_000_000);
+const x = (eur: number) => Math.min(100, Math.max(0, ((Math.log(eur) - LO) / (HI - LO)) * 100));
+
 export default function Home() {
+  const set = playerSet();
+  const showcase = set.source === "showcase";
+  const rows = set.players
+    .map(summary)
+    .filter((p) => p.estimate)
+    .sort((a, b) => b.market_value_eur - a.market_value_eur)
+    .slice(0, 10);
+  const bounds = TIER_BOUNDARIES_EUR.map(x);
+  const steps = funnel.slice(0, 4);
+
   return (
     <RoomTransition>
       <div className={styles.home}>
@@ -28,22 +45,42 @@ export default function Home() {
         <section className={styles.hero} aria-labelledby="hero-title">
           <div className={styles.heroText}>
             <p className="eyebrow">
-              <b className="num">{room("overview").index}</b> Football market intelligence
+              <b className="num">{room("overview").index}</b> Football valuation intelligence
             </p>
             <h1 id="hero-title" className={styles.title}>
-              Price the player.
-              <span> Then audit the price.</span>
+              Price the player. <span>Then audit the price.</span>
             </h1>
             <p className={styles.lede}>
-              FairValue estimates a footballer&apos;s market value from two seasons of club data, shows which inputs moved the number, and
-              publishes an audit of whom its errors fall on: players from inside and outside UEFA, across 14 European leagues.
+              FairValue estimates footballers&apos; market values from two years of club data, explains every estimate, and audits whom its
+              errors fall on: players from inside and outside UEFA, across 14 European leagues.
             </p>
             <div className={styles.actions}>
-              <ButtonLink href="/studio">Value a player</ButtonLink>
+              <ButtonLink href="/players">Explore players</ButtonLink>
+              <ButtonLink href="/studio" variant="quiet">
+                Value a player
+              </ButtonLink>
               <ButtonLink href="/fairness" variant="quiet">
                 See the audit
               </ButtonLink>
             </div>
+            <dl className={styles.kpis}>
+              <div>
+                <dt>Players modelled</dt>
+                <dd className="num">{integer(population.total)}</dd>
+              </div>
+              <div>
+                <dt>Leagues</dt>
+                <dd className="num">14</dd>
+              </div>
+              <div>
+                <dt>Held-out R²</dt>
+                <dd className="num">{decimal(heldOutLogR2("A"), 3)}</dd>
+              </div>
+              <div>
+                <dt>Audit gap, Model A</dt>
+                <dd className="num">{signed(gapA.estimate)}</dd>
+              </div>
+            </dl>
           </div>
           <div className={styles.heroSpecimen}>
             <Suspense fallback={<SpecimenSkeleton />}>
@@ -52,252 +89,181 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ---- Ledger: the scale of the work ---- */}
-        <section className={styles.ledger} aria-label="FairValue in figures">
-          <dl>
-            <div>
-              <dt>Players modelled</dt>
-              <dd className="num">{integer(population.total)}</dd>
-              <p>{integer(population.non_uefa)} of them from outside UEFA, valued June 2025 to June 2026.</p>
+        {/* ---- The market and the model, on one scale ---- */}
+        <section className={`fv-panel ${styles.spectrum}`} aria-labelledby="spectrum-title">
+          <header className="fv-panel-head">
+            <h2 id="spectrum-title" className="fv-panel-title">
+              The market and the model
+              <small>
+                {showcase
+                  ? "the eight research players: observed value against the served Model A (published results, cached)"
+                  : "the ten most valuable players: observed value against the held-out Model A estimate"}
+              </small>
+            </h2>
+            <span className={styles.legend} aria-hidden="true">
+              <i data-k="market" /> Market value <i data-k="model" /> Model A
+            </span>
+          </header>
+          <div className={styles.spectrumBody}>
+            <div className={styles.scaleHead} aria-hidden="true">
+              <span />
+              <span className={styles.zones}>
+                {TIER_NAMES.map((t, i) => (
+                  <b key={t} style={{ left: `${i === 0 ? 0 : bounds[i - 1]}%`, right: `${i === 3 ? 0 : 100 - bounds[i]!}%` }}>
+                    {t}
+                  </b>
+                ))}
+              </span>
+              <span />
             </div>
-            <div>
-              <dt>Leagues covered</dt>
-              <dd className="num">14</dd>
-              <p>European first divisions with match-level data. A selected population, not the global market.</p>
+            <ol className={styles.rows}>
+              {rows.map((p) => {
+                const m = x(p.market_value_eur);
+                const e = x(p.estimate!.value);
+                return (
+                  <li key={p.id}>
+                    <RoomLink href={`/players/${p.slug}`} className={styles.row} aria-label={`${p.name}: market ${formatEur(p.market_value_eur)}, Model A ${formatEur(p.estimate!.value)}`}>
+                      <span className={styles.who}>
+                        <span className="fv-role">{p.role_code}</span>
+                        <b>{p.last_name}</b>
+                        <small>{p.club ?? leagueName(p.league_id).split(",")[0]}</small>
+                      </span>
+                      <span className={styles.track} aria-hidden="true">
+                        {bounds.map((b) => (
+                          <i key={b} className={styles.bound} style={{ left: `${b}%` }} />
+                        ))}
+                        <span className={styles.link} style={{ left: `${Math.min(m, e)}%`, width: `${Math.abs(m - e)}%` }} />
+                        <span className={styles.model} style={{ left: `${e}%` }} />
+                        <span className={styles.market} style={{ left: `${m}%` }} />
+                      </span>
+                      <span className={`${styles.vals} num`}>
+                        <b>{formatEur(p.market_value_eur)}</b>
+                        <small>×{(p.estimate!.value / p.market_value_eur).toFixed(2)}</small>
+                      </span>
+                    </RoomLink>
+                  </li>
+                );
+              })}
+            </ol>
+            <div className={styles.scaleFoot} aria-hidden="true">
+              <span />
+              <span className={styles.ticks}>
+                {[500_000, 2_000_000, 10_000_000, 30_000_000].map((t) => (
+                  <i key={t} style={{ left: `${x(t)}%` }}>
+                    {formatEur(t, 0)}
+                  </i>
+                ))}
+              </span>
+              <span />
             </div>
-            <div>
-              <dt>Variance explained</dt>
-              <dd className="num">{decimal(heldOutLogR2("A"), 3)}</dd>
-              <p>Held-out R² on log value, Model A. Without league and club: {decimal(heldOutLogR2("B"), 3)}.</p>
-            </div>
-            <div>
-              <dt>Nationality inputs</dt>
-              <dd className="num">0</dd>
-              <p>The models never see nationality, citizenship, confederation or birthplace.</p>
-            </div>
-          </dl>
+          </div>
+        </section>
+
+        {/* ---- Rooms ---- */}
+        <section className={styles.rooms} aria-label="Inside FairValue">
+          <RoomLink href="/players" className={styles.tile}>
+            <span className={styles.tileHead}>
+              <span className="num">{room("players").index}</span> Players
+            </span>
+            <span className={styles.tileTitle}>Scouting dossiers</span>
+            <ul className={styles.tileList} aria-hidden="true">
+              {rows.slice(0, 3).map((p) => (
+                <li key={p.id}>
+                  <span className="fv-role">{p.role_code}</span> {p.last_name}
+                  <b className="num">{formatEur(p.market_value_eur)}</b>
+                </li>
+              ))}
+            </ul>
+            <span className={styles.tileText}>Identity, record, market vs both models, traits and SHAP for each player.</span>
+          </RoomLink>
+          <RoomLink href="/studio" className={styles.tile}>
+            <span className={styles.tileHead}>
+              <span className="num">{room("studio").index}</span> Studio
+            </span>
+            <span className={styles.tileTitle}>Valuation workstation</span>
+            <span className={styles.ladder} aria-hidden="true">
+              {TIER_NAMES.map((t, i) => (
+                <span key={t} data-i={i}>
+                  <b>{t}</b>
+                  <small>{["< €2M", "€2–10M", "€10–30M", "≥ €30M"][i]}</small>
+                </span>
+              ))}
+            </span>
+            <span className={styles.tileText}>Build a profile, get a live estimate, its tier, Model A vs B and the inputs that moved it.</span>
+          </RoomLink>
+          <RoomLink href="/fairness" className={styles.tile}>
+            <span className={styles.tileHead}>
+              <span className="num">{room("observatory").index}</span> Observatory
+            </span>
+            <span className={styles.tileTitle}>The fairness audit</span>
+            <span className={styles.mini} aria-hidden="true">
+              {[
+                { k: "A", g: gapA },
+                { k: "B", g: gapB },
+              ].map((r) => (
+                <span key={r.k} className={styles.miniRow}>
+                  <b>Model {r.k}</b>
+                  <span className={styles.miniTrack}>
+                    <i className={styles.miniZero} style={{ left: `${((0 + 0.05) / 0.3) * 100}%` }} />
+                    <i className={styles.miniCi} data-k={r.k} style={{ left: `${((r.g.low + 0.05) / 0.3) * 100}%`, width: `${((r.g.high - r.g.low) / 0.3) * 100}%` }} />
+                  </span>
+                  <span className="num">{signed(r.g.estimate)}</span>
+                </span>
+              ))}
+            </span>
+            <span className={styles.tileText}>Gaps by league, value level, subgroup and tier, with every robustness check.</span>
+          </RoomLink>
+          <RoomLink href="/methods" className={styles.tile}>
+            <span className={styles.tileHead}>
+              <span className="num">{room("methods").index}</span> Methods
+            </span>
+            <span className={styles.tileTitle}>How it was built</span>
+            <span className={styles.funnel} aria-hidden="true">
+              {steps.map((s) => (
+                <span key={s.stage} style={{ width: `${Math.max(18, (Math.log(s.total) / Math.log(steps[0]!.total)) * 100)}%` }}>
+                  <b className="num">{integer(s.total)}</b>
+                </span>
+              ))}
+            </span>
+            <span className={styles.tileText}>From {integer(steps[0]!.total)} players to the modelling population; validation, explainability and limits.</span>
+          </RoomLink>
         </section>
 
         {/* ---- The finding ---- */}
         <section className={styles.finding} aria-labelledby="finding-title">
-          <div className={styles.findingInner}>
-            <div className={styles.findingFigure}>
-              <p className={styles.kicker}>The headline finding</p>
-              <p className={`${styles.bigNumber} num`} aria-describedby="finding-unit">
-                {signed(gapA.estimate)}
-              </p>
-              <p id="finding-unit" className={styles.bigUnit}>
-                signed residual gap, non-UEFA minus UEFA, log units, within leagues
-                <span className="num">
-                  95% CI {signed(gapA.low)} to {signed(gapA.high)}
-                </span>
-              </p>
-            </div>
-            <div className={styles.findingText}>
-              <h2 id="finding-title" className={styles.h2}>
-                A model that never sees nationality still misses one group in one direction.
-              </h2>
-              <div className="prose">
-                <p>
-                  The study expected the market to value non-UEFA players below comparable UEFA players. It found the reverse. Their
-                  Transfermarkt values sit about <strong>{logGapAsPercent(gapA.estimate)}</strong> above what the model predicts, relative to UEFA
-                  players in the same leagues. Used as a valuation tool, the model would under-price them.
-                </p>
-                <p>
-                  Overall accuracy is close for both groups. What differs is the direction of the errors. Remove league and club from the
-                  inputs and the gap grows to <span className="num">{signed(gapB.estimate)}</span>.
-                </p>
-              </div>
-              <GapGlyph
-                rows={[
-                  { key: "A", label: "Model A", sublabel: "with league and club", interval: gapA, emphasis: true },
-                  { key: "B", label: "Model B", sublabel: "performance only", interval: gapB },
-                ]}
-                domain={[-0.05, 0.25]}
-              />
-              <p className={styles.observational}>
-                Observational, not causal. The target is Transfermarkt&apos;s own valuation, which may itself be biased. This is not evidence of
-                discrimination.
-              </p>
-            </div>
+          <div className={styles.findingFigure}>
+            <p className="fv-label">The headline finding</p>
+            <p className={`${styles.bigNumber} num`}>{signed(gapA.estimate)}</p>
+            <p className={styles.bigUnit}>
+              signed residual gap, non-UEFA minus UEFA, log units, within leagues ·{" "}
+              <span className="num">
+                95% CI {signed(gapA.low)} to {signed(gapA.high)}
+              </span>
+            </p>
           </div>
-        </section>
-
-        {/* ---- Why it matters ---- */}
-        <section className={styles.why} aria-labelledby="why-title">
-          <h2 id="why-title" className="visually-hidden">
-            Why this is worth studying
-          </h2>
-          <article>
-            <p className={styles.kicker}>Why value footballers</p>
-            <h3 className={styles.h3}>How a player plays sets most of the price. Where they play moves it a long way.</h3>
-            <p className="prose">
-              Market values anchor how clubs, media and fans talk about what a player is worth. FairValue learns to reproduce
-              Transfermarkt&apos;s community valuations from appearances, minutes, goal output, age and role. With the league and the
-              club&apos;s strength added, it explains {Math.round(heldOutLogR2("A") * 100)}% of the variation in log value on unseen players.
-              Without them, {Math.round(heldOutLogR2("B") * 100)}%: context is worth a great deal.
-            </p>
-          </article>
-          <article>
-            <p className={styles.kicker}>Why audit nationality</p>
-            <h3 className={styles.h3}>Leaving nationality out does not make a model group-blind.</h3>
-            <p className="prose">
-              The permitted inputs still predict whether a player is from a UEFA country with an AUC of{" "}
-              <span className="num">{decimal(proxyAuc.auc, 2)}</span>. Players from outside Europe also reach these leagues through a stricter
-              filter. So the audit asks a direct question of held-out predictions: does the model err differently for UEFA and non-UEFA players
-              in the same leagues?
-            </p>
-          </article>
-          <article className={styles.never}>
-            <p className={styles.kicker}>Never a model input</p>
-            <ul>
-              <li>Nationality and citizenship</li>
-              <li>Confederation</li>
-              <li>Place of birth</li>
-              <li>National-team caps and goals</li>
-              <li>Earlier valuations</li>
-            </ul>
-            <p className={styles.neverNote}>Group labels live in a separate audit table that training code never reads.</p>
-          </article>
-        </section>
-
-        {/* ---- Directory of rooms ---- */}
-        <section className={styles.rooms} aria-labelledby="rooms-title">
-          <div className={styles.roomsHead}>
-            <h2 id="rooms-title" className={styles.h2}>
-              Four ways in
+          <div className={styles.findingText}>
+            <h2 id="finding-title" className={styles.h2}>
+              A model that never sees nationality still misses one group in one direction.
             </h2>
-            <p>Each part of FairValue is its own workspace.</p>
+            <p>
+              The study expected the market to value non-UEFA players below comparable UEFA players. It found the reverse: their Transfermarkt values
+              sit about <strong>{logGapAsPercent(gapA.estimate)}</strong> above the model&apos;s estimates, relative to UEFA players in the same
+              leagues. Accuracy is similar for both groups; the direction differs. Without league and club the gap grows to {signed(gapB.estimate)}.
+            </p>
+            <GapGlyph
+              rows={[
+                { key: "A", label: "Model A", sublabel: "with league and club", interval: gapA, emphasis: true },
+                { key: "B", label: "Model B", sublabel: "performance only", interval: gapB },
+              ]}
+              domain={[-0.05, 0.25]}
+            />
+            <p className={styles.observational}>
+              Observational, not causal, on a selected population. The target is Transfermarkt&apos;s own valuation, which may itself be biased. Not
+              evidence of discrimination. The model never sees nationality, citizenship, confederation or birthplace.
+            </p>
           </div>
-          <ol className={styles.roomList}>
-            <li>
-              <RoomLink href="/players" className={styles.room}>
-                <span className={`${styles.roomIndex} num`}>{room("players").index}</span>
-                <span className={styles.roomName}>Players</span>
-                <span className={styles.roomSummary}>
-                  Real players from the research population: observed market value next to the model&apos;s estimates, what moved them, and how
-                  each player ranks among positional peers.
-                </span>
-                <span className={styles.roomGlyph} aria-hidden="true">
-                  <RadarGlyph />
-                </span>
-                <span className={styles.roomArrow} aria-hidden="true">
-                  →
-                </span>
-              </RoomLink>
-            </li>
-            <li>
-              <RoomLink href="/studio" className={styles.room}>
-                <span className={`${styles.roomIndex} num`}>{room("studio").index}</span>
-                <span className={styles.roomName}>Valuation studio</span>
-                <span className={styles.roomSummary}>
-                  Build a profile, value it with the live model, compare Model A with Model B and see the SHAP breakdown of that one estimate.
-                </span>
-                <span className={styles.roomGlyph} aria-hidden="true">
-                  <RulerGlyph />
-                </span>
-                <span className={styles.roomArrow} aria-hidden="true">
-                  →
-                </span>
-              </RoomLink>
-            </li>
-            <li>
-              <RoomLink href="/fairness" className={styles.room}>
-                <span className={`${styles.roomIndex} num`}>{room("observatory").index}</span>
-                <span className={styles.roomName}>Fairness observatory</span>
-                <span className={styles.roomSummary}>
-                  Gaps by league, value level, subgroup and tier, every robustness check, and what the audit cannot establish.
-                </span>
-                <span className={styles.roomGlyph} aria-hidden="true">
-                  <ForestGlyph />
-                </span>
-                <span className={styles.roomArrow} aria-hidden="true">
-                  →
-                </span>
-              </RoomLink>
-            </li>
-            <li>
-              <RoomLink href="/methods" className={styles.room}>
-                <span className={`${styles.roomIndex} num`}>{room("methods").index}</span>
-                <span className={styles.roomName}>Methods</span>
-                <span className={styles.roomSummary}>
-                  Provenance, population, features, nested cross-validation, model selection, explainability, monitoring and limitations.
-                </span>
-                <span className={styles.roomGlyph} aria-hidden="true">
-                  <PageGlyph />
-                </span>
-                <span className={styles.roomArrow} aria-hidden="true">
-                  →
-                </span>
-              </RoomLink>
-            </li>
-          </ol>
         </section>
       </div>
     </RoomTransition>
-  );
-}
-
-function RadarGlyph() {
-  const pts = [0, 1, 2, 3, 4, 5].map((i) => {
-    const a = (Math.PI * 2 * i) / 6 - Math.PI / 2;
-    const r = [15, 11, 17, 9, 14, 12][i]!;
-    return `${60 + Math.cos(a) * r},${20 + Math.sin(a) * r}`;
-  });
-  return (
-    <svg viewBox="0 0 120 40" width="120" height="40">
-      <polygon points="60,2 75.6,11 75.6,29 60,38 44.4,29 44.4,11" fill="none" stroke="currentColor" strokeWidth="1" />
-      <polygon points={pts.join(" ")} fill="rgb(233 185 73 / 0.25)" stroke="var(--flood)" strokeWidth="1.25" />
-    </svg>
-  );
-}
-
-/* Small line drawings for the room directory. Purely decorative; each echoes the room's main instrument. */
-function RulerGlyph() {
-  return (
-    <svg viewBox="0 0 120 40" width="120" height="40">
-      <line x1="4" y1="28" x2="116" y2="28" stroke="currentColor" strokeWidth="1.25" />
-      {[10, 22, 34, 46, 58, 70, 82, 94, 106].map((x) => (
-        <line key={x} x1={x} y1="28" x2={x} y2={x % 24 === 10 ? 21 : 24} stroke="currentColor" strokeWidth="1" />
-      ))}
-      <line x1="74" y1="8" x2="74" y2="28" stroke="var(--flood)" strokeWidth="2" />
-      <circle cx="74" cy="8" r="3" fill="var(--flood)" />
-    </svg>
-  );
-}
-
-function ForestGlyph() {
-  const rows = [
-    [40, 70, 55],
-    [52, 96, 74],
-    [30, 62, 46],
-    [58, 88, 72],
-  ];
-  return (
-    <svg viewBox="0 0 120 40" width="120" height="40">
-      <line x1="34" y1="2" x2="34" y2="38" stroke="currentColor" strokeWidth="1" strokeDasharray="2 3" />
-      {rows.map(([a, b, c], i) => (
-        <g key={i}>
-          <line x1={a} y1={6 + i * 9.5} x2={b} y2={6 + i * 9.5} stroke="currentColor" strokeWidth="1.25" />
-          <circle cx={c} cy={6 + i * 9.5} r="2.6" fill={i === 1 ? "var(--flood)" : "currentColor"} />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-function PageGlyph() {
-  return (
-    <svg viewBox="0 0 120 40" width="120" height="40">
-      <rect x="30" y="3" width="28" height="34" fill="none" stroke="currentColor" strokeWidth="1.25" />
-      <rect x="62" y="3" width="28" height="34" fill="none" stroke="currentColor" strokeWidth="1.25" />
-      {[10, 15, 20, 25, 30].map((y) => (
-        <g key={y}>
-          <line x1="34" y1={y} x2={y === 30 ? 46 : 54} y2={y} stroke="currentColor" strokeWidth="1" />
-          <line x1="66" y1={y} x2={y === 10 ? 80 : 86} y2={y} stroke="currentColor" strokeWidth="1" />
-        </g>
-      ))}
-      <line x1="34" y1="10" x2="44" y2="10" stroke="var(--flood)" strokeWidth="1.5" />
-    </svg>
   );
 }

@@ -81,12 +81,21 @@
   color: #c3cbc3;
 }
 
+/* Attribution sits at the edge of the stage, clear of the figure. */
 .credit {
   top: auto;
-  bottom: 8.5rem;
-  border-style: solid;
-  max-width: 22rem;
+  left: auto;
+  right: 0;
+  bottom: 7.25rem;
+  transform: none;
+  max-width: 16rem;
+  border: 0;
+  background: none;
+  padding: 0;
+  font-size: 0.68rem;
+  text-align: right;
   white-space: normal;
+  color: #8f9b93;
 }
 
 .figure[data-size="card"] .silhouette {

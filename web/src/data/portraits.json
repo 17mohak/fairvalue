@@ -1,5 +1,17 @@
 {
-  "policy": "Only images with a licence on the allow-list, a named author, a source URL and the attribution text may be listed. Never use Transfermarkt's image_url, club media-kit images or agency photos without a written licence. See docs/PLAYER_ASSETS.md.",
-  "allowed_licences": ["CC0-1.0", "CC-BY-4.0", "CC-BY-SA-4.0", "owned"],
+  "policy": "Only images with a licence on the allow-list (reuse in a product and derivative works allowed; no NC, ND or fair use), a named author, a source URL and the attribution text may be listed. Never use Transfermarkt's image_url, club media-kit images or agency photos without a written licence. Add entries with scripts/portraits/add_portrait.py. See docs/PLAYER_ASSETS.md.",
+  "allowed_licences": [
+    "CC0-1.0",
+    "PDM-1.0",
+    "CC-BY-2.0",
+    "CC-BY-2.5",
+    "CC-BY-3.0",
+    "CC-BY-4.0",
+    "CC-BY-SA-2.0",
+    "CC-BY-SA-2.5",
+    "CC-BY-SA-3.0",
+    "CC-BY-SA-4.0",
+    "owned"
+  ],
   "portraits": []
 }

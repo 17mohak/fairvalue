@@ -19,7 +19,7 @@ _Last updated: 2026-11-05_
 | Fairness | Signed residual gaps, MAE/RMSE gaps, league/strata, calibration check, ER1a/ER1b, club-clustered CIs, tier power | `docs/reports/FAIRNESS_AUDIT.md`, `SUPPLEMENTARY_CHECKS.md` |
 | Explainability | SHAP global/group/local; feature-based DiCE: full run complete (720 queries, no consistent group difference). DiCE is now time-bounded and checkpointed (D-031) | `docs/reports/EXPLAINABILITY.md` |
 | Monitoring | Evidently + PSI drift simulation, retraining policy (NO ACTION), quality gates | `docs/MONITORING.md` |
-| CI | Unit tests → data → quick train → gate → refit → Docker build/smoke test. **Not yet run on GitHub** (no remote) | `.github/workflows/ci.yml` |
+| CI | Private repo [17mohak/fairvalue](https://github.com/17mohak/fairvalue). First run (2026-11-04, about 6 min) **passed**: 79 unit tests (+10 data tests skipped as designed); data re-downloaded with an unchanged manifest; 9 data/leakage tests; quick-run gate with numbers identical to the local run (0.851 / 0.581 / 0.718); refit; Docker build, health and predict smoke test. No image pushed | `.github/workflows/ci.yml`, GitHub Actions |
 | Responsible AI | Model card, data card, EU AI Act assessment | `docs/MODEL_CARD.md`, `docs/DATA_CARD.md`, `docs/EU_AI_ACT_ASSESSMENT.md` |
 | Tests | 89 passing (unit + real-data + API against the real models) | `pytest -q` |
 | Reviews | Three independent read-only reviews; all findings addressed | DECISIONS D-015, D-023, D-028 |
@@ -38,8 +38,8 @@ _Last updated: 2026-11-05_
   components are too imprecise to interpret.
 
 ## Open items
-- **GitHub remote / CI run:** CI is written but has never run. Creating a remote and pushing needs the
-  owner's approval.
+- **GitHub:** private repository created and CI green (owner-approved 2026-11-05). Visibility changes
+  and collaborators are the owner's call.
 - **Hosting (Railway/Render) and GHCR image publishing:** not done; needs approval, and free-tier terms
   must be checked first.
 - **Academic report:** already submitted by the owner; no update planned from this repository.

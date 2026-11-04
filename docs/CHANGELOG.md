@@ -1,5 +1,11 @@
 # Development changelog
 
+## 2026-11-05: GitHub and first CI run
+- Private repository `17mohak/fairvalue` created (owner-approved); `main` pushed.
+- First CI run passed both jobs in about 6 minutes: unit tests; data acquisition reproduced the committed
+  checksums; data/leakage tests; quick training and gate (identical numbers to the local run); refit;
+  Docker build and smoke test. No image was published.
+
 ## 2026-11-05 (later): Priority pass: engineering verification
 
 - **DiCE:** the full run (720 queries) completed during this pass, after 83 minutes, and its outputs

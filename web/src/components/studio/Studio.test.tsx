@@ -1,5 +1,6 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { resetServiceStatus } from "@/lib/api/service";
 import fixtures from "@/test/fixtures.json";
 import { Studio } from "./Studio";
 
@@ -21,13 +22,17 @@ function mockApi(handler: Handler) {
 const ok = (body: unknown) => new Response(JSON.stringify(body), { status: 200, headers: { "Content-Type": "application/json" } });
 
 const realApi: Handler = (url, body) => {
-  if (url === "/api/health") return ok({ status: "ok", models_loaded: [], model_versions: {}, dataset_sha256_16: null });
+  // The app's /api/health route adds a verdict after checking the models against the registry.
+  if (url === "/api/health") return ok({ status: "ok", service: { state: "online", reason: "Serving the registered models." } });
   if (url === "/api/explain") return ok(fixtures.explain_A);
   if (url === "/api/predict") return ok(body?.model === "B" ? fixtures.predict_B : fixtures.predict_A);
   return new Response("{}", { status: 404 });
 };
 
-afterEach(() => vi.unstubAllGlobals());
+afterEach(() => {
+  vi.unstubAllGlobals();
+  resetServiceStatus();
+});
 
 describe("Valuation studio", () => {
   it("values the starting profile as soon as the service is up, and explains it", async () => {
@@ -115,6 +120,21 @@ describe("Valuation studio", () => {
     answerHealth();
     expect(await screen.findByText("Model service online")).toBeInTheDocument();
     expect(calls.filter((c) => c.url === "/api/predict")).toHaveLength(0);
+  });
+
+  it("never auto-values against a service that does not match the research registry", async () => {
+    const calls = mockApi((url, body) =>
+      url === "/api/health"
+        ? ok({ status: "ok", service: { state: "unverified", reason: "The served regressor_A differs from the models the research results describe." } })
+        : realApi(url, body),
+    );
+    render(<Studio />);
+    expect(await screen.findByText("Model service unverified")).toBeInTheDocument();
+    expect(screen.queryByText("Model service online")).not.toBeInTheDocument();
+    expect(calls.filter((c) => c.url === "/api/predict")).toHaveLength(0);
+    // Valuing on request still works, and the answer is flagged.
+    await userEvent.click(screen.getByRole("button", { name: "Value this player" }));
+    expect(await screen.findByText("Unverified service.")).toBeInTheDocument();
   });
 
   it("keeps roles consistent when the position changes", async () => {

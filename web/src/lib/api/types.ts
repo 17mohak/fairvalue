@@ -60,7 +60,9 @@ export interface ExplainResponse {
 }
 
 export interface HealthResponse {
-  status: "ok" | "degraded";
+  status: "ok" | "degraded" | "unreachable";
+  /** Added by the app's /api/health route: verified against the research registry. */
+  service?: { state: "online" | "unverified" | "offline"; reason: string };
   models_loaded: string[];
   model_versions: Record<string, string>;
   dataset_sha256_16: string | null;

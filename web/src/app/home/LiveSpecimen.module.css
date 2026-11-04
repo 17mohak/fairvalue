@@ -69,6 +69,15 @@
   box-shadow: none;
 }
 
+.card[data-state="unverified"] .live {
+  color: var(--flood);
+}
+
+.card[data-state="unverified"] .live i {
+  background: var(--flood);
+  box-shadow: none;
+}
+
 .card[data-state="loading"] .live i {
   background: var(--fog);
   box-shadow: none;

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ContributionChart } from "@/components/charts/ContributionChart";
 import { ValueRuler } from "@/components/charts/ValueRuler";
 import { explain, predict } from "@/lib/api/client";
+import { useServiceStatus } from "@/lib/api/service";
 import type { ExplainResponse, PredictResponse } from "@/lib/api/types";
 import { MODEL_LABELS, type ModelId } from "@/lib/football";
 import { formatEur } from "@/lib/format";
@@ -39,6 +40,7 @@ function offlineExplanation(p: PlayerProfile, version: string): ExplainResponse 
 }
 
 export function ValuationLab({ player: p, mae, regressorVersion }: Props) {
+  const service = useServiceStatus();
   const [model, setModel] = useState<ModelId>("A");
   const [live, setLive] = useState<Live>({ status: "loading", predict: {}, explain: {} });
 
@@ -73,7 +75,11 @@ export function ValuationLab({ player: p, mae, regressorVersion }: Props) {
   }, [model, live.status, live.explain.B, p.features]);
 
   const served = (m: ModelId) => live.predict[m]?.predicted_value_eur ?? p.estimates.served[m];
-  const servedSource = (m: ModelId) => (live.predict[m] ? "live" : p.estimates.served[m] ? "research run" : null);
+  // Where a served figure came from: a live answer from the verified service, a live answer from a
+  // service that does not match the research registry, or the published research result (cached).
+  const verified = service.state === "online";
+  const liveLabel = verified ? "live" : "live, unverified";
+  const servedSource = (m: ModelId) => (live.predict[m] ? liveLabel : p.estimates.served[m] ? "cached research result" : null);
   const best = (m: ModelId) => p.estimates.heldout[m] ?? served(m);
   const selected = best(model);
   const explanation = live.explain[model] ?? (model === "A" ? offlineExplanation(p, regressorVersion.A) : null);
@@ -130,13 +136,17 @@ export function ValuationLab({ player: p, mae, regressorVersion }: Props) {
         })}
       </div>
 
-      <p className={styles.status} data-state={live.status} aria-live="polite">
+      <p className={styles.status} data-state={live.status === "online" && !verified ? "unverified" : live.status} aria-live="polite">
         <i aria-hidden="true" />
         {live.status === "loading"
-          ? "Asking the served models…"
+          ? "Asking the prediction API…"
           : live.status === "online"
-            ? "Served estimates are live from the prediction API."
-            : "The prediction API is offline: served Model A figures come from the published research run, Model B needs the live service."}
+            ? verified
+              ? `Live: served estimates from the prediction API (${live.predict.A?.model_version.regressor ?? live.predict.B?.model_version.regressor}).`
+              : `Live, but unverified: ${service.reason} Treat these served figures with caution.`
+            : p.estimates.served.A !== null
+              ? "Prediction API offline. The served Model A figure and its explanation are the published research results (cached), not a live answer. Model B needs the live service."
+              : "Prediction API offline. No served estimates are available; held-out estimates come from the export."}
       </p>
 
       {selected !== null && selected !== undefined && (
@@ -171,7 +181,7 @@ export function ValuationLab({ player: p, mae, regressorVersion }: Props) {
           </h3>
           <p>
             SHAP contributions for this player&apos;s own inputs, from{" "}
-            {live.explain[model] ? "the live explanation endpoint" : explanation ? "the published research run" : "the live endpoint"}. Effects multiply;
+            {live.explain[model] ? (verified ? "the live explanation endpoint" : "the live but unverified explanation endpoint") : explanation ? "the published research results (cached)" : "the live endpoint"}. Effects multiply;
             they describe the model&apos;s arithmetic, not what causes market value.
           </p>
         </div>

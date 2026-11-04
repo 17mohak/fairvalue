@@ -3,30 +3,22 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, ViewTransition } from "react";
-import { health } from "@/lib/api/client";
+import { checkService, SERVICE_LABEL, useServiceStatus } from "@/lib/api/service";
 import { ROOMS, roomForPath, transitionTo } from "@/lib/rooms";
 import { Mark } from "./Mark";
 import styles from "./SiteHeader.module.css";
-
-type Service = "checking" | "online" | "offline";
 
 /** Masthead: brand, the four rooms, and the live state of the model service. */
 export function SiteHeader() {
   const path = usePathname() ?? "/";
   const current = roomForPath(path);
   const [open, setOpen] = useState(false);
-  const [service, setService] = useState<Service>("checking");
+  const { state: service, reason } = useServiceStatus();
   const menuRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    let live = true;
-    health()
-      .then((h) => live && setService(h.status === "ok" ? "online" : "offline"))
-      .catch(() => live && setService("offline"));
-    return () => {
-      live = false;
-    };
+    void checkService();
   }, []);
 
   // Close the mobile menu whenever the route changes.
@@ -62,7 +54,7 @@ export function SiteHeader() {
     };
   }, [open]);
 
-  const status = service === "checking" ? "Connecting" : service === "online" ? "Model online" : "Model offline";
+  const status = SERVICE_LABEL[service];
 
   return (
     <header className={styles.header} style={{ viewTransitionName: "site-header" }} data-open={open || undefined}>
@@ -98,7 +90,7 @@ export function SiteHeader() {
           </ul>
         </nav>
 
-        <p className={styles.status} data-state={service} title="State of the prediction API behind the studio">
+        <p className={styles.status} data-state={service} title={reason}>
           <span className={styles.dot} aria-hidden="true" />
           <span className={styles.statusText}>{status}</span>
         </p>
@@ -143,7 +135,7 @@ export function SiteHeader() {
           </ol>
         </nav>
         <p className={styles.sheetStatus} data-state={service}>
-          <span className={styles.dot} aria-hidden="true" /> {status}
+          <span className={styles.dot} aria-hidden="true" /> {status}. {reason}
         </p>
       </div>
     </header>

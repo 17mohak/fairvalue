@@ -52,7 +52,7 @@ export default async function PlayerPage({ params }: Params) {
     p.estimates.heldout.A !== null
       ? { label: "Model A · held-out estimate", value: p.estimates.heldout.A }
       : p.estimates.served.A !== null
-        ? { label: "Model A · served estimate (in-sample)", value: p.estimates.served.A }
+        ? { label: "Model A · served, in-sample · cached research result", value: p.estimates.served.A }
         : null;
   const gap = research.headline.A.signed_gap_league_stratified;
   const residual = p.estimates.heldout.A !== null ? Math.log(p.market_value_eur) - Math.log(p.estimates.heldout.A) : null;

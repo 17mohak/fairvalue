@@ -1,0 +1,122 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 3rem;
+}
+
+.controls {
+  display: grid;
+  gap: 1.75rem;
+  align-content: start;
+  min-width: 0;
+}
+
+.topline {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: 1rem;
+}
+
+.service {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding-bottom: 0.6rem;
+  font-size: var(--step--2);
+  color: var(--fog);
+  white-space: nowrap;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--fog-2);
+}
+
+.service[data-state="online"] .dot {
+  background: var(--chalk);
+  box-shadow: 0 0 0 3px rgb(237 239 230 / 0.12);
+}
+
+.service[data-state="offline"] {
+  color: var(--error);
+}
+
+.service[data-state="offline"] .dot {
+  background: var(--error);
+}
+
+.service[data-state="checking"] .dot {
+  animation: pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  50% {
+    opacity: 0.3;
+  }
+}
+
+.never {
+  padding: 0.85rem 1rem;
+  border-left: 2px solid var(--flood);
+  background: var(--turf-850);
+  font-size: var(--step--1);
+  line-height: 1.5;
+  color: var(--chalk-2);
+}
+
+.formErrors {
+  padding: 0.85rem 1rem;
+  border: 1px solid rgb(240 144 127 / 0.45);
+  border-radius: var(--radius-m);
+  background: var(--error-soft);
+  font-size: var(--step--1);
+  color: var(--chalk);
+}
+
+.submitBar {
+  position: sticky;
+  bottom: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 1.25rem;
+  margin-inline: calc(var(--gutter) * -1);
+  padding: 0.9rem var(--gutter);
+  background: linear-gradient(to top, var(--turf-900) 70%, rgb(15 23 19 / 0));
+}
+
+.errorCount {
+  font-size: var(--step--1);
+  color: var(--error);
+}
+
+.output {
+  min-width: 0;
+  scroll-margin-top: 4.5rem;
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: start;
+  }
+  .output {
+    position: sticky;
+    top: 4.75rem;
+    max-height: calc(100vh - 5.5rem);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    padding-right: 0.5rem;
+    scrollbar-width: thin;
+    scrollbar-color: var(--turf-600) transparent;
+  }
+  .submitBar {
+    margin-inline: 0;
+    padding-inline: 0;
+  }
+}

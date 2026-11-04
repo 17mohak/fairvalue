@@ -1,0 +1,17 @@
+model,tier,rate,denominator_nonUEFA,denominator_UEFA,pooled_rate,min_detectable_difference_pp
+A,Emerging,TPR,617,2159,0.8999,3.8
+A,Emerging,FPR,879,2165,0.1064,3.5
+A,Established,TPR,539,1317,0.7462,6.2
+A,Established,FPR,957,3007,0.1362,3.6
+A,Elite,TPR,246,597,0.6145,10.3
+A,Elite,FPR,1250,3727,0.0559,2.1
+A,World Class,TPR,94,251,0.6232,16.4
+A,World Class,FPR,1402,4073,0.0113,0.9
+B,Emerging,TPR,617,2159,0.8361,4.7
+B,Emerging,FPR,879,2165,0.2355,4.8
+B,Established,TPR,539,1317,0.5636,7.1
+B,Established,FPR,957,3007,0.2053,4.2
+B,Elite,TPR,246,597,0.4009,10.4
+B,Elite,FPR,1250,3727,0.0683,2.3
+B,World Class,TPR,94,251,0.4725,16.9
+B,World Class,FPR,1402,4073,0.0148,1.0

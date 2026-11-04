@@ -151,6 +151,12 @@ Classifier (primary for ER1), held-out:
   gaps. For example, Emerging under Model A: selection gap −0.071 vs base-rate gap −0.087. They mainly
   reflect the groups' different true tier distributions, so parity is not a target here.
 
+> **Small-sample caution (`SUPPLEMENTARY_CHECKS.md` §3):** with 94 non-UEFA World Class players,
+> the minimum detectable TPR difference is about 16 pp (Elite: about 10 pp). The World Class and Elite
+> components, and therefore `ER1b_max_EOD`, are **not estimable with useful precision**. Read them
+> as "compatible with no gap or a sizeable gap", not as evidence of fairness.
+> Under club-clustered CIs, Model A's ER1a lower bound reaches 0 (−0.000 to 0.050).
+
 ## 4. Model A vs Model B (RQ4; not a causal decomposition)
 
 - Removing league and club context **raises** the signed gap from +0.099 to +0.159. The paired
@@ -190,6 +196,8 @@ over-read):
 valuations; or anything about players outside these 14 leagues.
 
 ## 6. Limitations specific to this audit
+- Club dependence: residual ICC is 0.09 (A) and 0.50 (B). Club-clustered CIs are 0.85–1.16 × as
+  wide, and conclusions are unchanged (SUPPLEMENTARY_CHECKS §2).
 - The CIs ignore refit variance. Some stratum intervals will exclude 0 by chance (no multiplicity
   correction; strata are descriptive).
 - The ER1b maximum is biased upwards. Per-tier World Class and Elite estimates rest on 94 and 246

@@ -1,52 +1,51 @@
 # Project state
 
-_Last updated: 2026-11-04 (end of session 1)_
+_Last updated: 2026-11-05_
 
 ## Where we are
-- The research design is **locked** (`docs/RESEARCH_DESIGN.md`, D-011 accepted).
-- Milestones 0–4 are implemented, tested and run on the full data: data foundation, scope
-  assessment, baseline models with tuning and MLflow tracking, the tier classifier, and the first
-  fairness audit.
+- All eight milestones are implemented, tested and run on the full data. The research design is
+  **locked** (`docs/RESEARCH_DESIGN.md`).
+- Every reported number was regenerated from the committed code with `scripts/run_pipeline.sh` (D-028).
+- Nothing has been pushed, published or deployed.
 
 | Area | State | Evidence |
 |---|---|---|
-| Data | 10 tables, checksummed; 5,820-player modelling set; separate audit table and drift snapshot | `data/raw/MANIFEST.json`, `data/processed/build_metadata.json` |
-| Design | Locked: population, RQ1–RQ4, metrics, DiCE approach | `docs/RESEARCH_DESIGN.md`, DECISIONS D-011, D-017–D-025 |
-| Models | Ridge, RF, HGB, Optuna-HGB × Model A/B; HGB tier classifier; 5-fold held-out predictions | `reports/models/`, `docs/reports/MODEL_EVALUATION.md` |
-| Primary model | Optuna-tuned HGB (Model A log RMSE 0.529, R² 0.890) | `reports/models/primary_model.json` |
-| MLflow | 10 runs in `fairvalue-m3-baselines` (local `mlruns/`, git-ignored) | `python -m mlflow ui --backend-store-uri mlruns` |
-| Fairness | Signed residual gaps, MAE/RMSE gaps, league/strata tables, calibration check, ER1a/ER1b | `reports/fairness/`, `docs/reports/FAIRNESS_AUDIT.md` |
-| Supplementary checks | Club-grouped CV, club-clustered CIs, tier-cell power (D-026) | `docs/reports/SUPPLEMENTARY_CHECKS.md` |
-| Tests | 65 passing (unit + real-data) | `pytest -q` |
-| Reviews | Two independent read-only reviews; all findings addressed | DECISIONS D-015, D-023 |
+| Location | Permanent folder `C:\Users\MOHAK\fairvalue`; git history and data checksums verified after the move | `git log`, `data/raw/MANIFEST.json` |
+| Data | 10 tables, checksummed; 5,820-player modelling set; separate audit table and drift snapshot | `data/processed/build_metadata.json` |
+| Design | Locked: population, RQ1–RQ4, metrics, DiCE approach | `docs/RESEARCH_DESIGN.md`, DECISIONS D-011, D-017–D-030 |
+| Models | Ridge, RF, HGB, Optuna-HGB × Model A/B; HGB tier classifier; 5-fold held-out predictions | `docs/reports/MODEL_EVALUATION.md` |
+| Primary model | Optuna-tuned HGB: Model A log RMSE 0.526, R² 0.891 (unseen clubs: 0.573 / 0.871) | `reports/models/primary_model.json` |
+| Serving | Full-data refits + registry; FastAPI `POST /predict`, `GET /health`; Docker image built and smoke-tested locally | `docs/DEPLOYMENT.md`, `models/model_registry.json` |
+| Fairness | Signed residual gaps, MAE/RMSE gaps, league/strata, calibration check, ER1a/ER1b, club-clustered CIs, tier power | `docs/reports/FAIRNESS_AUDIT.md`, `SUPPLEMENTARY_CHECKS.md` |
+| Explainability | SHAP global/group/local; feature-based DiCE | `docs/reports/EXPLAINABILITY.md` |
+| Monitoring | Evidently + PSI drift simulation, retraining policy (NO ACTION), quality gates | `docs/MONITORING.md` |
+| CI | Unit tests → data → quick train → gate → refit → Docker build/smoke test. **Not yet run on GitHub** (no remote) | `.github/workflows/ci.yml` |
+| Responsible AI | Model card, data card, EU AI Act assessment | `docs/MODEL_CARD.md`, `docs/DATA_CARD.md`, `docs/EU_AI_ACT_ASSESSMENT.md` |
+| Reviews | Three independent read-only reviews; all findings addressed | DECISIONS D-015, D-023, D-028 |
 
-## Key results so far (held-out, within the selected population)
-- Context matters most for prediction: Model A R² 0.890 vs Model B 0.668 (log scale).
-- **Primary fairness result:** non-UEFA players are under-predicted relative to UEFA players in
-  the same leagues.
-  - League-stratified log gap +0.099 (95% CI 0.068–0.128) under Model A; +0.159 under Model B.
-  - It holds within predicted-value deciles, across all algorithms, and at 900 minutes.
+## Key results (held-out, within the selected population)
+- Context dominates prediction: Model A log R² 0.891 vs Model B 0.669.
+- **Primary fairness result:** non-UEFA players are under-predicted relative to UEFA players in the same
+  leagues.
+  - League-stratified log gap **+0.093** (95% CI 0.063–0.124) under Model A; +0.164 under Model B.
+  - It holds within predicted-value deciles, for every algorithm, at 900 minutes, for unseen clubs and
+    with club-clustered CIs.
   - It is concentrated in RU1, TR1, GR1, UKR1 and BE1.
-- This is the opposite of the original hypothesis; it is reported as found, with no causal reading.
-- Accuracy (MAE/RMSE) is similar for both groups. ER1a is +2.5 pp under Model A. Errors lean towards
-  under-tiering non-UEFA players.
+- This is the opposite of the original hypothesis. It is reported as found, with no causal reading.
+- Accuracy (MAE/RMSE) is similar for both groups. Model A's ER1a is +2.5 pp, and its club-clustered CI
+  reaches 0. Errors lean towards under-tiering non-UEFA players. The World Class and Elite tier
+  components are too imprecise to interpret.
 
-## Blockers
-- **Permanent folder not yet chosen.** The project is still in the temporary session folder. Milestone 5
-  starts only after it has moved and the copy is verified (owner's instruction).
-- No GitHub remote. Pushing, GHCR and hosting all need approval.
+## Open items
+- **GitHub remote / CI run:** CI is written but has never run. Creating a remote and pushing needs the
+  owner's approval.
+- **Hosting (Railway/Render) and GHCR image publishing:** not done; needs approval, and free-tier terms
+  must be checked first.
+- **Academic report:** update its wording (frozen dataset, real sizes, scope statement, results, reversed
+  hypothesis finding).
 
-## Next steps (in order)
-1. **Milestone 5: explainability.**
-   - SHAP for the primary model (global, local, mean |SHAP| by group).
-   - Feature-based DiCE on the tier classifier (D-022).
-   - Install `shap` and `dice-ml` and pin them.
-2. **Milestone 6: serving.**
-   - Refit the primary model on all 5,820 players and save it.
-   - FastAPI `POST /predict` with Pydantic schemas using real feature ranges.
-   - Dockerfile.
-3. **Milestone 7: MLOps.**
-   - CI runs `train --quick` with a quality gate based on the measured baseline.
-   - Evidently drift report (drift reference vs current), with drift features per S-2.
-4. **Milestone 8: Responsible AI documentation.** Model card, data card, EU AI Act classification.
-5. **Report integration:** update the academic report (frozen dataset, sizes, scope statement, results).
+## How to resume
+- `bash scripts/run_pipeline.sh` regenerates everything (about 1.5 h).
+- `./.venv/Scripts/python -m pytest -q` runs the tests.
+- The API runs with `./.venv/Scripts/python -m uvicorn src.api.app:app --port 8000`, or via Docker
+  (see `docs/DEPLOYMENT.md`).

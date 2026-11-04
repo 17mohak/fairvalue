@@ -143,6 +143,15 @@ players with comparable performance profiles"):
   P(predicted tier < true tier) and over-tier rate, by group.
 - **Supplementary:** per-tier predicted selection rates by group (demographic parity), shown next to
   true base rates. Groups differ in true tier distribution, so parity is **not** a fairness target here.
+- **Statistical caveats** (clarification added 2026-11-04 after code review; definitions unchanged):
+  - `ER1b_max_EOD` is a maximum of 8 noisy components, so it is biased upwards, and its
+    percentile CI is approximate. The per-tier components are the primary ER1b output.
+  - With about 14 strata, 14 leagues and 8 components, some intervals will exclude 0 by chance.
+    Strata are descriptive; no multiplicity correction is applied and no stratum result is read as
+    a separate finding.
+  - Strata with fewer than 30 non-UEFA players are flagged. Leagues with no UEFA comparator are
+    dropped from stratified gaps, and the dropped share is reported.
+  - Optuna's inner sampler seed is 42 + outer fold index (reproducible, differs per fold).
 - **Thresholds:** the spec's ~10 pp for ER1 is a placeholder, not an evidence-based limit. Results
   are reported with CIs against it as a reference only. No compliance is claimed.
 

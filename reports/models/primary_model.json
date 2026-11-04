@@ -1,0 +1,27 @@
+{
+  "rule": "lowest mean 5-fold CV log RMSE under Model A (D-019)",
+  "algorithm": "hgb_tuned",
+  "candidates": [
+    {
+      "algorithm": "hgb_tuned",
+      "cv_log_rmse_mean": 0.52851,
+      "cv_log_rmse_sd": 0.01386
+    },
+    {
+      "algorithm": "hgb",
+      "cv_log_rmse_mean": 0.53914,
+      "cv_log_rmse_sd": 0.01746
+    },
+    {
+      "algorithm": "ridge",
+      "cv_log_rmse_mean": 0.60378,
+      "cv_log_rmse_sd": 0.01185
+    },
+    {
+      "algorithm": "random_forest",
+      "cv_log_rmse_mean": 0.64637,
+      "cv_log_rmse_sd": 0.01158
+    }
+  ],
+  "dataset_sha256_16": "91174c392a8be652"
+}

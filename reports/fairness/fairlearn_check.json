@@ -1,0 +1,80 @@
+{
+  "A": {
+    "ER1a_error_rate_gap_fairlearn_abs": 0.024758591520032458,
+    "Emerging_EOD_fairlearn": 0.012943443562547396,
+    "Emerging_tpr_by_group": {
+      "UEFA": 0.9027,
+      "non-UEFA": 0.8898
+    },
+    "Emerging_fpr_by_group": {
+      "UEFA": 0.1048,
+      "non-UEFA": 0.1104
+    },
+    "Established_EOD_fairlearn": 0.032552396897660235,
+    "Established_tpr_by_group": {
+      "UEFA": 0.7403,
+      "non-UEFA": 0.7607
+    },
+    "Established_fpr_by_group": {
+      "UEFA": 0.1284,
+      "non-UEFA": 0.1609
+    },
+    "Elite_EOD_fairlearn": 0.03535972545655097,
+    "Elite_tpr_by_group": {
+      "UEFA": 0.6248,
+      "non-UEFA": 0.5894
+    },
+    "Elite_fpr_by_group": {
+      "UEFA": 0.0555,
+      "non-UEFA": 0.0568
+    },
+    "World Class_EOD_fairlearn": 0.052343816224463824,
+    "World Class_tpr_by_group": {
+      "UEFA": 0.6375,
+      "non-UEFA": 0.5851
+    },
+    "World Class_fpr_by_group": {
+      "UEFA": 0.0115,
+      "non-UEFA": 0.0107
+    }
+  },
+  "B": {
+    "ER1a_error_rate_gap_fairlearn_abs": 0.009221012431547326,
+    "Emerging_EOD_fairlearn": 0.012725462222187178,
+    "Emerging_tpr_by_group": {
+      "UEFA": 0.8365,
+      "non-UEFA": 0.8347
+    },
+    "Emerging_fpr_by_group": {
+      "UEFA": 0.2319,
+      "non-UEFA": 0.2446
+    },
+    "Established_EOD_fairlearn": 0.03982458587079474,
+    "Established_tpr_by_group": {
+      "UEFA": 0.552,
+      "non-UEFA": 0.5918
+    },
+    "Established_fpr_by_group": {
+      "UEFA": 0.1999,
+      "non-UEFA": 0.2226
+    },
+    "Elite_EOD_fairlearn": 0.03654451117375496,
+    "Elite_tpr_by_group": {
+      "UEFA": 0.3903,
+      "non-UEFA": 0.4268
+    },
+    "Elite_fpr_by_group": {
+      "UEFA": 0.0732,
+      "non-UEFA": 0.0536
+    },
+    "World Class_EOD_fairlearn": 0.00860388234296855,
+    "World Class_tpr_by_group": {
+      "UEFA": 0.4701,
+      "non-UEFA": 0.4787
+    },
+    "World Class_fpr_by_group": {
+      "UEFA": 0.0157,
+      "non-UEFA": 0.0121
+    }
+  }
+}

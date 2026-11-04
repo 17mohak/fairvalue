@@ -3,37 +3,50 @@
 _Last updated: 2026-11-04 (end of session 1)_
 
 ## Where we are
-Milestones 0–2 (data foundation) are implemented and tested. **No model has been
-trained; there are no accuracy or fairness results yet.**
+- The research design is **locked** (`docs/RESEARCH_DESIGN.md`, D-011 accepted).
+- Milestones 0–4 are implemented, tested and run on the full data: data foundation, scope
+  assessment, baseline models with tuning and MLflow tracking, the tier classifier, and the first
+  fairness audit.
 
 | Area | State | Evidence |
 |---|---|---|
-| Environment | `.venv`, Python 3.12.5, pinned core deps | `requirements.txt` |
-| Data | 10 tables downloaded, checksummed | `data/raw/MANIFEST.json` |
-| Quality checks | 13 checks, no blocking failures | `reports/data_quality.csv` |
-| Mapping | 202 citizenship values; matches `national_teams` for all 123 labelled countries | `src/data/mappings/country_confederation.csv` |
-| Dataset | 5,820 eligible players (4,324 UEFA, 1,496 non-UEFA), 20 features | `data/processed/build_metadata.json` |
-| Coverage audit | 13 generated tables + written interpretation | `reports/coverage/`, `docs/reports/COVERAGE_AUDIT.md` |
-| Tests | 44 passing (unit + real-data integrity + reproducibility) | `pytest -q` |
-| Independent review | done, findings addressed | DECISIONS D-015 |
-| CI | workflow written, **not yet run** on GitHub (no remote) | `.github/workflows/ci.yml` |
+| Data | 10 tables, checksummed; 5,820-player modelling set; separate audit table and drift snapshot | `data/raw/MANIFEST.json`, `data/processed/build_metadata.json` |
+| Design | Locked: population, RQ1–RQ4, metrics, DiCE approach | `docs/RESEARCH_DESIGN.md`, DECISIONS D-011, D-017–D-025 |
+| Models | Ridge, RF, HGB, Optuna-HGB × Model A/B; HGB tier classifier; 5-fold held-out predictions | `reports/models/`, `docs/reports/MODEL_EVALUATION.md` |
+| Primary model | Optuna-tuned HGB (Model A log RMSE 0.529, R² 0.890) | `reports/models/primary_model.json` |
+| MLflow | 10 runs in `fairvalue-m3-baselines` (local `mlruns/`, git-ignored) | `python -m mlflow ui --backend-store-uri mlruns` |
+| Fairness | Signed residual gaps, MAE/RMSE gaps, league/strata tables, calibration check, ER1a/ER1b | `reports/fairness/`, `docs/reports/FAIRNESS_AUDIT.md` |
+| Tests | 63 passing (unit + real-data) | `pytest -q` |
+| Reviews | Two independent read-only reviews; all findings addressed | DECISIONS D-015, D-023 |
 
-## Decisions waiting for the project owner
-1. **D-011 scope:** model only players at clubs in the 14 European leagues with match data.
-   Recommended: accept, and state it as the research population.
-2. **S-4 DiCE design:** flipping confederation cannot change a model that never sees it.
-   Recommended: DiCE on real features (distance to the next tier, compared by group).
-3. **S-1 / S-8 report wording:** the dataset is frozen (July 2026), not weekly; real sizes
-   are 50,149 players / 656,301 valuations.
+## Key results so far (held-out, within the selected population)
+- Context matters most for prediction: Model A R² 0.890 vs Model B 0.668 (log scale).
+- **Primary fairness result:** non-UEFA players are under-predicted relative to UEFA players in
+  the same leagues.
+  - League-stratified log gap +0.099 (95% CI 0.068–0.128) under Model A; +0.159 under Model B.
+  - It holds within predicted-value deciles, across all algorithms, and at 900 minutes.
+  - It is concentrated in RU1, TR1, GR1, UKR1 and BE1.
+- This is the opposite of the original hypothesis; it is reported as found, with no causal reading.
+- Accuracy (MAE/RMSE) is similar for both groups. ER1a is +2.5 pp under Model A. Errors lean towards
+  under-tiering non-UEFA players.
 
 ## Blockers
-- None technical. The project folder is currently a temporary session folder and should be
-  moved to a permanent location before further work.
-- No GitHub remote yet; pushing, GHCR and hosting all need approval.
+- None technical.
+- The project lives in a temporary session folder. Move it to a permanent location before the next
+  session.
+- No GitHub remote. Pushing, GHCR and hosting all need approval.
 
-## Next steps
-1. Milestone 3: log-target Ridge baseline → RandomForest → HistGradientBoosting,
-   5-fold CV on `model_dataset.parquet`, MLflow tracking; derive tier quantiles.
-2. Fix the fairness metric plan (per-tier equalized odds, residual gaps by group within
-   league, recent-arrival and diaspora strata) **before** looking at results.
-3. Exploration notebook (`notebooks/01_dataset_investigation.ipynb`) once Jupyter is added.
+## Next steps (in order)
+1. **Milestone 5: explainability.**
+   - SHAP for the primary model (global, local, mean |SHAP| by group).
+   - Feature-based DiCE on the tier classifier (D-022).
+   - Install `shap` and `dice-ml` and pin them.
+2. **Milestone 6: serving.**
+   - Refit the primary model on all 5,820 players and save it.
+   - FastAPI `POST /predict` with Pydantic schemas using real feature ranges.
+   - Dockerfile.
+3. **Milestone 7: MLOps.**
+   - CI runs `train --quick` with a quality gate based on the measured baseline.
+   - Evidently drift report (drift reference vs current), with drift features per S-2.
+4. **Milestone 8: Responsible AI documentation.** Model card, data card, EU AI Act classification.
+5. **Report integration:** update the academic report (frozen dataset, sizes, scope statement, results).

@@ -51,7 +51,7 @@
   background: rgb(233 185 73 / 0.05);
 }
 
-.rooms .num {
+.rooms :global(.num) {
   font-family: var(--font-display);
   font-size: 0.85rem;
   color: var(--flood);

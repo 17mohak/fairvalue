@@ -8,6 +8,7 @@ import { Segmented } from "@/components/ui/Segmented";
 import { ApiError, explain, health, predict } from "@/lib/api/client";
 import type { PlayerField } from "@/lib/api/types";
 import { MODEL_LABELS, SUB_POSITIONS, type ModelId, type Position } from "@/lib/football";
+import { formatEur } from "@/lib/format";
 import {
   DEFAULT_PLAYER,
   FIELD_SPECS,
@@ -45,14 +46,27 @@ export function Studio() {
   const resultRef = useRef<HTMLDivElement>(null);
   const runId = useRef(0);
 
+  // Check the service once; if it is up, value the starting profile straight away so the
+  // studio opens on a live result rather than an empty scale.
+  const autoRan = useRef(false);
   useEffect(() => {
     let live = true;
     health()
-      .then((h) => live && setService(h.status === "ok" ? "online" : "offline"))
+      .then((h) => {
+        if (!live) return;
+        const ok = h.status === "ok";
+        setService(ok ? "online" : "offline");
+        if (ok && !autoRan.current) {
+          autoRan.current = true;
+          // The initial render's run() already holds the starting profile and Model A.
+          void run(undefined, undefined, { quiet: true });
+        }
+      })
       .catch(() => live && setService("offline"));
     return () => {
       live = false;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once on mount
   }, []);
 
   const keyOf = (d: ProfileDraft, m: ModelId) => JSON.stringify([d, m]);
@@ -89,7 +103,7 @@ export function Studio() {
     (target as HTMLElement | null | undefined)?.focus();
   }
 
-  async function run(useModel: ModelId = model, useDraft: ProfileDraft = draft) {
+  async function run(useModel: ModelId = model, useDraft: ProfileDraft = draft, { quiet = false }: { quiet?: boolean } = {}) {
     const checked = validateProfile(useDraft);
     if (!checked.ok) {
       setErrors(checked.fieldErrors);
@@ -135,7 +149,7 @@ export function Studio() {
     });
     setSubmittedKey(keyOf(useDraft, useModel));
     setStatus("done");
-    if (window.matchMedia("(max-width: 1023px)").matches) {
+    if (!quiet && window.matchMedia("(max-width: 1099px)").matches) {
       resultRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
     }
   }
@@ -165,6 +179,13 @@ export function Studio() {
   return (
     <form className={styles.layout} onSubmit={onSubmit} noValidate aria-label="Player profile">
       <div className={styles.controls}>
+        <div className={styles.paneHead}>
+          <p className={styles.paneTitle}>Profile</p>
+          <p className={styles.service} data-state={service}>
+            <span className={styles.dot} aria-hidden="true" />
+            {service === "checking" ? "Checking the model service" : service === "online" ? "Model service online" : "Model service offline"}
+          </p>
+        </div>
         <div className={styles.topline}>
           <SelectField label="Start from" name="preset" value={presetId} onChange={choosePreset} hint="Illustrative, not real players">
             {presetId === "" && <option value="">Your edited profile</option>}
@@ -174,10 +195,6 @@ export function Studio() {
               </option>
             ))}
           </SelectField>
-          <p className={styles.service} data-state={service}>
-            <span className={styles.dot} aria-hidden="true" />
-            {service === "checking" ? "Checking the model service" : service === "online" ? "Model service online" : "Model service offline"}
-          </p>
         </div>
 
         <Segmented
@@ -212,6 +229,18 @@ export function Studio() {
             <p className={styles.errorCount} role="status">
               {Object.keys(errors).length === 1 ? "1 field needs attention." : `${Object.keys(errors).length} fields need attention.`}
             </p>
+          )}
+          {result && Object.keys(errors).length === 0 && (
+            <button
+              type="button"
+              className={styles.jump}
+              data-stale={stale || undefined}
+              onClick={() => resultRef.current?.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" })}
+            >
+              <span className="num">{formatEur(result.primary.predicted_value_eur)}</span> · {result.primary.predicted_tier}
+              <span aria-hidden="true"> ↓</span>
+              <span className="visually-hidden"> Go to the result</span>
+            </button>
           )}
         </div>
       </div>

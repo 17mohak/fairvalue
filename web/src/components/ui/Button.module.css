@@ -48,3 +48,14 @@
   border-color: var(--chalk-2);
   background: rgb(237 239 230 / 0.04);
 }
+
+.arrow {
+  display: inline-block;
+  font-family: var(--font-ui);
+  font-weight: 500;
+  transition: transform 220ms var(--ease-out);
+}
+
+.button:hover .arrow {
+  transform: translateX(3px);
+}

@@ -19,6 +19,10 @@ export interface IntervalRow {
   tone?: "uefa" | "non-uefa";
   /** True when only a point estimate exists (no interval was computed). */
   pointOnly?: boolean;
+  /** The same row under a comparison model, drawn as a thin hollow mark beneath. */
+  ghost?: Interval & { pointOnly?: boolean };
+  /** Sample size, when callers want to sort by it. */
+  n?: number;
 }
 
 interface Props {
@@ -31,14 +35,18 @@ interface Props {
   sides?: [string, string];
   caption?: string;
   tableCaption: string;
+  /** Legend text for ghost rows, e.g. "Model B". */
+  ghostLabel?: string;
+  primaryLabel?: string;
 }
 
 /** Forest plot: point estimate with 95% CI per row, zero reference line, exact values on hover/focus. */
-export function IntervalPlot({ rows, domain, format = (v) => signed(v, 3), axisLabel, sides, caption, tableCaption }: Props) {
+export function IntervalPlot({ rows, domain, format = (v) => signed(v, 3), axisLabel, sides, caption, tableCaption, ghostLabel, primaryLabel }: Props) {
   const reduce = useReducedMotion();
   const [active, setActive] = useState<string | null>(null);
-  const lo = domain?.[0] ?? Math.min(0, ...rows.map((r) => r.interval.low));
-  const hi = domain?.[1] ?? Math.max(0, ...rows.map((r) => r.interval.high));
+  const hasGhost = rows.some((r) => r.ghost);
+  const lo = domain?.[0] ?? Math.min(0, ...rows.flatMap((r) => [r.interval.low, r.ghost?.low ?? 0]));
+  const hi = domain?.[1] ?? Math.max(0, ...rows.flatMap((r) => [r.interval.high, r.ghost?.high ?? 0]));
   const pad = (hi - lo) * 0.06;
   const d0 = domain ? lo : lo - pad;
   const d1 = domain ? hi : hi + pad;
@@ -46,7 +54,17 @@ export function IntervalPlot({ rows, domain, format = (v) => signed(v, 3), axisL
   const ticks = niceTicks(d0, d1, 5);
 
   return (
-    <figure className={styles.figure}>
+    <figure className={styles.figure} data-ghost={hasGhost || undefined}>
+      {hasGhost && ghostLabel && (
+        <p className={styles.legend} aria-hidden="true">
+          <span>
+            <i className={styles.legendPrimary} /> {primaryLabel ?? "Selected model"}
+          </span>
+          <span>
+            <i className={styles.legendGhost} /> {ghostLabel}
+          </span>
+        </p>
+      )}
       {sides && (
         <div className={styles.sides} aria-hidden="true">
           <span />
@@ -72,7 +90,7 @@ export function IntervalPlot({ rows, domain, format = (v) => signed(v, 3), axisL
               data-active={active === r.key || undefined}
               data-emphasis={r.emphasis || undefined}
               tabIndex={0}
-              aria-label={`${r.label}${r.sublabel ? `, ${r.sublabel}` : ""}: ${format(estimate)}${r.pointOnly ? ", point estimate only" : `, 95% interval ${decimal(low, 3)} to ${decimal(high, 3)}${crossesZero ? ", includes zero" : ""}`}`}
+              aria-label={`${r.label}${r.sublabel ? `, ${r.sublabel}` : ""}: ${format(estimate)}${r.pointOnly ? ", point estimate only" : `, 95% interval ${decimal(low, 3)} to ${decimal(high, 3)}${crossesZero ? ", includes zero" : ""}`}${r.ghost && ghostLabel ? `; ${ghostLabel} ${format(r.ghost.estimate)}` : ""}`}
               onMouseEnter={() => setActive(r.key)}
               onMouseLeave={() => setActive(null)}
               onFocus={() => setActive(r.key)}
@@ -96,6 +114,14 @@ export function IntervalPlot({ rows, domain, format = (v) => signed(v, 3), axisL
                   className={`${styles.dot} ${r.hollow ? styles.hollow : ""} ${r.tone ? styles[r.tone] : ""}`}
                   style={{ left: `${pos(estimate)}%` }}
                 />
+                {r.ghost && (
+                  <>
+                    {!r.ghost.pointOnly && (
+                      <span className={styles.ghostWhisker} style={{ left: `${pos(r.ghost.low)}%`, width: `${pos(r.ghost.high) - pos(r.ghost.low)}%` }} />
+                    )}
+                    <span className={styles.ghostDot} style={{ left: `${pos(r.ghost.estimate)}%` }} />
+                  </>
+                )}
                 {active === r.key && (
                   <span className={`${styles.tip} num`} style={{ left: `${Math.min(80, Math.max(20, pos(estimate)))}%` }} role="presentation">
                     {format(estimate)} <span className={styles.tipCi}>{r.pointOnly ? "(no interval)" : `(${decimal(low, 3)} to ${decimal(high, 3)})`}</span>
@@ -130,6 +156,7 @@ export function IntervalPlot({ rows, domain, format = (v) => signed(v, 3), axisL
               <th scope="col">Estimate</th>
               <th scope="col">95% CI low</th>
               <th scope="col">95% CI high</th>
+              {hasGhost && <th scope="col">{ghostLabel ?? "Comparison"} estimate</th>}
             </tr>
           </thead>
           <tbody>
@@ -142,6 +169,7 @@ export function IntervalPlot({ rows, domain, format = (v) => signed(v, 3), axisL
                 <td className="num">{decimal(r.interval.estimate, 4)}</td>
                 <td className="num">{r.pointOnly ? "n/a" : decimal(r.interval.low, 4)}</td>
                 <td className="num">{r.pointOnly ? "n/a" : decimal(r.interval.high, 4)}</td>
+                {hasGhost && <td className="num">{r.ghost ? decimal(r.ghost.estimate, 4) : "n/a"}</td>}
               </tr>
             ))}
           </tbody>

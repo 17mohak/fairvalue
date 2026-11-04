@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { RoomTransition } from "@/components/site/RoomTransition";
 import { BarList } from "@/components/charts/BarList";
 import { featureLabel } from "@/lib/football";
-import { decimal, formatEur, integer, percent } from "@/lib/format";
+import { decimal, formatEur, integer, percent, signed } from "@/lib/format";
 import { research } from "@/lib/research";
+import { MethodsToc } from "./MethodsToc";
 import styles from "./methods.module.css";
 
 export const metadata: Metadata = {
@@ -79,29 +81,67 @@ export default function MethodsPage() {
   const policy = research.monitoring.policy;
   const dice = research.dice.run;
 
+  const gap = research.headline.A.signed_gap_league_stratified;
+  const pop = funnel[funnel.length - 1]!;
+
   return (
-    <div className={`page ${styles.layout}`}>
-      <header className={styles.intro}>
-        <h1 className={styles.title}>Methods</h1>
-        <p className={styles.lede}>
-          How the data was chosen, how the models were trained and judged, and where the results stop applying. Figures come from the
-          generated research outputs, dataset fingerprint <span className="num">{research.models.dataset_sha256_16}</span>.
+    <RoomTransition>
+    <div className="paper">
+    <article className={styles.layout}>
+      <header className={styles.masthead}>
+        <p className={styles.eyebrow}>
+          <b className="num">04</b> Methods · technical account
         </p>
+        <h1 className={styles.title}>How FairValue works</h1>
+        <p className={styles.lede}>
+          How the data was chosen, how the models were trained and judged, and where the results stop applying. Every figure on this page is
+          read from the generated research outputs.
+        </p>
+        <dl className={styles.meta}>
+          <div>
+            <dt>Population</dt>
+            <dd className="num">{integer(pop.total)} players · 14 leagues</dd>
+          </div>
+          <div>
+            <dt>Design locked</dt>
+            <dd>4 November 2026 (D-011)</dd>
+          </div>
+          <div>
+            <dt>Primary model</dt>
+            <dd>Gradient boosting, tuned</dd>
+          </div>
+          <div>
+            <dt>Dataset fingerprint</dt>
+            <dd className="num">{research.models.dataset_sha256_16}</dd>
+          </div>
+        </dl>
       </header>
 
-      <nav className={styles.toc} aria-label="On this page">
-        <ol>
-          {TOC.map((t) => (
-            <li key={t.id}>
-              <a href={`#${t.id}`}>{t.label}</a>
-            </li>
-          ))}
-        </ol>
-      </nav>
+      <section className={styles.abstract} aria-labelledby="abstract-title">
+        <h2 id="abstract-title" className={styles.abstractTitle}>
+          Abstract
+        </h2>
+        <p>
+          FairValue estimates the Transfermarkt market value of {integer(pop.total)} players at clubs in 14 European first divisions from two
+          seasons of club match data. Two tuned gradient-boosting models are compared: Model A sees league and club context, Model B does not.
+          Neither sees nationality. Every metric uses out-of-fold predictions. Comparing signed residuals within leagues, non-UEFA players are
+          under-predicted relative to UEFA players by <span className="num">{signed(gap.estimate)}</span> log units under Model A (95% CI{" "}
+          <span className="num">
+            {signed(gap.low)} to {signed(gap.high)}
+          </span>
+          ). The finding is observational, specific to this selected population, and not evidence of discrimination.
+        </p>
+      </section>
 
-      <div className={styles.body}>
+      <MethodsToc items={TOC} />
+
+      <div className={styles.body} id="methods-body">
         <section id="data" className={styles.section}>
-          <h2 className={styles.h2}>Data and provenance</h2>
+          <h2 className={styles.h2}>
+            <span className={`${styles.secNo} num`}>01</span>
+            Data and provenance
+          </h2>
+          <aside className={styles.margin}>Source: the open <em>transfermarkt-datasets</em> project. Raw files are checksummed against <code>data/raw/MANIFEST.json</code>.</aside>
           <div className="prose">
             <p>
               Valuations and match records come from Transfermarkt, compiled by the open <em>transfermarkt-datasets</em> project and downloaded
@@ -116,7 +156,11 @@ export default function MethodsPage() {
         </section>
 
         <section id="population" className={styles.section}>
-          <h2 className={styles.h2}>Population</h2>
+          <h2 className={styles.h2}>
+            <span className={`${styles.secNo} num`}>02</span>
+            Population
+          </h2>
+          <aside className={styles.margin}>Results describe this population only. 79% of currently valued non-UEFA players play in leagues without match data and are outside it.</aside>
           <p className={styles.note}>From every player in the dataset to the modelling population. Each bar splits UEFA and non-UEFA players.</p>
           <ol className={styles.funnel}>
             {funnel.slice(0, 4).map((f, i) => (
@@ -151,7 +195,11 @@ export default function MethodsPage() {
         </section>
 
         <section id="features" className={styles.section}>
-          <h2 className={styles.h2}>Features</h2>
+          <h2 className={styles.h2}>
+            <span className={`${styles.secNo} num`}>03</span>
+            Features
+          </h2>
+          <aside className={styles.margin}>Guard: <code>assert_no_demographic_columns</code> runs before every fit.</aside>
           <p className={styles.note}>All computed as of each player&apos;s own valuation date, from matches up to that date only.</p>
           <div className={styles.tableWrap}>
             <table className={styles.table}>
@@ -182,7 +230,11 @@ export default function MethodsPage() {
         </section>
 
         <section id="validation" className={styles.section}>
-          <h2 className={styles.h2}>Training and validation</h2>
+          <h2 className={styles.h2}>
+            <span className={`${styles.secNo} num`}>04</span>
+            Training and validation
+          </h2>
+          <aside className={styles.margin}>Residual = actual − predicted. Positive means the model under-predicted.</aside>
           <div className="prose">
             <p>
               The target is the natural log of market value. Models are compared with five-fold cross-validation, stratified on value tier.
@@ -198,7 +250,10 @@ export default function MethodsPage() {
         </section>
 
         <section id="selection" className={styles.section}>
-          <h2 className={styles.h2}>Model selection</h2>
+          <h2 className={styles.h2}>
+            <span className={`${styles.secNo} num`}>05</span>
+            Model selection
+          </h2>
           <p className={styles.note}>Rule fixed in advance: {primary.rule}.</p>
           <BarList
             items={primary.candidates.map((c) => ({ key: c.algorithm, label: ALG[c.algorithm] ?? c.algorithm, value: c.cv_log_rmse_mean, detail: `SD ${c.cv_log_rmse_sd}` }))}
@@ -209,7 +264,10 @@ export default function MethodsPage() {
         </section>
 
         <section id="evaluation" className={styles.section}>
-          <h2 className={styles.h2}>Evaluation</h2>
+          <h2 className={styles.h2}>
+            <span className={`${styles.secNo} num`}>06</span>
+            Evaluation
+          </h2>
           <div className={styles.tableWrap}>
             <table className={styles.table}>
               <caption className={styles.caption}>Regression on held-out players</caption>
@@ -275,7 +333,10 @@ export default function MethodsPage() {
         </section>
 
         <section id="explainability" className={styles.section}>
-          <h2 className={styles.h2}>Explainability</h2>
+          <h2 className={styles.h2}>
+            <span className={`${styles.secNo} num`}>07</span>
+            Explainability
+          </h2>
           <div className="prose">
             <p>
               SHAP values are computed with TreeExplainer on the served gradient-boosting regressors, on the log scale, with one-hot columns summed
@@ -306,7 +367,11 @@ export default function MethodsPage() {
         </section>
 
         <section id="fairness" className={styles.section}>
-          <h2 className={styles.h2}>Fairness definitions</h2>
+          <h2 className={styles.h2}>
+            <span className={`${styles.secNo} num`}>08</span>
+            Fairness definitions
+          </h2>
+          <aside className={styles.margin}>No metric is used as a pass/fail test, and no compliance is claimed.</aside>
           <div className="prose">
             <p>
               The primary measure is the signed residual gap: mean (actual − predicted) log value for non-UEFA players minus that for UEFA players,
@@ -320,7 +385,11 @@ export default function MethodsPage() {
         </section>
 
         <section id="monitoring" className={styles.section}>
-          <h2 className={styles.h2}>Monitoring</h2>
+          <h2 className={styles.h2}>
+            <span className={`${styles.secNo} num`}>09</span>
+            Monitoring
+          </h2>
+          <aside className={styles.margin}>The source is frozen, so drift is simulated from history rather than observed live.</aside>
           <div className="prose">
             <p>
               With no live traffic and a frozen source, drift is simulated: the previous year&apos;s snapshot ({policy.reference_window}) is compared
@@ -378,7 +447,10 @@ export default function MethodsPage() {
         </section>
 
         <section id="limitations" className={styles.section}>
-          <h2 className={styles.h2}>Limitations</h2>
+          <h2 className={styles.h2}>
+            <span className={`${styles.secNo} num`}>10</span>
+            Limitations
+          </h2>
           <dl className={styles.limits}>
             {LIMITATIONS.map(([k, v]) => (
               <div key={k}>
@@ -394,7 +466,10 @@ export default function MethodsPage() {
         </section>
 
         <section id="reproduce" className={styles.section}>
-          <h2 className={styles.h2}>Reproduce</h2>
+          <h2 className={styles.h2}>
+            <span className={`${styles.secNo} num`}>11</span>
+            Reproduce
+          </h2>
           <p className={styles.note}>From the repository root, with Python 3.12 and Node 20 or later.</p>
           <pre className={styles.code}>
             <code>{`python -m src.data.acquire          # download raw tables, verify checksums
@@ -408,6 +483,8 @@ cd web && npm ci && npm run dev     # this site`}</code>
           </pre>
         </section>
       </div>
+    </article>
     </div>
+    </RoomTransition>
   );
 }

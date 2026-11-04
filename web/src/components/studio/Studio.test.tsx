@@ -30,16 +30,18 @@ const realApi: Handler = (url, body) => {
 afterEach(() => vi.unstubAllGlobals());
 
 describe("Valuation studio", () => {
-  it("values the default profile end to end and explains it", async () => {
+  it("values the starting profile as soon as the service is up, and explains it", async () => {
     const calls = mockApi(realApi);
     render(<Studio />);
-    await userEvent.click(screen.getByRole("button", { name: "Value this player" }));
 
     const region = await screen.findByRole("region", { name: "Valuation result" });
     await waitFor(() => expect(within(region).getByText("€17,056,329")).toBeInTheDocument());
-    expect(within(region).getByText("Elite tier")).toBeInTheDocument();
-    // Model B comparison comes from the second model, not from arithmetic on the first.
-    expect(within(region).getByText(/puts this profile at/)).toHaveTextContent("€11.9M");
+    expect(within(region).getByText(/Elite tier, from Model A/)).toBeInTheDocument();
+    // Model B comparison comes from the second model's own response, not from arithmetic on the first.
+    const duel = within(region).getByRole("region", { name: /Model A compared with Model B/ });
+    expect(duel).toHaveTextContent("€17.1M");
+    expect(duel).toHaveTextContent("€11.9M");
+    expect(screen.getByRole("button", { name: "Value again" })).toBeInTheDocument();
     // Local explanation: the waterfall ends at the served prediction.
     expect(within(region).getByRole("tab", { name: "This estimate" })).toHaveAttribute("aria-selected", "true");
     expect(within(region).getByText("Average training player")).toBeInTheDocument();
@@ -54,21 +56,26 @@ describe("Valuation studio", () => {
   it("blocks invalid input in the browser and points at the field", async () => {
     const calls = mockApi(realApi);
     render(<Studio />);
+    await screen.findByText("€17,056,329"); // the automatic first valuation
+    const before = calls.filter((c) => c.url === "/api/predict").length;
+
     const age = screen.getByRole("textbox", { name: "Age" });
     await userEvent.clear(age);
     await userEvent.type(age, "12");
-    await userEvent.click(screen.getByRole("button", { name: "Value this player" }));
+    await userEvent.click(screen.getByRole("button", { name: "Value again" }));
 
     expect(await screen.findByText(/Enter 16–44/)).toBeInTheDocument();
     expect(age).toHaveAttribute("aria-invalid", "true");
     expect(age).toHaveFocus();
-    expect(calls.filter((c) => c.url === "/api/predict")).toHaveLength(0);
+    expect(calls.filter((c) => c.url === "/api/predict")).toHaveLength(before);
   });
 
   it("explains clearly when the model service is down", async () => {
     mockApi(() => new Response(JSON.stringify({ detail: "The valuation service is unreachable." }), { status: 503 }));
     render(<Studio />);
     expect(await screen.findByText("Model service offline")).toBeInTheDocument();
+    // Nothing is valued automatically while the service is down; the user asks explicitly.
+    expect(screen.queryByText("Valuing…")).not.toBeInTheDocument();
     await userEvent.click(screen.getByRole("button", { name: "Value this player" }));
     expect(await screen.findByText("The valuation service is offline")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: "Try again" })).toBeInTheDocument();
@@ -80,7 +87,6 @@ describe("Valuation studio", () => {
       return realApi(url, body);
     });
     render(<Studio />);
-    await userEvent.click(screen.getByRole("button", { name: "Value this player" }));
     expect(await screen.findByText("€17,056,329")).toBeInTheDocument();
     expect(screen.getByText(/Explanations need the 'shap' package/)).toBeInTheDocument();
   });
@@ -94,7 +100,6 @@ describe("Valuation studio", () => {
       );
     });
     render(<Studio />);
-    await userEvent.click(screen.getByRole("button", { name: "Value this player" }));
     expect(await screen.findByText("Input should be less than or equal to 2.7.")).toBeInTheDocument();
     expect(screen.getByText("The model can't value this profile")).toBeInTheDocument();
   });

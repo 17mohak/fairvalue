@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { RoomTransition } from "@/components/site/RoomTransition";
 import { Studio } from "@/components/studio/Studio";
 import styles from "./page.module.css";
 
@@ -9,15 +10,19 @@ export const metadata: Metadata = {
 
 export default function StudioPage() {
   return (
-    <div className="page">
-      <header className={styles.intro}>
-        <h1 className={styles.title}>Valuation studio</h1>
-        <p className={styles.lede}>
-          Describe a player&apos;s last two years of club football. The model returns a market value in euros, the tier it falls in, and the
-          inputs that moved it most.
-        </p>
-      </header>
-      <Studio />
-    </div>
+    <RoomTransition>
+      <div className={styles.studio}>
+        <header className={styles.head}>
+          <p className="eyebrow">
+            <b className="num">02</b> Valuation studio
+          </p>
+          <h1 className={styles.title}>Value a player</h1>
+          <p className={styles.lede}>
+            Describe two seasons of club football. The live model returns a value in euros, its tier, and the inputs that moved it.
+          </p>
+        </header>
+        <Studio />
+      </div>
+    </RoomTransition>
   );
 }

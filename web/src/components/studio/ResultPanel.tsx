@@ -66,6 +66,10 @@ export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
   const band: [number, number] = [value / Math.exp(mae), value * Math.exp(mae)];
   const classifierAgrees = primary.classifier_tier === primary.predicted_tier;
 
+  const ratio = counterpart ? value / counterpart.predicted_value_eur : null;
+  const modelAValue = model === "A" ? value : counterpart?.predicted_value_eur;
+  const modelBValue = model === "B" ? value : counterpart?.predicted_value_eur;
+
   return (
     <div className={styles.panel}>
       <div role="status" aria-live="polite" className="visually-hidden">
@@ -74,68 +78,86 @@ export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
 
       {status === "error" && error && <ErrorNotice error={error} onRetry={onRetry} compact />}
 
-      <AnimatePresence>
-        {(stale || loading) && (
-          <motion.p
-            className={styles.staleChip}
-            initial={reduce ? false : { opacity: 0, y: -4 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
-          >
-            {loading ? "Updating…" : "Profile edited. Value it again to update."}
-          </motion.p>
-        )}
-      </AnimatePresence>
-
       <div className={styles.result} data-dim={loading || undefined}>
-        <header className={styles.head}>
-          <p className={styles.kicker}>
-            Estimated market value, {MODEL_LABELS[model].name} ({MODEL_LABELS[model].short.toLowerCase()})
-          </p>
+        {/* ---- Scoreboard ---- */}
+        <header className={styles.board}>
+          <div className={styles.boardTop}>
+            <p className={styles.kicker}>
+              <span className={styles.modelTag}>{MODEL_LABELS[model].name}</span> Estimated market value · {MODEL_LABELS[model].short.toLowerCase()}
+            </p>
+            <AnimatePresence>
+              {(stale || loading) && (
+                <motion.p
+                  className={styles.staleChip}
+                  data-loading={loading || undefined}
+                  initial={reduce ? false : { opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  {loading ? "Updating…" : "Profile edited · value again to update"}
+                </motion.p>
+              )}
+            </AnimatePresence>
+          </div>
           <p className={styles.value}>
             <AnimatedEur key={model} value={value} />
           </p>
           <p className={styles.sub}>
+            <span className={styles.tierPill}>{primary.predicted_tier}</span>
             <span className="num">{formatEurExact(value)}</span>
-            <span className={styles.tierPill}>{primary.predicted_tier} tier</span>
           </p>
         </header>
 
-        <ValueRuler
-          ariaLabel={`Estimate ${formatEur(value)} on a log scale of market values, in the ${primary.predicted_tier} tier`}
-          marker={{ value, label: formatEur(value), variant: "primary" }}
-          ghost={counterpart ? { value: counterpart.predicted_value_eur, label: `Model ${other} ${formatEur(counterpart.predicted_value_eur)}`, variant: "ghost" } : null}
-          band={band}
-        />
+        {/* ---- Model A vs Model B ---- */}
+        {counterpart && modelAValue !== undefined && modelBValue !== undefined && ratio !== null && (
+          <section className={styles.duel} aria-label="Model A compared with Model B for this profile">
+            <div data-active={model === "A" || undefined}>
+              <span className={styles.duelName}>Model A</span>
+              <span className={styles.duelHint}>with league and club</span>
+              <span className={`${styles.duelValue} num`}>{formatEur(modelAValue)}</span>
+            </div>
+            <div className={styles.duelDelta}>
+              <span className={`${styles.duelRatio} num`}>×{decimal(modelAValue / modelBValue, 2)}</span>
+              <span className={styles.duelHint}>{modelAValue >= modelBValue ? "context raises this estimate" : "context lowers this estimate"}</span>
+            </div>
+            <div data-active={model === "B" || undefined}>
+              <span className={styles.duelName}>Model B</span>
+              <span className={styles.duelHint}>performance only</span>
+              <span className={`${styles.duelValue} num`}>{formatEur(modelBValue)}</span>
+            </div>
+          </section>
+        )}
 
-        <div className={styles.facts}>
-          <p>
-            <strong>Typical miss.</strong> On players it never saw in training, {MODEL_LABELS[model].name}&apos;s estimates were off by a factor of
-            about <span className="num">{Math.exp(mae).toFixed(2)}</span> either way (log MAE <span className="num">{decimal(mae, 3)}</span>). The
-            shaded band shows that range around this estimate. It is a guide to scale, not a confidence interval.
+        <div className={styles.rulerWrap}>
+          <ValueRuler
+            ariaLabel={`Estimate ${formatEur(value)} on a log scale of market values, in the ${primary.predicted_tier} tier`}
+            marker={{ value, label: formatEur(value), variant: "primary" }}
+            ghost={counterpart ? { value: counterpart.predicted_value_eur, label: `Model ${other} ${formatEur(counterpart.predicted_value_eur)}`, variant: "ghost" } : null}
+            band={band}
+          />
+          <p className={styles.rulerNote}>
+            <span className={styles.bandKey} aria-hidden="true" /> Typical miss: on unseen players {MODEL_LABELS[model].name} was off by a factor of
+            about <span className="num">{Math.exp(mae).toFixed(2)}</span> either way (log MAE <span className="num">{decimal(mae, 3)}</span>). A guide to
+            scale, not a confidence interval.
           </p>
-          {counterpart && (
-            <p>
-              <strong>{other === "B" ? "Without league and club." : "With league and club."}</strong> {MODEL_LABELS[other].name}
-              {other === "B" ? ", which sees only performance, age and position," : ", which also sees the league and club strength,"} puts this
-              profile at <span className="num">{formatEur(counterpart.predicted_value_eur)}</span>.
-            </p>
-          )}
         </div>
 
+        {/* ---- Tier classifier ---- */}
         <section className={styles.section} aria-labelledby="tier-heading">
-          <h3 id="tier-heading" className={styles.h3}>
-            Tier classifier
-          </h3>
-          <p className={styles.sectionNote}>
-            A separate model trained to predict the tier directly.{" "}
-            {classifierAgrees
-              ? `It agrees: ${primary.classifier_tier}.`
-              : `It leans ${primary.classifier_tier}, while the value estimate falls in ${primary.predicted_tier}. Profiles near a boundary often split like this.`}
-          </p>
+          <div className={styles.sectionHead}>
+            <h3 id="tier-heading" className={styles.h3}>
+              Tier classifier
+            </h3>
+            <p className={styles.sectionNote}>
+              A separate model trained to predict the tier directly.{" "}
+              {classifierAgrees
+                ? `It agrees: ${primary.classifier_tier}.`
+                : `It leans ${primary.classifier_tier}, while the value estimate falls in ${primary.predicted_tier}. Profiles near a boundary often split like this.`}
+            </p>
+          </div>
           <ol className={styles.tiers}>
-            {TIER_NAMES.map((t) => {
+            {TIER_NAMES.map((t, i) => {
               const p = primary.tier_probabilities[t] ?? 0;
               return (
                 <li key={t} className={styles.tier} data-top={t === primary.classifier_tier || undefined}>
@@ -143,10 +165,10 @@ export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
                   <span className={styles.tierTrack}>
                     <motion.span
                       className={styles.tierBar}
-                      initial={reduce ? false : { scaleY: 0 }}
-                      animate={{ scaleY: 1 }}
-                      style={{ height: `${Math.max(2, p * 100)}%` }}
-                      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+                      initial={reduce ? false : { scaleX: 0 }}
+                      animate={{ scaleX: 1 }}
+                      style={{ width: `${Math.max(1, p * 100)}%` }}
+                      transition={{ duration: 0.55, delay: reduce ? 0 : i * 0.05, ease: [0.22, 1, 0.36, 1] }}
                     />
                   </span>
                   <span className={`${styles.tierP} num`}>{percent(p, 0)}</span>
@@ -156,10 +178,13 @@ export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
           </ol>
         </section>
 
+        {/* ---- Explanation ---- */}
         <section className={styles.section} aria-labelledby="why-heading">
-          <h3 id="why-heading" className={styles.h3}>
-            Why this number
-          </h3>
+          <div className={styles.sectionHead}>
+            <h3 id="why-heading" className={styles.h3}>
+              Why this number
+            </h3>
+          </div>
           <Tabs
             label="Explanation views"
             tabs={[
@@ -208,23 +233,24 @@ export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
           />
         </section>
 
-        <section className={styles.section} aria-labelledby="read-heading">
+        {/* ---- Reading ---- */}
+        <section className={`${styles.section} ${styles.reading}`} aria-labelledby="read-heading">
           <h3 id="read-heading" className={styles.h3}>
             Reading this estimate
           </h3>
           <ul className={styles.caveats}>
             <li>
-              It reproduces Transfermarkt&apos;s community valuations, which may carry their own biases. It is not a fee, a wage or a judgement
-              of the player.
+              It reproduces Transfermarkt&apos;s community valuations, which may carry their own biases. It is not a fee, a wage or a judgement of the
+              player.
             </li>
             <li>
-              It only applies to players like those in training: at clubs in 14 European first divisions, with at least 450 minutes in two
-              years. This profile was valued as playing in {leagueName(player.valuation_league_id)}.
+              It only applies to players like those in training: at clubs in 14 European first divisions, with at least 450 minutes in two years.
+              This profile was valued as playing in {leagueName(player.valuation_league_id)}.
             </li>
             <li>
-              The model never sees nationality. Even so, the{" "}
-              <Link href="/fairness">fairness audit</Link> found it under-predicts non-UEFA players relative to UEFA players in the same leagues, by
-              about {Math.round(Math.expm1(research.headline.A.signed_gap_league_stratified.estimate) * 100)}% on average.
+              The model never sees nationality. Even so, the <Link href="/fairness">fairness audit</Link> found it under-predicts non-UEFA players
+              relative to UEFA players in the same leagues, by about{" "}
+              {Math.round(Math.expm1(research.headline.A.signed_gap_league_stratified.estimate) * 100)}% on average.
             </li>
           </ul>
           <dl className={styles.versions}>

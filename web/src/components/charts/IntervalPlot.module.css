@@ -234,3 +234,63 @@
     gap: 0 0.6rem;
   }
 }
+
+/* Comparison model: thin and hollow, offset below the selected model's mark. */
+.figure[data-ghost] .whisker,
+.figure[data-ghost] .dot {
+  top: 38%;
+}
+
+.ghostWhisker {
+  position: absolute;
+  top: 72%;
+  height: 1px;
+  background: var(--fog);
+  transition: left 420ms var(--ease-out), width 420ms var(--ease-out);
+}
+
+.ghostDot {
+  position: absolute;
+  top: 72%;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: var(--turf-900);
+  box-shadow: inset 0 0 0 1.5px var(--fog);
+  transition: left 420ms var(--ease-out);
+}
+
+.dot,
+.whisker {
+  transition: left 420ms var(--ease-out), width 420ms var(--ease-out);
+}
+
+.legend {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-size: var(--step--2);
+  color: var(--fog);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.legendPrimary,
+.legendGhost {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.legendPrimary {
+  background: var(--flood);
+}
+
+.legendGhost {
+  box-shadow: inset 0 0 0 1.5px var(--fog);
+}

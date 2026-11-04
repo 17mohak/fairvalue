@@ -1,27 +1,25 @@
 import type { Metadata } from "next";
-import { integer } from "@/lib/format";
+import { Suspense } from "react";
+import { RoomTransition } from "@/components/site/RoomTransition";
 import { fairnessData } from "./data";
-import { FairnessExplorer } from "./FairnessExplorer";
-import styles from "./fairness.module.css";
+import { Observatory } from "./Observatory";
 
 export const metadata: Metadata = {
-  title: "Fairness audit",
+  title: "Fairness observatory",
   description:
     "Does a nationality-blind football valuation model err differently for players from inside and outside UEFA? Gaps, intervals, leagues, tiers and robustness checks.",
 };
 
-export default function FairnessPage() {
+// Reading searchParams makes the route render per request, so a shared link such as
+// /fairness?view=leagues&model=B arrives fully rendered rather than filling in on the client.
+export default async function FairnessPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  await searchParams;
   const data = fairnessData();
   return (
-    <>
-      <header className={`page ${styles.intro}`}>
-        <h1 className={styles.title}>Fairness audit</h1>
-        <p className={styles.lede}>
-          Does a valuation model that never sees nationality still err differently for players from inside and outside UEFA? This is what the
-          audit of {integer(data.population.total)} held-out predictions found, with its uncertainty and its limits.
-        </p>
-      </header>
-      <FairnessExplorer data={data} />
-    </>
+    <RoomTransition>
+      <Suspense>
+        <Observatory data={data} />
+      </Suspense>
+    </RoomTransition>
   );
 }

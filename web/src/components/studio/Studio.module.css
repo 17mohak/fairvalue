@@ -1,20 +1,40 @@
+/* Valuation studio: a workbench. On wide screens the bench fills the viewport below the
+   masthead and each pane scrolls on its own; on narrow screens it flows top to bottom. */
+
 .layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: 3rem;
+  gap: 2.5rem;
 }
 
 .controls {
   display: grid;
-  gap: 1.75rem;
+  gap: 1.5rem;
   align-content: start;
   min-width: 0;
 }
 
+.paneHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 0.9rem;
+  border-bottom: 1px solid var(--rule);
+}
+
+.paneTitle {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--chalk-2);
+}
+
 .topline {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto;
-  align-items: end;
+  grid-template-columns: minmax(0, 1fr);
   gap: 1rem;
 }
 
@@ -22,7 +42,6 @@
   display: inline-flex;
   align-items: center;
   gap: 0.45rem;
-  padding-bottom: 0.6rem;
   font-size: var(--step--2);
   color: var(--fog);
   white-space: nowrap;
@@ -36,8 +55,8 @@
 }
 
 .service[data-state="online"] .dot {
-  background: var(--chalk);
-  box-shadow: 0 0 0 3px rgb(237 239 230 / 0.12);
+  background: #3fb68b;
+  box-shadow: 0 0 0 3px rgb(63 182 139 / 0.18);
 }
 
 .service[data-state="offline"] {
@@ -59,7 +78,7 @@
 }
 
 .never {
-  padding: 0.85rem 1rem;
+  padding: 0.8rem 1rem;
   border-left: 2px solid var(--flood);
   background: var(--turf-850);
   font-size: var(--step--1);
@@ -83,10 +102,13 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.5rem 1.25rem;
+  gap: 0.5rem 1rem;
   margin-inline: calc(var(--gutter) * -1);
-  padding: 0.9rem var(--gutter);
-  background: linear-gradient(to top, var(--turf-900) 70%, rgb(15 23 19 / 0));
+  padding: 0.85rem var(--gutter);
+  border-top: 1px solid var(--rule);
+  background: rgb(15 23 19 / 0.94);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .errorCount {
@@ -94,29 +116,54 @@
   color: var(--error);
 }
 
-.output {
-  min-width: 0;
-  scroll-margin-top: 4.5rem;
+.jump {
+  margin-left: auto;
+  padding: 0.45rem 0.8rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-s);
+  background: var(--turf-850);
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--flood);
+  cursor: pointer;
 }
 
-@media (min-width: 1024px) {
+.jump[data-stale] {
+  color: var(--fog);
+}
+
+.output {
+  min-width: 0;
+  scroll-margin-top: calc(var(--header-h) + 1rem);
+}
+
+@media (min-width: 1100px) {
   .layout {
-    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr);
-    gap: clamp(2.5rem, 5vw, 5rem);
-    align-items: start;
+    grid-template-columns: minmax(25rem, 0.82fr) minmax(0, 1.18fr);
+    gap: 0;
+    height: calc(100dvh - var(--header-h) - var(--studio-head, 0px));
+    min-height: 40rem;
+    border-top: 1px solid var(--rule);
   }
+  .controls,
   .output {
-    position: sticky;
-    top: 4.75rem;
-    max-height: calc(100vh - 5.5rem);
     overflow-y: auto;
-    overscroll-behavior: contain;
-    padding-right: 0.5rem;
     scrollbar-width: thin;
     scrollbar-color: var(--turf-600) transparent;
   }
+  .controls {
+    padding: 1.25rem 1.75rem 0 0;
+    border-right: 1px solid var(--rule);
+  }
+  .output {
+    padding: 1.5rem 0 3rem clamp(1.75rem, 3.5vw, 3.5rem);
+  }
   .submitBar {
-    margin-inline: 0;
-    padding-inline: 0;
+    margin-inline: 0 -1.75rem;
+    padding: 0.85rem 1.75rem 1rem 0;
+  }
+  .jump {
+    display: none;
   }
 }

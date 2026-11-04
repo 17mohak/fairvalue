@@ -39,6 +39,11 @@ _Last updated: 2026-11-05_
   components are too imprecise to interpret.
 
 ## Open items
+- **Real-data check of the player export:** follow `docs/PLAYER_EXPORT_VERIFICATION.md` on a machine
+  with the dataset and `data/processed/predictions/oof_*_hgb_tuned.parquet`; expect 24/24 (27/27
+  with the API). Not yet run.
+- **Portraits:** run `scripts/portraits/find_candidates.py` where Wikimedia is reachable, review the
+  sheet, add cutouts with `scripts/portraits/add_portrait.py` (docs/PLAYER_ASSETS.md).
 - **Player profiles (D-035):** the board and profiles ship with the eight-player research showcase.
   The full board, held-out estimates, traits radar and valuation history need
   `python -m src.product.players` to be run where the dataset and CV predictions exist; it was not

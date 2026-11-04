@@ -1,25 +1,28 @@
 .panel {
   position: relative;
+  min-width: 0;
 }
 
+/* ---- Empty and loading ---- */
 .empty {
   position: relative;
-  padding: 2rem 0 1rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem;
+  padding: 1.5rem 0 1rem;
   overflow: hidden;
 }
 
 .eyebrowless {
-  margin-bottom: 1.5rem;
   font-family: var(--font-display);
-  font-size: var(--step-3);
-  font-weight: 500;
-  line-height: 1.05;
+  font-size: var(--step-4);
+  font-weight: 600;
+  line-height: 0.98;
   color: var(--chalk-2);
-  max-width: 18ch;
+  max-width: 14ch;
 }
 
 .emptyNote {
-  margin-top: 1.5rem;
   max-width: 58ch;
   font-family: var(--font-serif);
   font-size: 0.975rem;
@@ -30,7 +33,7 @@
 /* Loading: a floodlight sweep along the ruler. */
 .scan {
   position: absolute;
-  top: 5.5rem;
+  top: 6rem;
   left: 0;
   width: 18%;
   height: 7.5rem;
@@ -48,11 +51,55 @@
   }
 }
 
+.result {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.75rem;
+  transition: opacity 200ms var(--ease-out), filter 200ms var(--ease-out);
+}
+
+.result[data-dim] {
+  opacity: 0.5;
+  filter: saturate(0.6);
+}
+
+/* ---- Scoreboard ---- */
+.board {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.boardTop {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem 1rem;
+  min-height: 1.9rem;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+
+.modelTag {
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-s);
+  background: var(--flood);
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--flood-ink);
+}
+
 .staleChip {
-  position: absolute;
-  top: -0.25rem;
-  right: 0;
-  z-index: 2;
   padding: 0.3rem 0.7rem;
   border: 1px solid rgb(233 185 73 / 0.4);
   border-radius: 999px;
@@ -61,31 +108,18 @@
   color: var(--flood);
 }
 
-.result {
-  transition: opacity 200ms var(--ease-out);
-}
-
-.result[data-dim] {
-  opacity: 0.45;
-}
-
-.head {
-  padding-top: 0.5rem;
-}
-
-.kicker {
-  font-size: var(--step--1);
-  color: var(--fog);
+.staleChip[data-loading] {
+  border-color: var(--rule-strong);
+  color: var(--chalk-2);
 }
 
 .value {
-  margin: 0.15rem 0 0.25rem;
   font-family: var(--font-display);
-  font-size: var(--step-6);
+  font-size: clamp(4.5rem, 9vw, 8.5rem);
   font-weight: 700;
-  line-height: 0.92;
-  letter-spacing: -0.02em;
-  color: var(--chalk);
+  line-height: 0.86;
+  letter-spacing: -0.025em;
+  color: var(--flood);
 }
 
 .sub {
@@ -93,61 +127,132 @@
   flex-wrap: wrap;
   align-items: center;
   gap: 0.5rem 1rem;
-  margin-bottom: 1.25rem;
   color: var(--chalk-2);
   font-size: var(--step--1);
 }
 
 .tierPill {
-  padding: 0.15rem 0.6rem;
+  padding: 0.15rem 0.7rem;
   border: 1px solid var(--flood);
   border-radius: 999px;
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 600;
+  letter-spacing: 0.03em;
   color: var(--flood);
 }
 
-.facts {
+/* ---- Duel ---- */
+.duel {
   display: grid;
-  gap: 0.8rem;
-  margin-top: 0.75rem;
-  font-family: var(--font-serif);
-  font-size: 0.975rem;
-  line-height: 1.6;
-  color: var(--chalk-2);
-  max-width: 64ch;
+  grid-template-columns: 1fr auto 1fr;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+  background: var(--turf-850);
 }
 
-.facts strong {
-  font-family: var(--font-ui);
+.duel > div {
+  display: grid;
+  align-content: center;
+  gap: 0.1rem;
+  padding: 0.9rem 1.1rem;
+}
+
+.duel > div[data-active] {
+  box-shadow: inset 0 -2px 0 var(--flood);
+}
+
+.duel > div:last-child {
+  text-align: right;
+}
+
+.duelName {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--chalk-2);
+}
+
+.duel > div[data-active] .duelName {
+  color: var(--flood);
+}
+
+.duelHint {
+  font-size: 0.75rem;
+  color: var(--fog);
+}
+
+.duelValue {
+  margin-top: 0.2rem;
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.duelDelta {
+  justify-items: center;
+  text-align: center;
+  border-inline: 1px solid var(--rule);
+  min-width: 9rem;
+}
+
+.duelRatio {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
   font-weight: 600;
   color: var(--chalk);
 }
 
+/* ---- Ruler ---- */
+.rulerWrap {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.rulerNote {
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: var(--fog);
+}
+
+.bandKey {
+  display: inline-block;
+  width: 1.4rem;
+  height: 0.55rem;
+  margin-right: 0.35rem;
+  vertical-align: middle;
+  border-radius: 2px;
+  background: rgb(233 185 73 / 0.22);
+}
+
+/* ---- Sections ---- */
 .section {
-  margin-top: 2.5rem;
+  display: grid;
+  gap: 0.9rem;
   padding-top: 1.5rem;
   border-top: 1px solid var(--rule);
 }
 
+.sectionHead {
+  display: grid;
+  gap: 0.3rem;
+}
+
 .h3 {
   font-size: var(--step-2);
-  margin-bottom: 0.5rem;
 }
 
 .sectionNote {
   max-width: 64ch;
-  margin-bottom: 1.1rem;
   font-size: var(--step--1);
-  line-height: 1.55;
+  line-height: 1.5;
   color: var(--fog);
 }
 
 .tiers {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 2px;
+  gap: 0.35rem;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -155,65 +260,66 @@
 
 .tier {
   display: grid;
-  grid-template-rows: auto 4.5rem auto;
-  gap: 0.4rem;
-  padding: 0.75rem 0.75rem 0.6rem;
-  background: var(--turf-850);
-}
-
-.tier:first-child {
-  border-radius: var(--radius-m) 0 0 var(--radius-m);
-}
-
-.tier:last-child {
-  border-radius: 0 var(--radius-m) var(--radius-m) 0;
+  grid-template-columns: 7rem minmax(0, 1fr) 3rem;
+  align-items: center;
+  gap: 0.9rem;
+  min-height: 1.9rem;
 }
 
 .tierName {
   font-family: var(--font-display);
-  font-size: 1rem;
+  font-size: 1.0625rem;
   font-weight: 500;
   color: var(--chalk-2);
 }
 
 .tierTrack {
   position: relative;
-  display: flex;
-  align-items: flex-end;
-  border-bottom: 1px solid var(--rule-strong);
+  height: 0.6rem;
+  border-radius: 3px;
+  background: var(--turf-800);
+  overflow: hidden;
 }
 
 .tierBar {
-  display: block;
-  width: 38%;
-  min-height: 2px;
-  background: var(--chalk-2);
-  opacity: 0.5;
-  border-radius: 2px 2px 0 0;
-  transform-origin: bottom;
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 3px;
+  background: var(--turf-600);
+  transform-origin: left center;
 }
 
 .tier[data-top] .tierBar {
   background: var(--flood);
-  opacity: 1;
 }
 
 .tier[data-top] .tierName {
   color: var(--chalk);
+  font-weight: 600;
 }
 
 .tierP {
   font-family: var(--font-display);
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  text-align: right;
+  color: var(--chalk-2);
+}
+
+.tier[data-top] .tierP {
+  color: var(--flood);
 }
 
 .unavailable {
-  padding: 1rem 1.1rem;
+  padding: 0.9rem 1rem;
   border: 1px dashed var(--rule-strong);
   border-radius: var(--radius-m);
   font-size: var(--step--1);
   color: var(--chalk-2);
+}
+
+.reading {
+  gap: 0.75rem;
 }
 
 .caveats {
@@ -222,75 +328,88 @@
   margin: 0;
   padding-left: 1.1rem;
   font-family: var(--font-serif);
-  font-size: 0.975rem;
-  line-height: 1.6;
+  font-size: 0.95rem;
+  line-height: 1.55;
   color: var(--chalk-2);
-  max-width: 64ch;
+  max-width: 68ch;
 }
 
 .caveats li::marker {
-  color: var(--fog-2);
+  color: var(--flood);
 }
 
 .versions {
-  display: grid;
-  gap: 0.35rem;
-  margin: 1.5rem 0 0;
-  font-size: var(--step--2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 2rem;
+  margin: 0.5rem 0 0;
 }
 
 .versions div {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.25rem 0.75rem;
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
 }
 
 .versions dt {
-  min-width: 5.5rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
   color: var(--fog-2);
 }
 
 .versions dd {
   margin: 0;
+  font-size: 0.78rem;
   color: var(--fog);
-  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
+/* ---- Errors ---- */
 .error {
   display: grid;
-  justify-items: start;
   gap: 0.6rem;
+  justify-items: start;
+  margin-block: 1.5rem;
   padding: 1.25rem 1.35rem;
   border: 1px solid rgb(240 144 127 / 0.45);
-  border-left-width: 3px;
   border-radius: var(--radius-m);
   background: var(--error-soft);
 }
 
 .errorCompact {
-  margin-bottom: 1.25rem;
+  margin-block: 0 1.25rem;
 }
 
 .errorTitle {
   font-family: var(--font-display);
-  font-size: var(--step-1);
+  font-size: var(--step-2);
   font-weight: 600;
   color: var(--chalk);
 }
 
 .errorBody {
+  max-width: 56ch;
   font-size: var(--step--1);
   color: var(--chalk-2);
-  max-width: 58ch;
 }
 
 @media (max-width: 560px) {
-  .tiers {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  .duel {
+    grid-template-columns: 1fr 1fr;
   }
-  .tier,
-  .tier:first-child,
-  .tier:last-child {
-    border-radius: var(--radius-s);
+  .duelDelta {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    border-inline: 0;
+    border-top: 1px solid var(--rule);
+    padding-block: 0.6rem !important;
+  }
+  .duelValue {
+    font-size: 1.65rem;
+  }
+  .tier {
+    grid-template-columns: 6rem minmax(0, 1fr) 2.75rem;
+    gap: 0.6rem;
   }
 }

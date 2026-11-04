@@ -1,18 +1,32 @@
-import Link from "next/link";
 import research from "@/data/research.json";
 import { DISCLAIMER } from "@/lib/football";
+import { ROOMS } from "@/lib/rooms";
 import { Mark } from "./Mark";
+import { RoomLink } from "./RoomLink";
 import styles from "./SiteFooter.module.css";
 
 export function SiteFooter() {
   return (
     <footer className={styles.footer}>
-      <div className={`page ${styles.inner}`}>
-        <div className={styles.brand}>
-          <Mark size={18} />
-          <span>FairValue</span>
+      <div className={styles.inner}>
+        <div className={styles.lead}>
+          <p className={styles.brand}>
+            <Mark size={20} />
+            <span>FairValue</span>
+          </p>
+          <p className={styles.disclaimer}>{DISCLAIMER}</p>
         </div>
-        <p className={styles.disclaimer}>{DISCLAIMER}</p>
+        <nav aria-label="Footer" className={styles.rooms}>
+          <ol>
+            {ROOMS.map((r) => (
+              <li key={r.id}>
+                <RoomLink href={r.href}>
+                  <span className="num">{r.index}</span> {r.label}
+                </RoomLink>
+              </li>
+            ))}
+          </ol>
+        </nav>
         <dl className={styles.meta}>
           <div>
             <dt>Training snapshot</dt>
@@ -23,9 +37,9 @@ export function SiteFooter() {
             <dd className="num">{research.models.dataset_sha256_16}</dd>
           </div>
           <div>
-            <dt>Read more</dt>
+            <dt>Limits</dt>
             <dd>
-              <Link href="/methods#limitations">Known limitations</Link>
+              <RoomLink href="/methods#limitations">Known limitations</RoomLink>
             </dd>
           </div>
         </dl>

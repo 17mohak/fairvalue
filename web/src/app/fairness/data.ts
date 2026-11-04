@@ -99,6 +99,7 @@ function modelView(m: ModelId): ModelView {
         sublabel: `${leagueCountry(l.league)}, ${l.n_non_uefa} non-UEFA${l.league_level_estimate ? "" : " (pooled only)"}`,
         interval: l[m],
         hollow: !l.league_level_estimate,
+        n: l.n_non_uefa,
       })),
     strata: STRATA_GROUPS.map((g) => ({
       title: g.title,

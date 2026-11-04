@@ -1,5 +1,9 @@
 .wrap {
   width: 100%;
+  min-width: 0;
+  /* The SVG is drawn at the measured width; containment stops that width feeding back into
+     the wrapper's own size, so the ruler can shrink inside grid and flex parents. */
+  contain: inline-size;
 }
 
 .svg {

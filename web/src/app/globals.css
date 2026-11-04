@@ -50,18 +50,61 @@
   --step-4: clamp(2.5rem, 4.6vw, 3.75rem);
   --step-5: clamp(3.25rem, 8vw, 7.25rem);
   --step-6: clamp(3.5rem, 9vw, 6.75rem);
+  --step-7: clamp(4rem, 11vw, 10rem);
 
   /* Space and shape */
   --gutter: clamp(1.25rem, 4vw, 3rem);
   --measure: 66ch;
   --page: 1240px;
+  --page-wide: 1480px;
+  --header-h: 3.75rem;
   --radius-s: 4px;
   --radius-m: 8px;
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
 
+  /* Semantic aliases used by newer modules; the paper scope redefines the raw tokens below. */
+  --surface: var(--turf-900);
+  --surface-raised: var(--turf-850);
+  --accent: var(--flood);
+  --accent-ink: var(--flood-ink);
+
   color-scheme: dark;
+}
+
+/* Paper: the methods publication is printed on chalk-white stock with turf-green ink.
+   Raw tokens are remapped so every shared component reads correctly on it. Data colours are
+   darkened to keep at least 3:1 against the paper. */
+.paper {
+  --turf-950: #dedbcf;
+  --turf-900: #f1efe6;
+  --turf-850: #e9e6db;
+  --turf-800: #e2dfd2;
+  --turf-700: #d3cfc0;
+  --turf-600: #bdb8a7;
+  --chalk: #142019;
+  --chalk-2: #2f3c35;
+  --fog: #5b665f;
+  --fog-2: #6f7972;
+  --rule: rgb(20 32 25 / 0.12);
+  --rule-strong: rgb(20 32 25 / 0.26);
+  --flood: #9c6b00;
+  --flood-soft: rgb(156 107 0 / 0.1);
+  --flood-ink: #fdf7e6;
+  --uefa: #2f6fb0;
+  --non-uefa: #b23f7c;
+  --raise: #93620c;
+  --lower: #0b7a72;
+  --tier-line: rgb(20 32 25 / 0.3);
+  --surface: var(--turf-900);
+  color-scheme: light;
+  background: var(--turf-900);
+  color: var(--chalk);
+}
+.paper ::selection {
+  background: #142019;
+  color: #f1efe6;
 }
 
 *,
@@ -74,7 +117,7 @@ html {
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
   scroll-behavior: smooth;
-  scroll-padding-top: 5rem;
+  scroll-padding-top: calc(var(--header-h) + 1.5rem);
 }
 
 body {
@@ -210,7 +253,72 @@ table {
   top: 0.75rem;
 }
 
+/* ---- Route transitions (React ViewTransition, see components/site/RoomTransition.tsx) ----
+   Moving to a later room slides content in from the right, an earlier room from the left.
+   The masthead is anchored so the reader keeps one fixed reference point. */
+::view-transition-old(.nav-forward) {
+  --slide-offset: -48px;
+  animation: 140ms ease-in both vt-fade reverse, 360ms var(--ease-in-out) both vt-slide reverse;
+}
+::view-transition-new(.nav-forward) {
+  --slide-offset: 48px;
+  animation: 220ms ease-out 120ms both vt-fade, 360ms var(--ease-in-out) both vt-slide;
+}
+::view-transition-old(.nav-back) {
+  --slide-offset: 48px;
+  animation: 140ms ease-in both vt-fade reverse, 360ms var(--ease-in-out) both vt-slide reverse;
+}
+::view-transition-new(.nav-back) {
+  --slide-offset: -48px;
+  animation: 220ms ease-out 120ms both vt-fade, 360ms var(--ease-in-out) both vt-slide;
+}
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 50;
+}
+::view-transition-group(nav-indicator) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out);
+  z-index: 51;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes vt-slide {
+  from {
+    translate: var(--slide-offset);
+  }
+}
+
+/* Shared eyebrow: the room index and name above each page title. */
+.eyebrow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+.eyebrow b {
+  color: var(--flood);
+  font-weight: 600;
+}
+
 @media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
   html {
     scroll-behavior: auto;
   }

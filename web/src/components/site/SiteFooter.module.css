@@ -52,7 +52,7 @@
   color: #e9b949;
 }
 
-.rooms .num {
+.rooms :global(.num) {
   margin-right: 0.35rem;
   font-size: 0.8rem;
   color: #6c786f;

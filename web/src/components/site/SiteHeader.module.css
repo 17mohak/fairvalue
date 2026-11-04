@@ -172,7 +172,7 @@
   letter-spacing: 0.02em;
 }
 
-.toggleRoom .num {
+.toggleRoom :global(.num) {
   color: #e9b949;
   margin-right: 0.2rem;
 }

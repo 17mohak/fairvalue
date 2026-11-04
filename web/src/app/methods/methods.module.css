@@ -159,7 +159,7 @@
   transition: color 160ms var(--ease-out);
 }
 
-.toc a .num {
+.toc a :global(.num) {
   flex: none;
   width: 1.4rem;
   font-family: var(--font-display);
@@ -177,7 +177,7 @@
   font-weight: 600;
 }
 
-.toc a[aria-current="location"] .num {
+.toc a[aria-current="location"] :global(.num) {
   color: var(--flood);
 }
 

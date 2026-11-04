@@ -1,0 +1,12 @@
+# NOT YET INSTALLED OR TESTED. Planned for Milestones 3+ (see docs/ROADMAP.md).
+# Versions will be pinned in requirements.txt when each component is implemented.
+mlflow
+optuna
+fairlearn
+shap
+dice-ml
+evidently
+fastapi
+pydantic
+uvicorn
+httpx

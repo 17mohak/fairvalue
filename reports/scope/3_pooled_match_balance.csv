@@ -1,0 +1,11 @@
+covariate,smd_before_matching,smd_after_matching
+age,-0.064,-0.011
+height_in_cm,-0.238,-0.041
+minutes,-0.035,0.02
+start_share,-0.023,0.062
+goal_contrib_p90,0.15,-0.005
+yellow_p90,0.219,0.031
+intl_club_minutes_share,0.003,-0.041
+club_ppg,0.022,0.024
+log_value,0.204,0.123
+n matched non-UEFA = 1461; unique UEFA controls = 1080,,

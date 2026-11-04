@@ -1,5 +1,22 @@
 # Development changelog
 
+## 2026-11-05: Player experience (branch `feat/multipage-experience`, not pushed)
+- **Rooms:** `/players` board and `/players/[id]` profile added as room 02 (D-035); room numbers now
+  come from the registry.
+- **Data:** `src/product/players.py`. Committed showcase of the eight published representative players
+  (`web/src/data/players.json`); full local export for the whole population (git-ignored). Window
+  counts are recovered exactly from per-90 rates. Traits are within-position mid-rank percentiles of
+  existing features, and peer deciles are included. Held-out and served estimates are kept apart.
+- **Profile:** stadium backdrop in CSS/SVG, role-code glyph, portrait slot with a licensed-cutout path,
+  pointer parallax, market vs Model A/B panel with live `/predict` and `/explain` and an offline
+  fallback to the published SHAP, interactive radar with decile strip, valuation-history chart, audit
+  context, and shared-element transitions from the board.
+- **Assets:** portrait manifest with a licence allow-list and validation tests; `docs/PLAYER_ASSETS.md`.
+- **Fixes:** `.num` selectors in CSS modules were hashed and never matched (footer, mobile menu,
+  methods contents); now `:global(.num)`.
+- **Tests:** Python +11 (showcase, percentiles, window counts, full export on synthetic frames); web
+  59 passed (+11: helpers, URL parsing, portrait gate, radar, valuation panel offline/live).
+
 ## 2026-11-05: Multi-page experience (branch `feat/multipage-experience`, not pushed)
 - **Structure (D-034):** four rooms with their own compositions. Overview (live streamed specimen,
   figures ledger, headline finding, room directory); studio as a viewport-height workbench with

@@ -39,6 +39,10 @@ _Last updated: 2026-11-05_
   components are too imprecise to interpret.
 
 ## Open items
+- **Player profiles (D-035):** the board and profiles ship with the eight-player research showcase.
+  The full board, held-out estimates, traits radar and valuation history need
+  `python -m src.product.players` to be run where the dataset and CV predictions exist; it was not
+  run on real data in the session that built it (no dataset access). No licensed portraits yet.
 - **Multi-page branch:** `feat/multipage-experience` (based on `feat/product-experience`) restructures
   the web app into four rooms (D-034). Local commits only; pushing and merging need owner approval.
   Its live API path was not exercised end to end in the session that built it (the cloud sandbox

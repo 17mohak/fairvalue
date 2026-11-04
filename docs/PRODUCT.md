@@ -4,14 +4,15 @@ The product layer over the research: a Next.js app in `web/` that talks to the e
 service. It adds no new model and changes no research result (D-032, D-033).
 
 ## What it contains
-Four rooms, each with its own route, layout and interaction model (D-034):
+Five rooms, each with its own route, layout and interaction model (D-034, D-035):
 
 | Route | Room | Composition | Data source |
 |---|---|---|---|
 | `/` | 01 Overview | Editorial front door: headline, live specimen (streamed, uncached), figures ledger, headline finding, room directory | `POST /predict` (live), `research.json` |
-| `/studio` | 02 Valuation studio | Workbench: profile pane and result pane scroll independently on desktop; values the starting profile once the service is up; scoreboard, Model A/B duel, ruler, tier odds, SHAP | `POST /predict`, `POST /explain` |
-| `/fairness` | 03 Fairness observatory | Instrument: readout dial, rail of seven views (gap, value level, leagues, subgroups, tier errors, robustness, limits), comparison-model overlay, definitions dialog. State in the URL: `?view=leagues&model=B&compare=1` | `research.json` |
-| `/methods` | 04 Methods | Paper on light stock: abstract, numbered sections, scroll-spy contents, margin notes, booktabs tables | `research.json` |
+| `/players`, `/players/[id]` | 02 Players | Board: floodlit squad cards, search and filters in the URL. Profile: cinematic hero built around a licensed cutout (labelled silhouette until one exists) with the role code as the oversized glyph; market value vs Model A/B (held-out and served, labelled); live SHAP; traits radar vs positional peers with decile detail; valuation history; audit context | `players.json` (showcase, committed) or the git-ignored full export; `POST /predict`, `POST /explain` |
+| `/studio` | 03 Valuation studio | Workbench: profile pane and result pane scroll independently on desktop; values the starting profile once the service is up; scoreboard, Model A/B duel, ruler, tier odds, SHAP | `POST /predict`, `POST /explain` |
+| `/fairness` | 04 Fairness observatory | Instrument: readout dial, rail of seven views (gap, value level, leagues, subgroups, tier errors, robustness, limits), comparison-model overlay, definitions dialog. State in the URL: `?view=leagues&model=B&compare=1` | `research.json` |
+| `/methods` | 05 Methods | Paper on light stock: abstract, numbered sections, scroll-spy contents, margin notes, booktabs tables | `research.json` |
 | `/api/predict`, `/api/explain`, `/api/health` | Server-side proxy to FastAPI (backend URL never reaches the browser) | `FAIRVALUE_API_URL` |
 
 ## Where the numbers come from
@@ -23,6 +24,12 @@ Four rooms, each with its own route, layout and interaction model (D-034):
 
 `tests/test_product_export.py` fails if any of these is stale, so rerun the export after changing
 reports, the registry or the API schema. Nothing in the web app computes a new research figure.
+
+## Players
+- Default build: the eight-player research showcase (committed). Full board: run
+  `python -m src.product.players` after `src.data.build_dataset` (and `src.models.train` for held-out
+  estimates); it writes `web/src/data/generated/players.json`, which the app prefers when present.
+- Portraits: see `docs/PLAYER_ASSETS.md` (licence allow-list, cutout spec, manifest, tests).
 
 ## Explanations
 `POST /explain` (src/api/explain.py) runs SHAP TreeExplainer on the served regressor, the same

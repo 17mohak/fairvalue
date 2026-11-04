@@ -12,7 +12,7 @@ _Last updated: 2026-11-05_
 |---|---|---|
 | Location | Permanent folder `C:\Users\MOHAK\fairvalue`; git history and data checksums verified after the move | `git log`, `data/raw/MANIFEST.json` |
 | Data | 10 tables, checksummed; 5,820-player modelling set; separate audit table and drift snapshot | `data/processed/build_metadata.json` |
-| Design | Locked: population, RQ1–RQ4, metrics, DiCE approach | `docs/RESEARCH_DESIGN.md`, DECISIONS D-011, D-017–D-030 |
+| Design | Locked: population, RQ1–RQ4, metrics, DiCE approach | `docs/RESEARCH_DESIGN.md`, DECISIONS D-011, D-017–D-031 |
 | Models | Ridge, RF, HGB, Optuna-HGB × Model A/B; HGB tier classifier; 5-fold held-out predictions | `docs/reports/MODEL_EVALUATION.md` |
 | Primary model | Optuna-tuned HGB: Model A log RMSE 0.526, R² 0.891 (unseen clubs: 0.573 / 0.871) | `reports/models/primary_model.json` |
 | Serving | Full-data refits + registry; FastAPI `POST /predict`, `GET /health`. Docker image rebuilt from the re-run models and smoke-tested on 2026-11-05: predictions identical to the saved artefacts; 422 on 7 invalid-input cases (including a nationality field); 405 on GET /predict; non-root; HEALTHCHECK healthy | `docs/DEPLOYMENT.md`, `models/model_registry.json` |

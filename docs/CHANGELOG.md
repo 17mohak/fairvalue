@@ -1,5 +1,29 @@
 # Development changelog
 
+## 2026-11-04: Session 1 (continued): design lock, models, first fairness audit
+
+### Added
+- `docs/RESEARCH_DESIGN.md`: the locked research design. D-011 accepted; D-017 to D-025 recorded.
+- `src/fairness/scope_analysis.py` + `reports/scope/`: selection, threshold, overlap and proxy evidence.
+- `src/models/tiers.py` (€2M / €10M / €30M), `src/models/evaluate.py`, and `src/models/train.py`
+  (Ridge, RF, HGB, nested-Optuna HGB, HGB tier classifier; Model A/B; MLflow).
+- `src/fairness/audit.py`: signed residual gaps, MAE/RMSE gaps, league-stratified estimates,
+  stratified bootstrap, strata/league tables, calibration-within-deciles check, ER1a/ER1b via
+  Fairlearn plus directional tier errors.
+- Reports: `docs/reports/MODEL_EVALUATION.md`, `docs/reports/FAIRNESS_AUDIT.md`, `reports/models/`,
+  `reports/fairness/`.
+- Dependencies pinned: mlflow 2.22.0, optuna 4.2.1, fairlearn 0.12.0.
+- Tests: tiers, folds, CV loop, nested tuning, metric scales, stratified-gap logic, bootstrap
+  strata, Fairlearn agreement, arrival-strata regression test (63 total).
+
+### Changed
+- Scope assessment: selection language revised (observed vs plausible; no assumed direction).
+- Preprocessor always outputs dense arrays (needed by HistGradientBoosting).
+
+### Fixed (independent review, D-023)
+- The "established players" stratum selected everyone (object-dtype boolean negation).
+- Bootstrap replicates are now 2,000 everywhere; the primary-model rule matches the spec.
+
 ## 2026-11-04: Session 1: data foundation (Milestones 0–2)
 
 ### Added

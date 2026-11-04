@@ -191,6 +191,29 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
 - Feature-based DiCE counterfactuals on the tier classifier, mutable = match statistics,
   compared across groups. No auxiliary model containing nationality is trained.
 
+## D-023 Fixes from the independent review of modelling/audit code — Decided
+- **Bug fixed:** `recent_arrival` is stored as object dtype, so `~` produced -1/-2 and the
+  "established" stratum selected everyone. It is now cast to bool in `load_frame`, with a
+  regression test. The bug only affected quick (smoke-test) outputs; all reported results were
+  produced after the fix.
+- All bootstrap blocks now use the full 2,000 replicates (some had used 500).
+- The primary-model rule now uses mean fold log RMSE, exactly as the spec says. It was applied
+  from saved held-out predictions (`select_primary`), and the pooled-RMSE ranking agrees.
+- Small strata (< 30 non-UEFA) are flagged, and the share of non-UEFA players dropped by stratified
+  gaps is reported. Max-EOD bias and multiplicity are documented in RESEARCH_DESIGN §7.
+
+## D-024 Supplementary check: gap within predicted-value deciles — Decided
+- Residuals correlate with value and the groups' value distributions differ. The signed gap is
+  therefore also reported stratified by deciles of the model's own prediction (not the true value,
+  which would condition on the outcome), and by league × decile.
+- This is a robustness check for RQ2, not a new metric or a design change.
+
+## D-025 First full results recorded, design unchanged — Decided
+- First full run: 2026-11-04 (`docs/reports/MODEL_EVALUATION.md`, `docs/reports/FAIRNESS_AUDIT.md`).
+- The primary signed gap is positive (non-UEFA under-predicted relative to UEFA). That is the
+  opposite of the original hypothesis, and it is reported as found.
+- The design is not revised in response to the result.
+
 ---
 
 # Issues found in the locked technical spec

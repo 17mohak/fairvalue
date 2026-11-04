@@ -1,0 +1,5 @@
+position,n,mean_residual,mae,rmse
+Attack,1583,-0.0131,0.7266,0.9118
+Defender,2065,0.0112,0.7298,0.9276
+Goalkeeper,485,-0.0111,0.7446,0.9306
+Midfield,1687,0.011,0.7174,0.9106

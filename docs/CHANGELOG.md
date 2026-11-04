@@ -1,5 +1,21 @@
 # Development changelog
 
+## 2026-11-05: Multi-page experience (branch `feat/multipage-experience`, not pushed)
+- **Structure (D-034):** four rooms with their own compositions. Overview (live streamed specimen,
+  figures ledger, headline finding, room directory); studio as a viewport-height workbench with
+  auto-valuation, Model A/B duel and SHAP; fairness observatory as an instrument with seven
+  URL-addressable views, model overlay, league sorting and a definitions dialog (replaces the
+  anchor-scroll explorer); methods as a light-paper publication with abstract, numbered sections,
+  scroll-spy contents and margin notes.
+- **Shell:** numbered room navigation with a morphing active indicator, mobile room sheet (inert
+  background, Escape, closes on navigation/resize), model-service status, directional route
+  transitions (React ViewTransition, off under reduced motion), designed 404 and error pages.
+- **Fixes:** ValueRuler no longer blows out grid parents; the landing page's "live" estimate is no
+  longer served from an hour-old cache; methods limitation figures are read from `research.json`;
+  a home-page claim that contradicted the R² results was corrected; paper-theme small text meets AA.
+- **Tests:** web 48 passed (room routing, observatory URL state, studio auto-run and its race);
+  Python 93 passed, 11 skipped (no dataset or model binaries in this checkout).
+
 ## 2026-11-05: Product experience (branch `feat/product-experience`, not pushed)
 - **API:** `POST /explain` (per-prediction SHAP, additivity enforced) and `GET /metadata` (D-033);
   optional CORS via `FAIRVALUE_CORS_ORIGINS`; `original_feature` moved to `src/features/preprocess.py`.

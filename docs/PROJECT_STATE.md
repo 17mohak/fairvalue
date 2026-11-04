@@ -39,6 +39,10 @@ _Last updated: 2026-11-05_
   components are too imprecise to interpret.
 
 ## Open items
+- **Multi-page branch:** `feat/multipage-experience` (based on `feat/product-experience`) restructures
+  the web app into four rooms (D-034). Local commits only; pushing and merging need owner approval.
+  Its live API path was not exercised end to end in the session that built it (the cloud sandbox
+  could not download the dataset to build model binaries); run the compose stack once before merging.
 - **Product branch:** `feat/product-experience` is local only. Pushing it (and running its CI) and any
   merge into `main` need owner approval.
 - **GitHub:** private repository created and CI green (owner-approved 2026-11-05). Visibility changes

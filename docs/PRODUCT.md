@@ -4,12 +4,14 @@ The product layer over the research: a Next.js app in `web/` that talks to the e
 service. It adds no new model and changes no research result (D-032, D-033).
 
 ## What it contains
-| Route | Purpose | Data source |
-|---|---|---|
-| `/` | Landing: live example estimate, Model A vs B, the headline audit interval | `POST /predict` (live), `research.json` |
-| `/studio` | Valuation studio: profile form, estimate, tier, Model B comparison, per-prediction SHAP | `POST /predict`, `POST /explain` |
-| `/fairness` | Fairness explorer (Model A/B switch): gaps, deciles, leagues, subgroups, tiers, robustness, limits | `research.json` |
-| `/methods` | Provenance, population, features, validation, selection, evaluation, explainability, monitoring, limitations | `research.json` |
+Four rooms, each with its own route, layout and interaction model (D-034):
+
+| Route | Room | Composition | Data source |
+|---|---|---|---|
+| `/` | 01 Overview | Editorial front door: headline, live specimen (streamed, uncached), figures ledger, headline finding, room directory | `POST /predict` (live), `research.json` |
+| `/studio` | 02 Valuation studio | Workbench: profile pane and result pane scroll independently on desktop; values the starting profile once the service is up; scoreboard, Model A/B duel, ruler, tier odds, SHAP | `POST /predict`, `POST /explain` |
+| `/fairness` | 03 Fairness observatory | Instrument: readout dial, rail of seven views (gap, value level, leagues, subgroups, tier errors, robustness, limits), comparison-model overlay, definitions dialog. State in the URL: `?view=leagues&model=B&compare=1` | `research.json` |
+| `/methods` | 04 Methods | Paper on light stock: abstract, numbered sections, scroll-spy contents, margin notes, booktabs tables | `research.json` |
 | `/api/predict`, `/api/explain`, `/api/health` | Server-side proxy to FastAPI (backend URL never reaches the browser) | `FAIRVALUE_API_URL` |
 
 ## Where the numbers come from
@@ -56,6 +58,12 @@ docker compose up --build             # web on :3000, API on :8000
 - CI runs all of these; the Docker job also smoke-tests `/explain` and the compose stack.
 
 ## Design notes
+- Navigation: numbered rooms in the masthead with a morphing active indicator; a full-screen room
+  sheet on mobile. Route changes slide forward or back by room order (React `<ViewTransition>`,
+  `components/site/RoomTransition.tsx`); the masthead stays anchored. Reduced motion disables it.
+- Each room varies the shared system: Overview is editorial and wide, the studio is an app-like
+  bench, the observatory has an instrument graticule, Methods switches to the `.paper` token scope
+  (light stock, serif display, darker data colours re-checked for contrast).
 - Identity: a night match. Turf-dark ground, chalk text, sodium-floodlight accent for value.
   Barlow Condensed for headlines and numerals, Source Serif 4 for research prose, Barlow for UI.
 - Data colours were checked with a colour-vision-deficiency validator against the dark surface:

@@ -168,7 +168,7 @@ players with comparable performance profiles"):
   reported as a design property.
 - **DiCE (feature-based):** counterfactuals on the tier classifier for a pre-specified,
   tier-stratified random sample of matched players from both groups (excluding World Class).
-  - Mutable features: match statistics only.
+  - Mutable features: match statistics only (goals and assists per 90, minutes, start share; D-030).
   - Immutable: age, height, position, foot, league, club strength.
   - Compared by group: the share of players with a valid counterfactual, and the size of change
     needed to reach the next tier.

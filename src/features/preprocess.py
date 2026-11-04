@@ -86,6 +86,7 @@ def build_preprocessor(feature_set: str = "full") -> ColumnTransformer:
     return ColumnTransformer(
         [("num", numeric_pipe, numeric), ("cat", categorical_pipe, categorical)],
         remainder="drop",  # anything not listed (ids, audit columns) is dropped
+        sparse_threshold=0.0,  # always dense: HistGradientBoosting does not accept sparse input
     )
 
 

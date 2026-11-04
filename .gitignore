@@ -27,3 +27,8 @@ kaggle.json
 .ipynb_checkpoints/
 .DS_Store
 Thumbs.db
+
+# Smoke-test (--quick) outputs
+reports/**/*_quick*
+reports/models/plots/*_quick*
+reports/**/*_log.txt

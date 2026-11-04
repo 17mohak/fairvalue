@@ -224,6 +224,36 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   World Class and Elite components are reported as imprecise and not interpreted as evidence of
   fairness or unfairness.
 
+## D-027 Serving models: full-data refit with median tuned settings — Decided
+- The served regressor is the pre-specified primary algorithm refit on all 5,820 players, using the
+  median of the per-fold Optuna optima (one fixed setting; no extra tuning on all data).
+- Its performance claims are the held-out CV results; a full-data refit has no held-out data of its own.
+- `models/model_registry.json` records versions, settings, features, the dataset fingerprint and
+  those CV metrics. `final.py` refuses to refit if the dataset fingerprint changed.
+
+## D-028 Second independent review: fixes and full re-run — Decided
+- Fixes:
+  - Python `None` is now treated as missing in categorical features (the 49 unknown-foot players
+    were a separate `None` category before);
+  - API ranges match the training data;
+  - DiCE holds European-cup share fixed and keeps minutes consistent;
+  - the drift decay model uses default settings.
+- The preprocessing fix reorders one-hot columns. Because gradient boosting subsamples features,
+  results shift slightly. **Every reported result was regenerated from the committed code**
+  (`scripts/run_pipeline.sh`), and documents were updated to the re-run numbers.
+
+## D-029 Docker image verified by equivalence locally, built in CI — Decided
+- Docker Desktop on the development machine fails to start: its Model Runner cannot remove a stale
+  socket file. The offered fix, factory reset, would delete the owner's images and containers, so it
+  was not done without approval.
+- The image contents were verified locally with a container-equivalent run: only the copied files and
+  `requirements-api.txt` in a clean environment. The real build and smoke test are in CI (no push).
+
+## D-030 DiCE mutable features — Decided (refines D-022)
+- Mutable: goals_p90, assists_p90, minutes, start_share. European-cup minute share is treated as
+  club context and held fixed, consistent with RESEARCH_DESIGN §8.
+- Minutes are bounded by minutes in the last 365 days and by the training maximum minutes per appearance.
+
 ---
 
 # Issues found in the locked technical spec

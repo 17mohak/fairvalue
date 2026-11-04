@@ -38,23 +38,16 @@ docker build -t fairvalue-api .
 docker run -p 8000:8000 fairvalue-api
 ```
 
-### Local verification status (2026-11-04)
-- **The local Docker engine did not start on the development machine.** Docker Desktop 4.59.0 showed
-  a startup error: its Model Runner ("Inference manager") could not remove a stale socket file under
-  `%LOCALAPPDATA%\Docker\run\dockerInference`. The app offers "Quit" or "Reset to factory defaults".
-  The reset would delete existing images and containers, so it was not done without the owner's approval.
-- **Verified instead with a container-equivalent run:**
-  - exactly the files the Dockerfile copies, placed in a clean folder;
-  - a fresh virtual environment with only `requirements-api.txt` (confirmed MLflow is not importable);
-  - uvicorn on a local port.
-  - Result: `/health` OK with all four models; `/predict` returned a value, tier and versions; a
-    `nationality` field gave HTTP 422.
-- **The real image build and smoke test run in CI** (`.github/workflows/ci.yml`, job
-  `train-quick-and-gate`). CI has not run yet because no GitHub remote exists.
-- **To fix Docker locally:** try in order:
-  1. Disable "Docker Model Runner" in Docker Desktop settings (if the UI opens), or quit Docker
-     Desktop and delete the stale `dockerInference` entry, then restart.
-  2. Use Troubleshoot → "Reset to factory defaults" (this removes local images and containers).
+### Local verification (2026-11-04)
+- **Built and run with Docker Engine 29.2.0 (linux/x86_64)**: image `fairvalue-api:local`, 676 MB.
+  - `GET /health`: HTTP 200, all four models loaded, versions and dataset fingerprint reported.
+  - `POST /predict`: value, tier, tier probabilities, model versions and disclaimer returned.
+  - A request containing `nationality`: HTTP 422.
+  - The process runs as the non-root `appuser`; Docker's HEALTHCHECK status is `healthy`.
+- History: Docker Desktop first failed to start (its Model Runner could not remove a stale socket
+  file). Before the engine came up, the image contents were verified with a container-equivalent
+  run. The engine started normally after the owner rebooted and enabled virtualization.
+- CI repeats the build and smoke test on every push (no push to any registry).
 
 ## Hosting and registry: NOT done (approval required)
 - Pushing the image to GitHub Container Registry and deploying to Railway or Render both publish

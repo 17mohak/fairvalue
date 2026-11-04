@@ -242,12 +242,14 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   results shift slightly. **Every reported result was regenerated from the committed code**
   (`scripts/run_pipeline.sh`), and documents were updated to the re-run numbers.
 
-## D-029 Docker image verified by equivalence locally, built in CI — Decided
+## D-029 Docker image: verified locally (after an engine fault was resolved) and built in CI — Decided
 - Docker Desktop on the development machine fails to start: its Model Runner cannot remove a stale
   socket file. The offered fix, factory reset, would delete the owner's images and containers, so it
   was not done without approval.
-- The image contents were verified locally with a container-equivalent run: only the copied files and
-  `requirements-api.txt` in a clean environment. The real build and smoke test are in CI (no push).
+- The image contents were first verified with a container-equivalent run. After the owner rebooted
+  and enabled virtualization, Docker Engine 29.2.0 started. The real image was then built and
+  smoke-tested locally: health, predict, nationality rejected, non-root user, HEALTHCHECK healthy.
+  CI repeats this on every push (no push to any registry).
 
 ## D-030 DiCE mutable features — Decided (refines D-022)
 - Mutable: goals_p90, assists_p90, minutes, start_share. European-cup minute share is treated as

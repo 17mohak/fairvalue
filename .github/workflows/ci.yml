@@ -1,11 +1,14 @@
 name: CI
 
+# Runs on every push / PR. Nothing is published: the Docker image is built and smoke-tested
+# locally on the runner only (publishing to GHCR needs explicit owner approval; see docs/ROADMAP.md).
+
 on:
   push:
   pull_request:
 
 jobs:
-  test:
+  unit-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -14,6 +17,39 @@ jobs:
           python-version: "3.12"
           cache: pip
       - run: pip install -r requirements.txt
-      # Data-dependent tests skip automatically (no dataset in CI yet).
-      # Training on a data subset + the quality gate are added in Milestone 7.
+      # Data-dependent tests skip automatically here (no dataset).
       - run: pytest -q
+
+  train-quick-and-gate:
+    needs: unit-tests
+    runs-on: ubuntu-latest
+    env:
+      DO_NOT_TRACK: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Acquire data (public bucket, checksums verified against MANIFEST.json)
+        run: |
+          python -m src.data.acquire
+          git diff --exit-code data/raw/MANIFEST.json || echo "::warning::upstream data differs from the committed manifest"
+      - run: python -m src.data.build_dataset
+      - name: Data and leakage tests on real data
+        run: pytest -q -m data
+      - name: Train on a reproducible 20% subset (seed 42, 3 Optuna trials)
+        run: python -m src.models.train --quick
+      - name: Quality gate (thresholds from measured results, src/models/quality_gate.py)
+        run: python -m src.models.quality_gate --quick
+      - name: Refit serving models on the full approved population
+        run: python -m src.models.final
+      - name: Build and smoke-test the API image (not pushed)
+        run: |
+          docker build -t fairvalue-api:ci .
+          docker run -d --name api -p 8000:8000 fairvalue-api:ci
+          for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 2; done
+          curl -sf -X POST localhost:8000/predict -H 'Content-Type: application/json' \
+            -d '{"player": {"age": 24.5, "height_in_cm": 181, "position": "Attack", "sub_position": "Centre-Forward", "foot": "right", "valuation_league_id": "ES1", "club_ppg": 1.6, "appearances": 60, "minutes": 4200, "start_share": 0.8, "goals_p90": 0.45, "assists_p90": 0.15, "minutes_last_365": 2300, "days_since_last_match": 7}}'
+          docker rm -f api

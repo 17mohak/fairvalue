@@ -1,0 +1,6 @@
+feature,psi,reference_median,current_median
+age,0.002,26.3532,26.3874
+minutes,0.002,2645.0,2592.0
+goal_contrib_p90,0.0014,0.1592,0.1584
+club_ppg,0.0407,1.3333,1.2647
+log_value,0.0073,14.5087,14.5087

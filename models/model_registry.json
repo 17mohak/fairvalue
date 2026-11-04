@@ -1,5 +1,5 @@
 {
-  "created_utc": "2026-11-04T17:17:40+00:00",
+  "created_utc": "2026-11-04T18:32:41+00:00",
   "dataset_sha256_16": "91174c392a8be652",
   "n_training_rows": 5820,
   "target": "ln(market_value_in_eur)",
@@ -22,12 +22,12 @@
       "model_label": "Model A",
       "algorithm": "hgb_tuned",
       "hyperparameters": {
-        "learning_rate": 0.0322472793720565,
-        "max_iter": 500,
-        "max_leaf_nodes": 26,
-        "min_samples_leaf": 16,
-        "l2_regularization": 0.0435664630246515,
-        "max_features": 0.7022297518405309
+        "learning_rate": 0.0582624039388458,
+        "max_iter": 450,
+        "max_leaf_nodes": 21,
+        "min_samples_leaf": 10,
+        "l2_regularization": 0.0089459372244825,
+        "max_features": 0.6861055389030626
       },
       "features": [
         "age",
@@ -52,11 +52,11 @@
         "valuation_league_id"
       ],
       "cv_heldout_metrics": {
-        "log_rmse": 0.5287,
-        "log_mae": 0.408,
-        "log_r2": 0.89,
-        "eur_mae": 2349360.2255,
-        "eur_r2": 0.8398
+        "log_rmse": 0.5255,
+        "log_mae": 0.4059,
+        "log_r2": 0.8913,
+        "eur_mae": 2315445.6099,
+        "eur_r2": 0.8455
       }
     },
     "classifier_A": {
@@ -102,12 +102,12 @@
       "model_label": "Model B",
       "algorithm": "hgb_tuned",
       "hyperparameters": {
-        "learning_rate": 0.028079685711447,
-        "max_iter": 300,
+        "learning_rate": 0.0234047303140622,
+        "max_iter": 400,
         "max_leaf_nodes": 18,
         "min_samples_leaf": 28,
-        "l2_regularization": 0.0007047560655103,
-        "max_features": 0.5957889183777669
+        "l2_regularization": 0.0029810681370924,
+        "max_features": 0.6675488570412397
       },
       "features": [
         "age",
@@ -130,11 +130,11 @@
         "foot"
       ],
       "cv_heldout_metrics": {
-        "log_rmse": 0.9187,
-        "log_mae": 0.7266,
-        "log_r2": 0.6677,
-        "eur_mae": 3812540.5271,
-        "eur_r2": 0.6155
+        "log_rmse": 0.917,
+        "log_mae": 0.7253,
+        "log_r2": 0.6689,
+        "eur_mae": 3817780.9248,
+        "eur_r2": 0.6114
       }
     },
     "classifier_B": {

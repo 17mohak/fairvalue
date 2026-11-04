@@ -8,7 +8,7 @@ Thresholds are set from MEASURED results (2026-11-04), with a margin for run-to-
 platform variation. They guard against regressions; they are not targets.
     quick run (20% subset, 3 Optuna trials): measured primary Model A log R² 0.826-0.851
         -> gate 0.78; Model B measured 0.58-0.60 -> gate 0.50; tier accuracy 0.718 -> gate 0.68
-    full run: measured Model A log R² 0.890, Model B 0.668, Model A tier accuracy 0.793
+    full run: measured Model A log R² 0.891, Model B 0.669, Model A tier accuracy 0.793 (re-run 2026-11-05)
         -> gates 0.86, 0.62, 0.75
 Model A must also beat Model B (context features must add information; a failure here would
 signal a broken feature pipeline). Fairness metrics are deliberately NOT gated: they are audited

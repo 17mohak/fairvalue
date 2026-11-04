@@ -1,7 +1,7 @@
 model,set,n,nonUEFA_share_in_set,nonUEFA_share_overall
-Model A,largest under-predictions (top 5%),291,0.3539518900343643,0.2570446735395189
-Model A,largest over-predictions (top 5%),291,0.19931271477663232,0.2570446735395189
-Model A,largest absolute errors (top 5%),291,0.2611683848797251,0.2570446735395189
-Model B,largest under-predictions (top 5%),291,0.29896907216494845,0.2570446735395189
-Model B,largest over-predictions (top 5%),291,0.12371134020618557,0.2570446735395189
-Model B,largest absolute errors (top 5%),291,0.20962199312714777,0.2570446735395189
+Model A,largest under-predictions (top 5%),291,0.35738831615120276,0.2570446735395189
+Model A,largest over-predictions (top 5%),291,0.20962199312714777,0.2570446735395189
+Model A,largest absolute errors (top 5%),291,0.24054982817869416,0.2570446735395189
+Model B,largest under-predictions (top 5%),291,0.31958762886597936,0.2570446735395189
+Model B,largest over-predictions (top 5%),291,0.14432989690721648,0.2570446735395189
+Model B,largest absolute errors (top 5%),291,0.23024054982817868,0.2570446735395189

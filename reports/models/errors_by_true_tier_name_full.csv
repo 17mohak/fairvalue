@@ -1,5 +1,5 @@
 true_tier_name,n,mean_residual,mae,rmse
-Elite,843,0.2419,0.4092,0.5245
-Emerging,2776,-0.1604,0.4194,0.5451
-Established,1856,0.0983,0.4035,0.5206
-World Class,345,0.2462,0.338,0.4393
+Elite,843,0.2324,0.4084,0.5236
+Emerging,2776,-0.155,0.4159,0.5401
+Established,1856,0.1028,0.4054,0.5216
+World Class,345,0.2288,0.3216,0.422

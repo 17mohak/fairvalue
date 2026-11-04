@@ -1,5 +1,5 @@
 model,cv_scheme,signed_gap_league_stratified,mae_gap_league_stratified
-A,standard (players),0.0978,0.0073
-A,grouped by club,0.1061,0.0075
-B,standard (players),0.1675,-0.0148
-B,grouped by club,0.1659,-0.0152
+A,standard (players),0.0992,0.01
+A,grouped by club,0.1122,0.0094
+B,standard (players),0.1659,-0.0135
+B,grouped by club,0.1664,-0.0161

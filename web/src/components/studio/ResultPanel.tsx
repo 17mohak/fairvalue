@@ -38,19 +38,18 @@ export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
   if (!result) {
     return (
       <div className={styles.panel}>
-        {status === "error" && error ? (
-          <ErrorNotice error={error} onRetry={onRetry} />
-        ) : (
-          <div className={styles.empty} data-loading={loading || undefined}>
+        {status === "error" && error && <ErrorNotice error={error} onRetry={onRetry} />}
+        <div className={styles.empty} data-loading={loading || undefined} data-muted={(status === "error" && !!error) || undefined}>
+          {!(status === "error" && error) && (
             <p className={styles.eyebrowless}>{loading ? "Valuing this profile…" : "Your estimate will land on this scale."}</p>
-            <ValueRuler ariaLabel="Market value scale from €20k to €250M with tier boundaries at €2M, €10M and €30M" />
-            {loading && <span className={styles.scan} aria-hidden="true" />}
-            <p className={styles.emptyNote}>
-              Tiers are fixed definitions, not model outputs: under €2M is Emerging, €2–10M Established, €10–30M Elite and €30M or more
-              World Class. They are the 50th, 80th and 95th percentiles of values in the training population.
-            </p>
-          </div>
-        )}
+          )}
+          <ValueRuler ariaLabel="Market value scale from €20k to €250M with tier boundaries at €2M, €10M and €30M" />
+          {loading && <span className={styles.scan} aria-hidden="true" />}
+          <p className={styles.emptyNote}>
+            Tiers are fixed definitions, not model outputs: under €2M is Emerging, €2–10M Established, €10–30M Elite and €30M or more World
+            Class. They are the 50th, 80th and 95th percentiles of values in the training population.
+          </p>
+        </div>
         <div role="status" aria-live="polite" className="visually-hidden">
           {loading ? "Valuing profile" : ""}
         </div>
@@ -66,7 +65,6 @@ export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
   const band: [number, number] = [value / Math.exp(mae), value * Math.exp(mae)];
   const classifierAgrees = primary.classifier_tier === primary.predicted_tier;
 
-  const ratio = counterpart ? value / counterpart.predicted_value_eur : null;
   const modelAValue = model === "A" ? value : counterpart?.predicted_value_eur;
   const modelBValue = model === "B" ? value : counterpart?.predicted_value_eur;
 
@@ -78,7 +76,7 @@ export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
 
       {status === "error" && error && <ErrorNotice error={error} onRetry={onRetry} compact />}
 
-      <div className={styles.result} data-dim={loading || undefined}>
+      <div className={styles.result} data-dim={loading || undefined} data-stale={(stale && !loading) || undefined}>
         {/* ---- Scoreboard ---- */}
         <header className={styles.board}>
           <div className={styles.boardTop}>
@@ -110,7 +108,7 @@ export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
         </header>
 
         {/* ---- Model A vs Model B ---- */}
-        {counterpart && modelAValue !== undefined && modelBValue !== undefined && ratio !== null && (
+        {counterpart && modelAValue !== undefined && modelBValue !== undefined && (
           <section className={styles.duel} aria-label="Model A compared with Model B for this profile">
             <div data-active={model === "A" || undefined}>
               <span className={styles.duelName}>Model A</span>

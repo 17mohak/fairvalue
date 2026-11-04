@@ -13,7 +13,7 @@ import { decimal, formatEur, integer, logGapAsPercent, percent, percentagePoints
 import type { FairnessData, ModelView } from "./data";
 import styles from "./fairness.module.css";
 
-export const VIEWS = [
+const VIEWS = [
   { id: "gap", index: "01", label: "The gap", question: "Are non-UEFA players' errors different from UEFA players'?" },
   { id: "value", index: "02", label: "Value level", question: "Is it just that non-UEFA players are worth more?" },
   { id: "leagues", index: "03", label: "Leagues", question: "Where does the gap sit?" },
@@ -23,7 +23,7 @@ export const VIEWS = [
   { id: "limits", index: "07", label: "Limits", question: "What can this audit establish, and what not?" },
 ] as const;
 
-export type ViewId = (typeof VIEWS)[number]["id"];
+type ViewId = (typeof VIEWS)[number]["id"];
 
 const isView = (v: string | null): v is ViewId => VIEWS.some((x) => x.id === v);
 const isModel = (v: string | null): v is ModelId => v === "A" || v === "B";

@@ -37,3 +37,6 @@ reports/**/*_log.txt
 !models/model_registry.json
 reports/monitoring/drift_report.html
 reports/pipeline_log*.txt
+
+# Full player export (python -m src.product.players): per-player dataset content, never committed
+web/src/data/generated/

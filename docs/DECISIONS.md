@@ -281,6 +281,16 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   `requirements.txt`).
 - `GET /metadata` exposes valid inputs and model versions. `/predict` behaviour is unchanged.
 
+## D-034 Four-room product structure — Decided (2026-11-05)
+- The web app is organised as four routes with distinct layouts: Overview `/`, Valuation studio
+  `/studio`, Fairness observatory `/fairness`, Methods `/methods`. No anchor-scroll imitation of pages.
+- The observatory keeps its state (view, model, comparison overlay) in the URL query, so every view is
+  linkable and works with refresh and back/forward. The page renders per request from that query.
+- The studio values the illustrative starting profile automatically once `/health` reports the
+  service up (never while it is down, never over the user's own edits).
+- The landing page's live example is fetched uncached: it is labelled "live", so it must be.
+- Presentation only: no research figure, model, feature, metric or API contract changes (D-011, D-032).
+
 ---
 
 # Issues found in the locked technical spec

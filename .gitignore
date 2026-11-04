@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.pytest_cache/
+*.egg-info/
+
+# Data: never commit datasets (see docs/DATA_PROVENANCE.md for how to re-acquire)
+data/raw/*
+data/interim/*
+data/processed/*
+!data/**/.gitkeep
+!data/raw/MANIFEST.json
+
+# Experiment tracking / model artifacts
+mlruns/
+mlartifacts/
+models/*.joblib
+*.pkl
+
+# Secrets
+.env
+*.pem
+kaggle.json
+
+# Notebooks / OS
+.ipynb_checkpoints/
+.DS_Store
+Thumbs.db

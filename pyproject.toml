@@ -1,0 +1,12 @@
+[project]
+name = "fairvalue"
+version = "0.1.0"
+description = "Football player market value prediction with a nationality-based fairness audit (BTECH CAP 501)"
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+markers = [
+    "data: tests that need the downloaded raw dataset in data/raw (skipped if absent)",
+]

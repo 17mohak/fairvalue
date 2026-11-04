@@ -1,2 +1,0 @@
-# NOT YET INSTALLED OR TESTED. Planned for Milestone 7 (see docs/ROADMAP.md).
-evidently

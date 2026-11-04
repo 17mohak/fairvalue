@@ -1,5 +1,37 @@
 # Development changelog
 
+## 2026-11-05: Milestones 5–8, review fixes, full re-run
+
+### Added
+- Project moved to the permanent folder `fairvalue` in the user's home directory. Git history
+  restored, venv rebuilt, checksums verified, MLflow paths repointed.
+- `src/models/final.py`: full-data refit of the selected models with `models/model_registry.json`.
+- `src/fairness/explain_shap.py` (SHAP global, group and local) and `src/fairness/counterfactuals.py`
+  (feature-based DiCE).
+- `src/api/` (FastAPI `POST /predict`, `GET /health`, Pydantic validation), `Dockerfile`,
+  `.dockerignore`, `requirements-api.txt`.
+- `src/monitoring/drift.py` (Evidently + PSI on the reserved period, last-year model decay) and
+  `src/monitoring/policy.py` (retraining triggers).
+- `src/models/quality_gate.py`; CI now runs data → quick train → gate → refit → Docker smoke test.
+- `scripts/run_pipeline.sh` regenerates every reported result.
+- Docs: MODEL_CARD, DATA_CARD, EU_AI_ACT_ASSESSMENT, MONITORING, DEPLOYMENT, reports/EXPLAINABILITY,
+  reports/SUPPLEMENTARY_CHECKS.
+- Supplementary checks: club-grouped CV, club-clustered bootstrap, tier-cell power (D-026).
+- Dependencies pinned: shap 0.46.0, dice-ml 0.12, fastapi 0.115.6, uvicorn 0.32.1, pydantic 2.14.2,
+  httpx 0.28.1, evidently 0.7.14.
+
+### Fixed (third independent review, D-028)
+- Python `None` was not treated as missing in categorical features.
+- API ranges are now the training ranges.
+- DiCE minutes are consistent, and European-cup share is held fixed.
+- The drift decay simulation no longer uses settings tuned on its test period.
+- `final.py` checks the dataset fingerprint; `/health` returns 503 when models are missing.
+- Then: a full pipeline re-run. Model A fairness gap +0.093 (was +0.099); all conclusions unchanged.
+
+### Environment
+- Docker Desktop's engine failed to start (stale Model Runner socket). It started after the owner
+  rebooted and enabled virtualization, and the image was then built and smoke-tested locally.
+
 ## 2026-11-04: Session 1 (continued): design lock, models, first fairness audit
 
 ### Added

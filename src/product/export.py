@@ -254,8 +254,9 @@ def render(obj: dict) -> str:
 
 
 def outputs() -> dict[Path, str]:
+    from src.product.players import showcase  # the committed eight-player showcase (D-035)
     return {WEB_DATA / "research.json": render(research()), WEB_DATA / "openapi.json": render(openapi()),
-            WEB_DATA / "catalog.json": render(catalog())}
+            WEB_DATA / "catalog.json": render(catalog()), WEB_DATA / "players.json": render(showcase())}
 
 
 def main() -> None:

@@ -1,6 +1,6 @@
-# Core dependencies installed and verified for Milestones 0-2 (data foundation).
-# Pinned so results are reproducible. Later-stage dependencies are listed in
-# requirements-later.txt and will be pinned once they are installed and tested.
+# All dependencies, pinned so results are reproducible. Each block lists the milestone that added it.
+# The API container uses the smaller requirements-api.txt (versions must match this file).
+# Core (Milestones 0-2):
 numpy==2.1.3
 pandas==2.2.3
 pyarrow==18.1.0

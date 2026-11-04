@@ -42,7 +42,7 @@ export async function forward(path: "/predict" | "/explain" | "/health" | "/meta
   }
 }
 
-/** Server-side fetch used by pages (e.g. the landing page's live example). Never throws. */
+/** Server-side fetch used by pages (e.g. the landing page's live example). Never throws; null when the API is down. */
 export async function fetchUpstream<T>(path: "/predict" | "/health", body?: unknown, timeoutMs = 2_500): Promise<T | null> {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
@@ -52,7 +52,8 @@ export async function fetchUpstream<T>(path: "/predict" | "/health", body?: unkn
       body: body ? JSON.stringify(body) : undefined,
       headers: body ? { "Content-Type": "application/json" } : undefined,
       signal: ctrl.signal,
-      next: { revalidate: 3600 },
+      // Never cached: the landing page labels this estimate "live", so it must be one.
+      cache: "no-store",
     });
     return res.ok ? ((await res.json()) as T) : null;
   } catch {

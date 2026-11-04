@@ -104,6 +104,19 @@ describe("Valuation studio", () => {
     expect(screen.getByText("The model can't value this profile")).toBeInTheDocument();
   });
 
+  it("does not auto-value over a profile the user started editing before the service answered", async () => {
+    let answerHealth: () => void = () => {};
+    const calls = mockApi((url, body) => {
+      if (url === "/api/health") return new Promise<Response>((resolve) => (answerHealth = () => resolve(realApi(url, body) as Response)));
+      return realApi(url, body);
+    });
+    render(<Studio />);
+    await userEvent.click(screen.getByRole("radio", { name: "Keeper" }));
+    answerHealth();
+    expect(await screen.findByText("Model service online")).toBeInTheDocument();
+    expect(calls.filter((c) => c.url === "/api/predict")).toHaveLength(0);
+  });
+
   it("keeps roles consistent when the position changes", async () => {
     mockApi(realApi);
     render(<Studio />);

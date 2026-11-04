@@ -49,6 +49,7 @@ export function Studio() {
   // Check the service once; if it is up, value the starting profile straight away so the
   // studio opens on a live result rather than an empty scale.
   const autoRan = useRef(false);
+  const touched = useRef(false);
   useEffect(() => {
     let live = true;
     health()
@@ -56,7 +57,8 @@ export function Studio() {
         if (!live) return;
         const ok = h.status === "ok";
         setService(ok ? "online" : "offline");
-        if (ok && !autoRan.current) {
+        // Skip if the user has already edited, switched or valued something themselves.
+        if (ok && !autoRan.current && !touched.current && runId.current === 0) {
           autoRan.current = true;
           // The initial render's run() already holds the starting profile and Model A.
           void run(undefined, undefined, { quiet: true });
@@ -73,6 +75,7 @@ export function Studio() {
   const stale = result !== null && status !== "loading" && submittedKey !== keyOf(draft, model);
 
   function update(field: PlayerField, value: string) {
+    touched.current = true;
     setDraft((d) => {
       const next = { ...d, [field]: value };
       if (field === "position") {
@@ -160,12 +163,14 @@ export function Studio() {
   }
 
   function chooseModel(m: ModelId) {
+    touched.current = true;
     setModel(m);
     // Switching models re-values the same profile straight away once there is a result.
     if (result) void run(m);
   }
 
   function choosePreset(id: string) {
+    touched.current = true;
     const preset = PRESETS.find((p) => p.id === id);
     if (!preset) return;
     const next = toDraft(preset.player);
@@ -245,7 +250,7 @@ export function Studio() {
         </div>
       </div>
 
-      <div className={styles.output} ref={resultRef} aria-label="Valuation result" role="region">
+      <div className={styles.output} ref={resultRef} aria-label="Valuation result" role="region" tabIndex={0}>
         <ResultPanel status={status} result={result} error={error} stale={stale} onRetry={() => void run()} />
       </div>
     </form>

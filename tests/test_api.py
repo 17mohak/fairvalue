@@ -78,3 +78,30 @@ def test_prediction_is_deterministic(client):
     a = client.post("/predict", json={"player": EXAMPLE}).json()
     b = client.post("/predict", json={"player": EXAMPLE}).json()
     assert a["predicted_value_eur"] == b["predicted_value_eur"]
+
+
+def test_sub_position_is_required_and_validated(client):
+    assert client.post("/predict", json={"player": dict(EXAMPLE, sub_position=None)}).status_code == 422
+    r = client.post("/predict", json={"player": dict(EXAMPLE, sub_position="Libero")})
+    assert r.status_code == 422 and "Unknown sub_position" in r.text
+
+
+def test_model_b_ignores_league_and_club_context(client):
+    a = client.post("/predict", json={"player": dict(EXAMPLE, valuation_league_id="GB1", club_ppg=2.5), "model": "B"}).json()
+    b = client.post("/predict", json={"player": dict(EXAMPLE, valuation_league_id="BE1", club_ppg=0.5), "model": "B"}).json()
+    assert a["predicted_value_eur"] == b["predicted_value_eur"]
+
+
+def test_derived_features_match_training_definitions():
+    f = PlayerFeatures(**EXAMPLE).to_features()
+    assert f["goal_contrib_p90"] == EXAMPLE["goals_p90"] + EXAMPLE["assists_p90"]
+    assert f["minutes_per_appearance"] == EXAMPLE["minutes"] / EXAMPLE["appearances"]
+
+
+def test_health_is_503_when_models_missing(tmp_path):
+    api.load_models(tmp_path)  # empty directory
+    try:
+        r = TestClient(api.app).get("/health")
+        assert r.status_code == 503 and r.json()["status"] == "degraded"
+    finally:
+        api.load_models()

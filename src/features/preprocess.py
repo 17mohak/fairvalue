@@ -9,6 +9,7 @@ Two feature sets support the ablation in the locked spec:
 """
 
 import numpy as np
+import pandas as pd
 from sklearn.compose import ColumnTransformer
 from sklearn.impute import SimpleImputer
 from sklearn.pipeline import Pipeline
@@ -62,6 +63,13 @@ def _add_age_squared(X):
     return np.column_stack([X, X[:, :1] ** 2])  # first numeric column is age
 
 
+def _none_to_nan(X):
+    # SimpleImputer(missing_values=np.nan) does not treat Python None as missing in object
+    # columns, so None would become its own category (or an unknown one at inference).
+    X = np.asarray(X, dtype=object)
+    return np.where(pd.isna(X), np.nan, X)
+
+
 def _age_squared_names(transformer, input_names):
     # Lets ColumnTransformer.get_feature_names_out() name the extra age^2 column (used by SHAP).
     return list(input_names) + ["age_squared"]
@@ -85,6 +93,7 @@ def build_preprocessor(feature_set: str = "full") -> ColumnTransformer:
         ("scale", StandardScaler()),
     ])
     categorical_pipe = Pipeline([
+        ("none_to_nan", FunctionTransformer(_none_to_nan, feature_names_out="one-to-one")),
         ("impute", SimpleImputer(strategy="constant", fill_value="missing")),
         ("onehot", OneHotEncoder(handle_unknown="ignore", min_frequency=20)),
     ])

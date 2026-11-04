@@ -87,3 +87,12 @@ def test_fitted_preprocessor_uses_only_declared_columns(feature_set):
     # The performance-only model must not see league or club context.
     if feature_set == "performance":
         assert "valuation_league_id" not in used and "club_ppg" not in used
+
+
+def test_python_none_is_treated_as_missing_in_categoricals():
+    """Regression test: None must be imputed like NaN (it previously became its own category)."""
+    df = toy_frame()
+    pre = build_preprocessor("full").fit(df)
+    a, b = df.iloc[:1].copy(), df.iloc[:1].copy()
+    a["foot"], b["foot"] = None, np.nan
+    np.testing.assert_array_equal(pre.transform(a), pre.transform(b))

@@ -17,10 +17,11 @@ Design
     * Sample: players matched within league and position (same propensity matching as the scope
       analysis), complete cases only. Tier-stratified random sample by the model's current
       predicted tier (Emerging/Established/Elite), `per_cell` players per group and tier, seed 42.
-    * Mutable: goals_p90, assists_p90, minutes, start_share, intl_club_minutes_share, each
-      limited to the 1st-99th percentile of the training data. goal_contrib_p90 and
-      minutes_per_appearance are recomputed from their parts by a wrapper, so counterfactuals
-      stay internally consistent.
+    * Mutable: goals_p90, assists_p90, minutes, start_share, each limited to the 1st-99th
+      percentile of the training data. European-cup minute share is held fixed (club context).
+      Minutes are limited to [minutes_last_365, appearances x 101.25] so the two-year total
+      never falls below the last-year total and minutes per appearance stay in the training
+      range. goal_contrib_p90 and minutes_per_appearance are recomputed by a wrapper.
     * DiCE "random" method, 10 candidate counterfactuals per player, desired class = predicted tier + 1.
       Per player, the counterfactual with the smallest normalised change is summarised.
 
@@ -45,7 +46,8 @@ from src.models.train import load_training_data
 log = get_logger(__name__)
 logging.getLogger("dice_ml").setLevel(logging.WARNING)
 OUT = REPORTS_DIR / "explainability"
-MUTABLE = ["goals_p90", "assists_p90", "minutes", "start_share", "intl_club_minutes_share"]
+MUTABLE = ["goals_p90", "assists_p90", "minutes", "start_share"]
+MAX_MINUTES_PER_APPEARANCE = 101.25  # training maximum
 DERIVED = ["goal_contrib_p90", "minutes_per_appearance"]
 LABEL = {"full": "Model A", "performance": "Model B"}
 N_CFS = 10  # candidates per player; the closest valid one is summarised
@@ -119,6 +121,9 @@ def run(feature_set: str, df: pd.DataFrame, is_n: np.ndarray, matched: set, per_
                        "predicted_tier": TIER_NAMES[k], "target_tier": TIER_NAMES[k + 1], "found": False}
                 # The player's own value must lie inside the permitted range, or DiCE rejects the query.
                 own = {c: [min(lo, float(q[c].iloc[0])), max(hi, float(q[c].iloc[0]))] for c, (lo, hi) in ranges.items()}
+                m_lo = float(q.minutes_last_365.iloc[0])
+                m_hi = float(q.appearances.iloc[0]) * MAX_MINUTES_PER_APPEARANCE
+                own["minutes"] = [max(own["minutes"][0], m_lo), min(own["minutes"][1], m_hi)]
                 try:
                     res = explainer.generate_counterfactuals(
                         q, total_CFs=N_CFS, desired_class=int(k + 1), features_to_vary=MUTABLE,
@@ -128,7 +133,10 @@ def run(feature_set: str, df: pd.DataFrame, is_n: np.ndarray, matched: set, per_
                     out["note"] = type(exc).__name__
                     cfs = None
                 if cfs is not None and len(cfs):
-                    cfs = cfs[model.predict(cfs[dice_cols]) == k + 1]
+                    cfs = cfs[dice_cols].astype({c: float for c in continuous})
+                    valid = ((cfs.minutes >= cfs.minutes_last_365)
+                             & (cfs.minutes / cfs.appearances <= MAX_MINUTES_PER_APPEARANCE + 1e-9))
+                    cfs = cfs[valid.to_numpy() & (model.predict(cfs) == k + 1)]
                 if cfs is not None and len(cfs):
                     delta = cfs[MUTABLE].astype(float).to_numpy() - q[MUTABLE].astype(float).to_numpy()
                     dist = np.abs(delta / np.array([mad[c] for c in MUTABLE])).sum(axis=1)
@@ -138,7 +146,6 @@ def run(feature_set: str, df: pd.DataFrame, is_n: np.ndarray, matched: set, per_
                             "normalised_distance": float(dist[b]),
                             "delta_goal_contrib_p90": d["goals_p90"] + d["assists_p90"],
                             "delta_minutes": d["minutes"], "delta_start_share": d["start_share"],
-                            "delta_intl_club_minutes_share": d["intl_club_minutes_share"],
                             "base_goal_contrib_p90": float(q.goals_p90.iloc[0] + q.assists_p90.iloc[0])}
                 rows.append(out)
             log.info("%s %s %s: %d players", LABEL[feature_set], g_name, TIER_NAMES[k], len(pick))
@@ -154,7 +161,7 @@ def compare(res: pd.DataFrame, n_boot: int = 2000) -> pd.DataFrame:
                "median_delta_goal_contrib_p90": lambda d: d.loc[d.found, "delta_goal_contrib_p90"].median(),
                "median_n_features_changed": lambda d: d.loc[d.found, "n_features_changed"].median()}
     for (model, tier), d in list(res.groupby(["model", "predicted_tier"])) + \
-            [((m, "ALL"), d) for m, d in res.groupby("model")]:
+            [((m, "ALL (pooled, unadjusted)"), d) for m, d in res.groupby("model")]:
         u, n = d[d.group == "UEFA"], d[d.group == "non-UEFA"]
         for name, f in metrics.items():
             est = f(n) - f(u)

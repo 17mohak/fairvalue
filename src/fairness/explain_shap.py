@@ -148,6 +148,7 @@ def main() -> None:
         tables.append(t)
         # Check: SHAP gaps add up to the gap in mean predictions.
         pred_gap = pred[is_n].mean() - pred[~is_n].mean()
+        assert abs(pred_gap - t.mean_shap_gap_nonUEFA_minus_UEFA.sum()) < 1e-6
         log.info("%s: mean predicted log gap %.4f = sum of SHAP gaps %.4f", LABEL[fs], pred_gap,
                  t.mean_shap_gap_nonUEFA_minus_UEFA.sum())
 

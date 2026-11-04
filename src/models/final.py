@@ -56,7 +56,11 @@ def main() -> None:
     MODELS_DIR.mkdir(exist_ok=True)
     df = load_training_data()
     assert_no_demographic_columns(df.columns)
-    primary = json.loads((REPORTS_DIR / "models" / "primary_model.json").read_text())["algorithm"]
+    primary_info = json.loads((REPORTS_DIR / "models" / "primary_model.json").read_text())
+    primary = primary_info["algorithm"]
+    if primary_info["dataset_sha256_16"] != dataset_fingerprint():
+        raise SystemExit("Dataset differs from the one the reported CV metrics and tuned parameters "
+                         "came from. Re-run `python -m src.models.train` before refitting.")
     reg_summary = pd.read_csv(REPORTS_DIR / "models" / "regression_summary.csv")
     clf_summary = pd.read_csv(REPORTS_DIR / "models" / "classification_summary.csv")
     fp = dataset_fingerprint()

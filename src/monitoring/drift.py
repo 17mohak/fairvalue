@@ -11,7 +11,7 @@ built by the same pipeline and the same eligibility rules:
 Checks
     1. Feature and target drift: Evidently DataDriftPreset (all features) plus our own PSI for the
        monitored features (S-2: age, minutes, goal_contrib_p90, club_ppg, market value).
-    2. Performance decay: a "last-year model" (same algorithm and settings as the served regressor)
+    2. Performance decay: a "last-year model" (same algorithm as the served regressor, default settings)
        is fit on the reference snapshot only, then scored on the current snapshot. Its error is
        compared with its own 5-fold CV error on the reference period. This model exists only for
        this simulation. Neither it nor the reference data ever enters research training or CV.
@@ -45,7 +45,6 @@ from src.features.preprocess import (
     PERFORMANCE_CATEGORICAL,
     assert_no_demographic_columns,
 )
-from src.models.final import median_tuned_params
 from src.models.train import make_regressor
 from src.monitoring.policy import MONITORED_FEATURES, evaluate_policy
 
@@ -79,6 +78,8 @@ def psi(ref: pd.Series, cur: pd.Series, bins: int = 10) -> float:
     """Population stability index with reference-quantile bins (0.1 small, 0.25 large shift)."""
     ref, cur = ref.dropna().to_numpy(), cur.dropna().to_numpy()
     edges = np.unique(np.quantile(ref, np.linspace(0, 1, bins + 1)))
+    if len(edges) < 2:  # constant reference: split around the constant
+        edges = np.array([edges[0] - 0.5, edges[0] + 0.5])
     edges[0], edges[-1] = -np.inf, np.inf
     r = np.histogram(ref, edges)[0] / len(ref)
     c = np.histogram(cur, edges)[0] / len(cur)
@@ -105,7 +106,9 @@ def performance_decay(ref: pd.DataFrame, cur: pd.DataFrame) -> pd.DataFrame:
     rows = []
     for fs in ["full", "performance"]:
         from src.features.preprocess import feature_columns
-        cols, params = feature_columns(fs), median_tuned_params(fs)
+        # Default HGB settings: the Optuna parameters were tuned on the current window, which is
+        # this simulation's test period, so reusing them would leak.
+        cols, params = feature_columns(fs), {}
         y_ref, y_cur = ref.log_value.to_numpy(), cur.log_value.to_numpy()
         cv = []
         for tr, te in KFold(5, shuffle=True, random_state=RANDOM_SEED).split(ref):

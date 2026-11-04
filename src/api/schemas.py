@@ -1,6 +1,6 @@
 """Request / response schemas for POST /predict.
 
-Ranges reflect the approved modelling population (docs/RESEARCH_DESIGN.md §1): players with at
+Ranges are the training data's min/max (rounded slightly outward) for the approved modelling population (docs/RESEARCH_DESIGN.md §1): players with at
 least 450 club minutes in the two years before valuation, at clubs in the 14 covered leagues.
 Inputs outside that population are rejected rather than silently extrapolated.
 
@@ -33,31 +33,32 @@ class PlayerFeatures(BaseModel):
         "yellow_p90": 0.1, "red_p90": 0.0, "intl_club_minutes_share": 0.1,
         "minutes_last_365": 2300, "days_since_last_match": 7, "valuation_club_minutes_share": 1.0}})
 
-    age: float = Field(..., ge=15, le=45, description="Age in years at the valuation date")
-    height_in_cm: float | None = Field(None, ge=150, le=215)
+    age: float = Field(..., ge=16, le=44, description="Age in years at the valuation date (training range 16.4-43.4)")
+    height_in_cm: float | None = Field(None, ge=160, le=206, description="Missing allowed (imputed as in training)")
     position: Literal["Attack", "Midfield", "Defender", "Goalkeeper"]
-    sub_position: str | None = Field(None, description="Transfermarkt sub-position, e.g. 'Centre-Forward'")
+    sub_position: str = Field(..., description="Transfermarkt sub-position, e.g. 'Centre-Forward' (never missing in training)")
     foot: Literal["left", "right", "both"] | None = None
     valuation_league_id: COVERED_LEAGUES = Field(..., description="League of the club at valuation (Model A only)")
-    club_ppg: float | None = Field(None, ge=0, le=3, description="Club league points per game, last 365 days (Model A only)")
-    appearances: int = Field(..., ge=1, le=200)
-    minutes: float = Field(..., ge=450, le=12000, description="Club minutes; >= 450 is the approved population")
+    club_ppg: float | None = Field(None, ge=0.2, le=2.7, description="Club league points per game, last 365 days (Model A only; missing allowed)")
+    appearances: int = Field(..., ge=5, le=113)
+    minutes: float = Field(..., ge=450, le=9650, description="Club minutes; >= 450 is the approved population")
     start_share: float = Field(..., ge=0, le=1)
-    goals_p90: float = Field(..., ge=0, le=3)
-    assists_p90: float = Field(..., ge=0, le=3)
-    yellow_p90: float = Field(0.0, ge=0, le=3)
-    red_p90: float = Field(0.0, ge=0, le=1)
-    intl_club_minutes_share: float = Field(0.0, ge=0, le=1)
-    minutes_last_365: float = Field(..., ge=0, le=7000)
-    days_since_last_match: int = Field(..., ge=0, le=730)
-    valuation_club_minutes_share: float = Field(1.0, ge=0, le=1)
+    goals_p90: float = Field(..., ge=0, le=1.2)
+    assists_p90: float = Field(..., ge=0, le=0.75)
+    # Optional inputs with documented default assumptions (never missing in training):
+    yellow_p90: float = Field(0.0, ge=0, le=0.91, description="Default 0")
+    red_p90: float = Field(0.0, ge=0, le=0.2, description="Default 0")
+    intl_club_minutes_share: float = Field(0.0, ge=0, le=1, description="Default 0 (no European club minutes)")
+    minutes_last_365: float = Field(..., ge=0, le=4970)
+    days_since_last_match: int = Field(..., ge=0, le=620)
+    valuation_club_minutes_share: float = Field(1.0, ge=0, le=1, description="Default 1 (all minutes at current club)")
 
     @model_validator(mode="after")
     def consistent(self):
         if self.minutes_last_365 > self.minutes:
             raise ValueError("minutes_last_365 cannot exceed minutes (two-year total)")
-        if self.minutes / self.appearances > 130:
-            raise ValueError("minutes per appearance cannot exceed 130")
+        if not 14 <= self.minutes / self.appearances <= 101.25:
+            raise ValueError("minutes per appearance must be within the training range 14-101.25")
         return self
 
     def to_features(self) -> dict:

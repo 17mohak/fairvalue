@@ -1,5 +1,17 @@
 # Development changelog
 
+## 2026-11-05 (later): Priority pass: engineering verification
+
+- **DiCE:** the full run (720 queries) completed during this pass, after 83 minutes, and its outputs
+  were saved (`reports/explainability/dice_*`). DiCE is now bounded: `--max-minutes`, per-player
+  checkpoints, a demo default and incomplete-run labelling. The pipeline runs the full analysis only
+  with `WITH_DICE=1` (D-031). Bounded mode was smoke-tested, including an early stop marked incomplete.
+- **Docker:** the image was rebuilt from the re-run models and smoke-tested. Predictions are identical to
+  the saved artefacts; 7 invalid inputs return 422; GET /predict returns 405; non-root user; HEALTHCHECK healthy.
+- **Tests:** 89 passing.
+- **Docs:** explainability report completed. Thresholds checked for agreement between code and
+  `docs/MONITORING.md`. Run logs are kept out of git (they contain local paths).
+
 ## 2026-11-05: Milestones 5–8, review fixes, full re-run
 
 ### Added

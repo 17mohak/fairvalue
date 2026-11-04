@@ -36,3 +36,4 @@ reports/**/*_log.txt
 # Model binaries stay out of git; the registry metadata is committed
 !models/model_registry.json
 reports/monitoring/drift_report.html
+reports/pipeline_log*.txt

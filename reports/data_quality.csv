@@ -1,0 +1,14 @@
+check,offending_rows,severity,detail
+players.player_id unique,0,fail,
+"player_valuations (player_id, date) unique",0,fail,
+"appearances (player_id, game_id) unique",0,fail,
+player_valuations.player_id in players,0,fail,
+appearances.player_id in players,2,warn,orphan appearances are dropped by the inner join to current valuations
+appearances.game_id in games,0,warn,
+market_value_in_eur > 0,1,warn,one 2008 row (player 60096); outside the training window and also filtered by eligibility
+"appearances minutes in [0, 130]",3,warn,
+transfers dated after data snapshot,3327,warn,future-dated rows (planned moves / loan returns); transfers are not used as features
+appearance goals match game_events goals,449,warn,of 161548 player-games with goals; game_events also records own goals/penalties differently
+"duplicate country spellings (Turkey/Türkiye, Neukaledonien)",1394,warn,resolved via canonical_country in the confederation mapping
+national-team competition appearances (excluded from features),3027,info,
+clubs.total_market_value all null,1,info,column unusable; not used

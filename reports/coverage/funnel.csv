@@ -1,0 +1,6 @@
+stage,UEFA,non-UEFA,UNKNOWN,total,non_uefa_share_%
+1 all players in dataset,32234,17646,269,50149,35.4
+2 current valuation (last 12 months),10395,8969,0,19364,46.3
+3 + valued while in a covered league,5536,1842,0,7378,25.0
+4 + >= 450 club minutes in 2y window,4324,1496,0,5820,25.7
+"5 eligible (+ valid age, value > 0)",4324,1496,0,5820,25.7

@@ -10,8 +10,9 @@ import { DEFAULT_PLAYER } from "@/lib/profile";
 import { heldOutLogR2, research } from "@/lib/research";
 import styles from "./page.module.css";
 
-// The hero shows a live estimate from the served model; refresh it hourly.
-export const revalidate = 3600;
+// Rendered per request so the hero's live estimate works even when the API was down at build
+// time; the upstream fetch itself is cached for an hour (lib/api/upstream.ts).
+export const dynamic = "force-dynamic";
 
 const h = research.headline;
 const proxyAuc = research.population.proxy_auc[0]!.auc;

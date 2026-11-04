@@ -1,0 +1,17 @@
+# Local full stack: the prediction API and the web app.
+# Needs the trained models in models/ (python -m src.models.final). Nothing is published.
+#   docker compose up --build   then open http://localhost:3000
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+  web:
+    build: ./web
+    environment:
+      FAIRVALUE_API_URL: http://api:8000
+    ports:
+      - "3000:3000"
+    depends_on:
+      api:
+        condition: service_healthy

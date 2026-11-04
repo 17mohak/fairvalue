@@ -20,6 +20,7 @@ _Last updated: 2026-11-05_
 | Explainability | SHAP global/group/local; feature-based DiCE: full run complete (720 queries, no consistent group difference). DiCE is now time-bounded and checkpointed (D-031) | `docs/reports/EXPLAINABILITY.md` |
 | Monitoring | Evidently + PSI drift simulation, retraining policy (NO ACTION), quality gates | `docs/MONITORING.md` |
 | CI | Private repo [17mohak/fairvalue](https://github.com/17mohak/fairvalue). First run (2026-11-04, about 6 min) **passed**: 79 unit tests (+10 data tests skipped as designed); data re-downloaded with an unchanged manifest; 9 data/leakage tests; quick-run gate with numbers identical to the local run (0.851 / 0.581 / 0.718); refit; Docker build, health and predict smoke test. No image pushed | `.github/workflows/ci.yml`, GitHub Actions |
+| Product (branch `feat/product-experience`) | Next.js app in `web/`: landing, valuation studio (live predict + per-prediction SHAP), fairness explorer, methods. `POST /explain`, `GET /metadata`. Compose stack built and smoke-tested locally. Not pushed or deployed | `docs/PRODUCT.md`, D-032, D-033 |
 | Responsible AI | Model card, data card, EU AI Act assessment | `docs/MODEL_CARD.md`, `docs/DATA_CARD.md`, `docs/EU_AI_ACT_ASSESSMENT.md` |
 | Tests | 89 passing (unit + real-data + API against the real models) | `pytest -q` |
 | Reviews | Three independent read-only reviews; all findings addressed | DECISIONS D-015, D-023, D-028 |
@@ -38,6 +39,8 @@ _Last updated: 2026-11-05_
   components are too imprecise to interpret.
 
 ## Open items
+- **Product branch:** `feat/product-experience` is local only. Pushing it (and running its CI) and any
+  merge into `main` need owner approval.
 - **GitHub:** private repository created and CI green (owner-approved 2026-11-05). Visibility changes
   and collaborators are the owner's call.
 - **Hosting (Railway/Render) and GHCR image publishing:** not done; needs approval, and free-tier terms

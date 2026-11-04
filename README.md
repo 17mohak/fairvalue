@@ -23,6 +23,14 @@ UEFA and non-UEFA nationals, **even though nationality is never a model input**.
   (log gap +0.093, 95% CI 0.063–0.124). That is the opposite direction to the original hypothesis.
   See [`FAIRNESS_AUDIT`](docs/reports/FAIRNESS_AUDIT.md).
 
+## Web product
+A Next.js app in [`web/`](web/) puts the research in front of people: a valuation studio backed by the
+real API (with per-prediction SHAP explanations), an interactive fairness explorer and a methods page.
+Every figure comes from generated outputs. See [`docs/PRODUCT.md`](docs/PRODUCT.md).
+```bash
+docker compose up --build        # API on :8000, web on :3000 (needs models/*.joblib)
+```
+
 ## Quick start
 ```bash
 python -m venv .venv
@@ -43,7 +51,9 @@ src/data/          acquire, quality checks, nationality mapping, dataset build
 src/features/      feature lists + shared ColumnTransformer
 src/fairness/      coverage, scope analysis, fairness audit, SHAP, DiCE, supplementary checks
 src/models/        tiers, training (CV + MLflow + Optuna), evaluation
-src/api/           FastAPI POST /predict + GET /health (Dockerfile at repo root)
+src/api/           FastAPI POST /predict, POST /explain, GET /metadata, GET /health (Dockerfile at repo root)
+src/product/       export of research outputs + API contract for the web app
+web/               Next.js product front end (see docs/PRODUCT.md)
 src/monitoring/    drift simulation (Evidently, PSI) and retraining policy
 scripts/           run_pipeline.sh: regenerates every reported result
 tests/             unit tests (synthetic) + data tests (real outputs)

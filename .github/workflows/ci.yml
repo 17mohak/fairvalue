@@ -20,6 +20,23 @@ jobs:
       # Data-dependent tests skip automatically here (no dataset).
       - run: pytest -q
 
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build
+
   train-quick-and-gate:
     needs: unit-tests
     runs-on: ubuntu-latest
@@ -52,6 +69,14 @@ jobs:
           for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 2; done
           curl -sf -X POST localhost:8000/predict -H 'Content-Type: application/json' \
             -d '{"player": {"age": 24.5, "height_in_cm": 181, "position": "Attack", "sub_position": "Centre-Forward", "foot": "right", "valuation_league_id": "ES1", "club_ppg": 1.6, "appearances": 60, "minutes": 4200, "start_share": 0.8, "goals_p90": 0.45, "assists_p90": 0.15, "minutes_last_365": 2300, "days_since_last_match": 7}}'
+      - name: Smoke-test POST /explain and the full stack via docker compose (not pushed)
+        run: |
+          curl -sf -X POST localhost:8000/explain -H 'Content-Type: application/json'             -d '{"player": {"age": 24.5, "height_in_cm": 181, "position": "Attack", "sub_position": "Centre-Forward", "foot": "right", "valuation_league_id": "ES1", "club_ppg": 1.6, "appearances": 60, "minutes": 4200, "start_share": 0.8, "goals_p90": 0.45, "assists_p90": 0.15, "minutes_last_365": 2300, "days_since_last_match": 7}}'
+          docker rm -f api
+          docker compose up --build -d
+          for i in $(seq 1 45); do curl -sf localhost:3000/studio > /dev/null && break; sleep 2; done
+          curl -sf localhost:3000/api/health
+          docker compose down
       - name: Remove test container
         if: always()
         run: docker rm -f api || true

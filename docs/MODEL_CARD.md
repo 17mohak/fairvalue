@@ -8,7 +8,7 @@ held-out (out-of-fold) evaluation unless stated otherwise. Sources: `docs/report
 | | |
 |---|---|
 | Developer | Mohak Mandwani (solo), BTECH CAP 501, ATLAS SkillTech University; mentor Shakti Sangram Behera |
-| Date / version | 2026-11-04 · `fairvalue-regressor_A-hgb_tuned-91174c39-20261104` (+ classifier and Model B variants) |
+| Date / version | 2026-11-05 (regenerated after D-028) · `fairvalue-regressor_A-hgb_tuned-91174c39-20261104` (+ classifier and Model B variants) |
 | Type | scikit-learn `Pipeline`: shared `ColumnTransformer` + `HistGradientBoostingRegressor` (target: ln EUR value). Separate `HistGradientBoostingClassifier` for 4 value tiers |
 | Variants | **Model A** (served default): performance + profile + league + club strength. **Model B** (ablation): performance + profile only |
 | Hyperparameters | Median of the per-fold Optuna optima (25 trials, nested CV); listed in the registry |
@@ -37,12 +37,12 @@ held-out (out-of-fold) evaluation unless stated otherwise. Sources: `docs/report
 ## Metrics (held-out, 5-fold CV)
 | | Model A | Model B |
 |---|---|---|
-| log RMSE / MAE / R² | 0.529 / 0.408 / 0.890 | 0.919 / 0.727 / 0.668 |
-| EUR MAE / R² / median abs. error | €2.35M / 0.840 / €0.60M | €3.81M / 0.616 / €1.06M |
-| log RMSE, clubs unseen in training (supplementary) | 0.573 (+8.8%) | 0.942 (+2.7%) |
+| log RMSE / MAE / R² | 0.526 / 0.406 / 0.891 | 0.917 / 0.725 / 0.669 |
+| EUR MAE / R² / median abs. error | €2.32M / 0.846 / €0.62M | €3.82M / 0.611 / €1.06M |
+| log RMSE, clubs unseen in training (supplementary) | 0.573 (+8.7%) | 0.941 (+2.9%) |
 | Tier classifier accuracy / macro F1 / macro ROC AUC | 0.793 / 0.737 / 0.946 | 0.665 / 0.590 / 0.862 |
 
-Typical error: predictions are off by a factor of about 1.5 (e^0.408). Errors are larger for
+Typical error: predictions are off by a factor of about 1.5 (e^0.406). Errors are larger for
 goalkeepers, players with under 900 minutes and Scottish-league players. Low-value players are
 over-predicted and high-value players under-predicted (shrinkage towards the mean).
 
@@ -51,9 +51,9 @@ Gap = non-UEFA − UEFA; residual = actual − predicted (positive = under-predi
 
 | | Model A | Model B |
 |---|---|---|
-| Signed log-residual gap, league-stratified | **+0.099** (0.068, 0.128) | **+0.159** (0.116, 0.201) |
-| Same, club-clustered CI | (0.067, 0.131) | (0.110, 0.210) |
-| MAE gap (league-stratified) | +0.010 (−0.009, 0.031) | −0.014 (−0.044, 0.018) |
+| Signed log-residual gap, league-stratified | **+0.093** (0.063, 0.124) | **+0.164** (0.121, 0.207) |
+| Same, club-clustered CI | (0.061, 0.125) | (0.115, 0.216) |
+| MAE gap (league-stratified) | +0.012 (−0.008, 0.031) | −0.009 (−0.039, 0.022) |
 | ER1a tier error-rate gap | +0.025 (0.001, 0.049); club-clustered (−0.000, 0.050) | +0.009 (−0.018, 0.035) |
 | Under-tier rate gap | +0.033 (0.013, 0.054) | +0.042 (0.018, 0.065) |
 | Per-tier EOD (Emerging / Established / Elite / World Class) | 0.013 / 0.033 / 0.035 / 0.052 | 0.013 / 0.040 / 0.037 / 0.009 |

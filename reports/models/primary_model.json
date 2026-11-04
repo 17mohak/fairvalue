@@ -4,8 +4,8 @@
   "candidates": [
     {
       "algorithm": "hgb_tuned",
-      "cv_log_rmse_mean": 0.52851,
-      "cv_log_rmse_sd": 0.01386
+      "cv_log_rmse_mean": 0.52538,
+      "cv_log_rmse_sd": 0.01336
     },
     {
       "algorithm": "hgb",
@@ -19,8 +19,8 @@
     },
     {
       "algorithm": "random_forest",
-      "cv_log_rmse_mean": 0.64637,
-      "cv_log_rmse_sd": 0.01158
+      "cv_log_rmse_mean": 0.6459,
+      "cv_log_rmse_sd": 0.01012
     }
   ],
   "dataset_sha256_16": "91174c392a8be652"

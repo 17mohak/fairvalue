@@ -21,7 +21,7 @@
 | CIs ignore refit variance | bootstrap resamples held-out predictions only | CIs are somewhat too narrow | Documented; fold-to-fold metric SDs reported alongside |
 | Many strata and leagues | 14 leagues, ~14 strata, 8 tier components | Some intervals will exclude 0 by chance | No significance thresholds; strata are descriptive (RESEARCH_DESIGN §2) |
 | Fixed tier boundaries from the full population | €2M/€10M/€30M | Label definition known before CV (no feature leakage) | Documented (D-018) |
-| Performance partly relies on known clubs | club-grouped CV: HGB log RMSE +8.8% | Primary metrics are optimistic for unseen clubs | Reported as a supplement (D-026) |
-| Players clustered within clubs | residual ICC 0.09 (A) / 0.50 (B) | Player-level CIs slightly narrow | Club-clustered CIs as sensitivity (D-026) |
+| Performance partly relies on known clubs | club-grouped CV: HGB log RMSE +8.7% | Primary metrics are optimistic for unseen clubs | Reported as a supplement (D-026) |
+| Players clustered within clubs | residual ICC 0.08 (A) / 0.49 (B) | Player-level CIs slightly narrow | Club-clustered CIs as sensitivity (D-026) |
 | World Class / Elite tiers small for non-UEFA | 94 / 246 players; MDD ≈ 16 / 10 pp | Per-tier EOD imprecise | Not interpreted (D-026) |
 | Valuation club vs playing club | stats include all club matches in 2 years, even at a previous club | Recently transferred players mix two clubs' context | To quantify in Milestone 3 |

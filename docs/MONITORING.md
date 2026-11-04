@@ -11,11 +11,11 @@ Run: `python -m src.monitoring.drift` → `reports/monitoring/` (`drift_report.h
   - 4,296 players appear in both snapshots, each with a different valuation date and feature window.
 - **Monitored features** (spec S-2, replacing the FIFA-era list): age, minutes, goal_contrib_p90,
   club_ppg and the target ln(value).
-- **Performance decay:** a "last-year model" (same algorithm and settings as the served regressor) is
-  fit on the reference snapshot only. Its error on the current snapshot is compared with its own 5-fold
+- **Performance decay:** a "last-year model" (same algorithm as the served regressor, with default
+  settings, because the tuned settings came from the current window) is fit on the reference snapshot only. Its error on the current snapshot is compared with its own 5-fold
   CV error on the reference period. This model exists only for the simulation.
 
-## Results (2026-11-04)
+## Results (regenerated 2026-11-05)
 **PSI** (reference-quantile bins):
 
 | Feature | PSI | Median ref → current |
@@ -32,8 +32,8 @@ Run: `python -m src.monitoring.drift` → `reports/monitoring/` (`drift_report.h
 
   | Model | CV log RMSE (reference period) | Log RMSE on next year | Change |
   |---|---|---|---|
-  | A | 0.526 | 0.563 | **+7.2%** |
-  | B | 0.935 | 1.025 | +9.6% |
+  | A | 0.538 | 0.570 | **+6.0%** |
+  | B | 0.939 | 1.059 | +12.9% |
 
 - **Policy decision: NO ACTION** (no triggers, no warnings).
 
@@ -60,4 +60,4 @@ Thresholds are set from measured results with a margin. Fairness metrics are aud
 | Run | Model A log R² | Model B log R² | Model A tier accuracy | Also required |
 |---|---|---|---|---|
 | CI (20% subset, `train --quick`) | ≥ 0.78 (measured 0.826–0.851) | ≥ 0.50 (0.58–0.60) | ≥ 0.68 (0.718) | A beats B |
-| Release (full run) | ≥ 0.86 (0.890) | ≥ 0.62 (0.668) | ≥ 0.75 (0.793) | A beats B |
+| Release (full run) | ≥ 0.86 (0.891) | ≥ 0.62 (0.669) | ≥ 0.75 (0.793) | A beats B |

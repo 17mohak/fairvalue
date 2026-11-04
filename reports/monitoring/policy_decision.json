@@ -2,7 +2,7 @@
   "decision": "NO ACTION",
   "triggers": [],
   "warnings": [],
-  "rmse_degradation_pct": 7.180929797174662,
+  "rmse_degradation_pct": 6.000024664750869,
   "evidently": {
     "drifted_columns": 2.0,
     "drifted_share": 0.09523809523809523,

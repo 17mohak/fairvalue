@@ -1,6 +1,6 @@
 # Supplementary validation checks
 
-**Run:** 2026-11-04, `python -m src.fairness.supplementary --boot 2000`. Tables: `reports/supplementary/`.
+**Run:** regenerated 2026-11-05 (`scripts/run_pipeline.sh`, after D-028), `python -m src.fairness.supplementary --boot 2000`. Tables: `reports/supplementary/`.
 These checks do **not** change the primary protocol (RESEARCH_DESIGN §6–§7) or the primary results.
 They describe how sensitive those results are to two assumptions: that players are independent,
 and that validation players come from clubs already seen in training.
@@ -16,19 +16,18 @@ per-fold Optuna optima, so no re-tuning was done.
 |---|---|---|---|---|---|---|
 | A | Ridge | 0.604 | 0.613 | +1.5% | 0.856 → 0.853 | 0.751 → 0.740 |
 | A | HGB (default) | 0.539 | 0.584 | +8.2% | 0.885 → 0.866 | 0.826 → 0.773 |
-| A | HGB (median tuned) | 0.527 | 0.573 | +8.8% | 0.891 → 0.871 | 0.841 → 0.786 |
+| A | HGB (median tuned) | 0.527 | 0.573 | +8.7% | 0.891 → 0.871 | 0.848 → 0.795 |
 | B | Ridge | 1.026 | 1.028 | +0.2% | 0.585 → 0.583 | 0.544 → 0.539 |
-| B | HGB (median tuned) | 0.917 | 0.942 | +2.7% | 0.669 → 0.651 | 0.610 → 0.600 |
+| B | HGB (median tuned) | 0.915 | 0.941 | +2.9% | 0.670 → 0.651 | 0.615 → 0.601 |
 
 - Gradient boosting in Model A gains about 8–9% in RMSE from having seen the same clubs. It probably
-  learns club-specific value levels, since `club_ppg` effectively identifies a club. Ridge gains
-  very little.
-- For players at **clubs the model has never seen**, the realistic Model A performance is log RMSE
-  of about 0.57 and log R² of about 0.87. The primary figures (0.529 / 0.890) describe players at
-  known clubs.
+  learns club-specific value levels, since `club_ppg` effectively identifies a club. Ridge gains very little.
+- For players at **clubs the model has never seen**, the realistic Model A performance is log RMSE of
+  about 0.57 and log R² of about 0.87. The primary figures (0.526 / 0.891) describe players at known clubs.
 - HGB still beats Ridge under club folds (0.573 vs 0.613), so the model choice stands.
-- **The fairness gap does not depend on this.** Model A's league-stratified signed log gap is
-  +0.098 with player folds and +0.106 with club folds. Model B: +0.168 and +0.166.
+- **The fairness gap does not depend on this.** Model A's league-stratified signed log gap is +0.099
+  with player folds and +0.112 with club folds; Model B +0.166 and +0.166. These use the median-tuned
+  settings, so they differ slightly from the primary +0.093, which uses per-fold tuning.
 
 ## 2. Dependence within clubs (club-clustered bootstrap)
 
@@ -36,32 +35,32 @@ Residual intra-club correlation (ICC(1) on held-out log residuals):
 
 | Model | ICC |
 |---|---|
-| A | 0.093 |
-| B | 0.495 |
+| A | 0.084 |
+| B | 0.494 |
 
 - Under Model B about half the residual variance is between clubs, because Model B has no club or
   league context. Under Model A, club context absorbs most of it.
-- The primary CIs resample *players* within league × group, which treats players as independent.
-  As a sensitivity check, **whole clubs** were resampled within each league (2,000 replicates).
+- The primary CIs resample *players* within league × group, which treats players as independent. As a
+  sensitivity check, **whole clubs** were resampled within each league (2,000 replicates).
 
 | Metric | Estimate | Player-level CI | Club-clustered CI | Width ratio |
 |---|---|---|---|---|
-| A signed gap (league-stratified) | +0.099 | 0.068 to 0.128 | 0.067 to 0.131 | 1.06 |
-| A MAE gap | +0.010 | −0.009 to 0.031 | −0.011 to 0.029 | 0.97 |
+| A signed gap (league-stratified) | +0.093 | 0.063 to 0.124 | 0.061 to 0.125 | 1.05 |
+| A MAE gap | +0.012 | −0.008 to 0.031 | −0.008 to 0.030 | 0.98 |
 | A ER1a | +0.025 | 0.001 to 0.049 | −0.000 to 0.050 | 1.04 |
 | A under-tier gap | +0.033 | 0.013 to 0.054 | 0.012 to 0.056 | 1.06 |
-| B signed gap (league-stratified) | +0.159 | 0.116 to 0.201 | 0.110 to 0.210 | 1.16 |
+| B signed gap (league-stratified) | +0.164 | 0.121 to 0.207 | 0.115 to 0.216 | 1.18 |
 | B ER1a | +0.009 | −0.018 to 0.035 | −0.021 to 0.041 | 1.16 |
 
-All metrics: `clustered_bootstrap.csv`. Width ratios range from 0.85 to 1.16.
+All metrics: `clustered_bootstrap.csv`. Width ratios range from 0.84 to 1.18.
 
 **Conclusion:**
-- Clustering widens the main intervals only slightly: about 6% for Model A and 16% for Model B.
+- Clustering widens the main intervals only slightly: about 5% for Model A and 18% for Model B.
 - The signed gaps stay clearly above 0 under both schemes.
 - The one material change: Model A's ER1a lower bound moves from +0.001 to −0.000. **ER1a should not
   be described as clearly different from 0.**
-- Player-level CIs stay the primary reported intervals (locked protocol). Club-clustered CIs are
-  reported alongside them as a sensitivity check.
+- Player-level CIs stay the primary reported intervals (locked protocol). Club-clustered CIs are reported
+  alongside them as a sensitivity check.
 
 ## 3. World Class (and Elite) tier: limits of per-tier equalized odds
 

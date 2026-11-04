@@ -6,7 +6,8 @@ The system predicts a player's Transfermarkt market value (EUR) from match perfo
 and context, then audits whether the model's errors differ systematically between
 UEFA and non-UEFA nationals, **even though nationality is never a model input**.
 
-> Status: research design locked; baseline models and first fairness audit complete (Milestones 0–4).
+> Status: Milestones 0–8 implemented: data, locked design, models, fairness audit, explainability,
+> API + Docker, monitoring/CI and Responsible AI documentation.
 > Results describe a **selected population** (14 European leagues) and are associations, not causal
 > findings. See [`docs/PROJECT_STATE.md`](docs/PROJECT_STATE.md).
 
@@ -19,7 +20,7 @@ UEFA and non-UEFA nationals, **even though nationality is never a model input**.
 - Primary model (tuned gradient boosting) explains 89% of log-value variance (held-out); without
   league/club context, 67%. See [`MODEL_EVALUATION`](docs/reports/MODEL_EVALUATION.md).
 - Non-UEFA players are **under-predicted** relative to UEFA players in the same leagues
-  (log gap +0.099, 95% CI 0.068–0.128). That is the opposite direction to the original hypothesis.
+  (log gap +0.093, 95% CI 0.063–0.124). That is the opposite direction to the original hypothesis.
   See [`FAIRNESS_AUDIT`](docs/reports/FAIRNESS_AUDIT.md).
 
 ## Quick start
@@ -40,9 +41,11 @@ data/              raw / interim / processed (git-ignored except MANIFEST.json)
 src/config.py      paths and research constants
 src/data/          acquire, quality checks, nationality mapping, dataset build
 src/features/      feature lists + shared ColumnTransformer
-src/fairness/      coverage, scope analysis, fairness audit (SHAP/DiCE next)
+src/fairness/      coverage, scope analysis, fairness audit, SHAP, DiCE, supplementary checks
 src/models/        tiers, training (CV + MLflow + Optuna), evaluation
-src/monitoring, src/api   scaffolds for later milestones
+src/api/           FastAPI POST /predict + GET /health (Dockerfile at repo root)
+src/monitoring/    drift simulation (Evidently, PSI) and retraining policy
+scripts/           run_pipeline.sh: regenerates every reported result
 tests/             unit tests (synthetic) + data tests (real outputs)
 reports/           generated audit tables
 docs/              decisions, provenance, features, limitations, roadmap, state
@@ -59,6 +62,9 @@ docs/              decisions, provenance, features, limitations, roadmap, state
 | [KNOWN_LIMITATIONS](docs/KNOWN_LIMITATIONS.md) | biases and caveats |
 | [ROADMAP](docs/ROADMAP.md) | milestones |
 | [CHANGELOG](docs/CHANGELOG.md) | development log |
+| [MODEL_CARD](docs/MODEL_CARD.md) · [DATA_CARD](docs/DATA_CARD.md) | model and data documentation |
+| [EU_AI_ACT_ASSESSMENT](docs/EU_AI_ACT_ASSESSMENT.md) | risk classification |
+| [MONITORING](docs/MONITORING.md) · [DEPLOYMENT](docs/DEPLOYMENT.md) | drift policy, API and Docker |
 
 ## Data
 [dcaribou/transfermarkt-datasets](https://github.com/dcaribou/transfermarkt-datasets)

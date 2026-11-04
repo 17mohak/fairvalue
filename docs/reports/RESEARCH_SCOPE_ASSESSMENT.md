@@ -1,7 +1,9 @@
 # Research-scope assessment (input to D-011)
 
-**Status:** recommendation only. D-011 is **PENDING PROJECT-OWNER APPROVAL**. No dataset,
-threshold or model was changed, and no model was trained.
+**Status:** D-011 **ACCEPTED** on 2026-11-04: Option E is the working design, with the
+UEFA vs non-UEFA primary comparison. The binding specification is `docs/RESEARCH_DESIGN.md`.
+This document keeps the evidence and reasoning. Selection language was revised at acceptance
+to separate observed patterns from plausible mechanisms (section 1).
 **Evidence:** `python -m src.fairness.scope_analysis` → `reports/scope/*.csv` (15 tables).
 Every number below is copied from those files or from `reports/coverage/`.
 
@@ -13,9 +15,9 @@ Every number below is copied from those files or from `reports/coverage/`.
    Retained non-UEFA players sit at the 82nd percentile of their group's value distribution;
    retained UEFA players at the 74th. For AFC players, the retained median value is 10× the
    excluded median. A 14-league design studies the non-UEFA players who *made it* to Europe.
-2. **That selection makes the audit asymmetric.** Finding that non-UEFA players are
-   *undervalued* would be robust, because selection pushes the other way. Finding *no* gap,
-   or a positive gap, cannot be read as "no undervaluation in the market".
+2. **That selection limits external validity.** Results describe players who reached these
+   leagues. How selection shifts any measured gap relative to the wider market cannot be
+   determined from this data, so neither a gap nor its absence generalises beyond the population.
 3. **450 minutes is the lowest defensible threshold, not an optimal one.** Below it, per-90
    output is mostly noise (split-half reliability 0.19). The choice of threshold does not
    change group composition (non-UEFA share 25.5–26.0% at 90, 450 and 900 minutes).
@@ -68,14 +70,18 @@ Every number below is copied from those files or from `reports/coverage/`.
 
 ### Can the sample hide the disparity we are looking for?
 
-Yes, in a specific direction:
+Possibly. *(Revised at acceptance: the original wording below claimed a definite direction.
+The binding version is `docs/RESEARCH_DESIGN.md` §9: observed patterns, plausible mechanisms,
+external validity, and what cannot be established.)* The reasoning below describes **one
+plausible mechanism**, not an established effect:
 - Entry into a covered league is plausibly selected on value. A club only imports a non-European player
   it already values highly. Work-permit and non-EU squad rules (known context, not measured here) push
   in the same direction.
 - If the market undervalued some non-UEFA players, those players would be **less** likely to be signed,
-  and so less likely to be in our sample. The retained non-UEFA players are then biased towards those
-  the market rates highly for their observed performance. Selection on the outcome biases the
-  conditional gap upwards (towards "overvalued").
+  and so less likely to be in our sample. The retained non-UEFA players could then lean towards
+  those the market rates highly for their observed performance. *Whether this happens, and how
+  strongly, depends on how selection relates to quality the data does not record; it cannot be
+  verified here.*
 - The data shows this pattern: before any adjustment, non-UEFA eligible players are valued higher
   (log-value SMD +0.204). After within-league, same-position matching on performance and profile,
   the gap is still +0.123 (`3_pooled_match_balance.csv`). **This is descriptive and must not be read
@@ -83,11 +89,11 @@ Yes, in a specific direction:
   would produce. The data cannot tell them apart.
 
 ### Implications for the hypothesis
-- **A finding of non-UEFA undervaluation** within this sample would be *conservative*, since selection
-  works against it. It would be the strongest possible result.
-- **A null or positive finding** says only that, among non-UEFA players who reached these leagues,
-  valuations are not lower than a nationality-blind model predicts. It says nothing about the
-  non-UEFA players in other leagues (83.3% of valued non-UEFA players).
+- Any finding, in either direction, applies to non-UEFA players **who reached these leagues**.
+  It says nothing about the 83.3% of valued non-UEFA players outside them.
+- If the mechanism above operates, it would tend to work against finding undervaluation. Because
+  that cannot be verified, the study does not treat any result as "conservative" or "robust to
+  selection". It reports results conditional on the selected population.
 - **External validity** is limited to "players at clubs in 14 European first divisions, valued
   2025-06 to 2026-06". It does not extend to the global market, to second divisions, or to non-European leagues.
 
@@ -294,8 +300,8 @@ and equalized odds as below.
 - **Cannot:** discrimination or a causal effect of nationality (talent not captured in the data,
   missing defensive statistics, contract length, agents and marketing are all omitted). Nor
   conclusions about non-European leagues, or claims that Transfermarkt's values are "correct".
-- **Asymmetry, from section 1:** an undervaluation finding is robust to the known selection; a null
-  or overvaluation finding is not evidence of fairness.
+- **Selection (section 1):** no result is evidence about the wider market. A null result is not
+  evidence of fairness, and a gap is not evidence of unfairness, outside this population.
 
 ---
 
@@ -343,10 +349,10 @@ scope under the current locks.
 
 **I still recommend Option E.** Every alternative is worse on validity (B), breaks a locked
 decision (D), or keeps the same sample without stating its limits (A/C). Option E turns the
-selection problem into a measured, reported limitation, and keeps the one result that would be
-robust (undervaluation despite positive selection) interpretable.
+selection problem into a measured, reported limitation, and keeps results interpretable within a
+clearly stated population.
 
-## Decisions needed from you
-1. Approve, amend or reject **D-011 = Option E**.
-2. Approve or reject the **EU-mobility secondary contrast** (touches the locked binary framing).
-3. Approve splitting **ER1 into ER1a/ER1b**, and that the ablation is no longer the first item to cut.
+## Outcome (2026-11-04)
+1. D-011 = Option E: **accepted**.
+2. EU-mobility: kept as an **exploratory stratum only**. The primary contrast stays UEFA vs non-UEFA (D-020).
+3. ER1 is split into ER1a/ER1b (D-021). The Model A/B ablation is retained as RQ4 (D-019).

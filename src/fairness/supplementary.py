@@ -25,6 +25,7 @@ from src.config import PROCESSED_DIR, RANDOM_SEED, REPORTS_DIR, get_logger
 from src.fairness.audit import load_frame, regression_stats, tier_stats
 from src.features.preprocess import feature_columns
 from src.models.evaluate import regression_metrics
+from src.models.final import median_tuned_params
 from src.models.tiers import TIER_NAMES
 from src.models.train import N_FOLDS, load_training_data, make_folds, make_regressor
 
@@ -41,14 +42,6 @@ def club_folds(tier, clubs) -> np.ndarray:
     for k, (_, te) in enumerate(sgkf.split(np.zeros(len(tier)), tier, groups=clubs)):
         folds[te] = k
     return folds
-
-
-def median_tuned_params(feature_set) -> dict:
-    """Fixed HGB settings = median of the per-fold Optuna optima (avoids re-tuning per scheme)."""
-    p = pd.read_csv(REPORTS_DIR / "models" / "optuna_best_params.csv")
-    p = p[p.feature_set == feature_set].drop(columns=["feature_set", "fold"]).median()
-    ints = {"max_iter", "max_leaf_nodes", "min_samples_leaf"}
-    return {k: (int(round(v)) if k in ints else float(v)) for k, v in p.items()}
 
 
 def grouped_cv_check() -> tuple[pd.DataFrame, pd.DataFrame]:

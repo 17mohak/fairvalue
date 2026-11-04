@@ -62,6 +62,11 @@ def _add_age_squared(X):
     return np.column_stack([X, X[:, :1] ** 2])  # first numeric column is age
 
 
+def _age_squared_names(transformer, input_names):
+    # Lets ColumnTransformer.get_feature_names_out() name the extra age^2 column (used by SHAP).
+    return list(input_names) + ["age_squared"]
+
+
 def build_preprocessor(feature_set: str = "full") -> ColumnTransformer:
     """ColumnTransformer for 'full' (Model A) or 'performance' (Model B) features."""
     if feature_set == "full":
@@ -76,7 +81,7 @@ def build_preprocessor(feature_set: str = "full") -> ColumnTransformer:
 
     numeric_pipe = Pipeline([
         ("impute", SimpleImputer(strategy="median", add_indicator=True)),
-        ("age_sq", FunctionTransformer(_add_age_squared)),
+        ("age_sq", FunctionTransformer(_add_age_squared, feature_names_out=_age_squared_names)),
         ("scale", StandardScaler()),
     ])
     categorical_pipe = Pipeline([

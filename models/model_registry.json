@@ -1,0 +1,175 @@
+{
+  "created_utc": "2026-11-04T17:17:40+00:00",
+  "dataset_sha256_16": "91174c392a8be652",
+  "n_training_rows": 5820,
+  "target": "ln(market_value_in_eur)",
+  "tier_names": [
+    "Emerging",
+    "Established",
+    "Elite",
+    "World Class"
+  ],
+  "tier_boundaries_eur": [
+    2000000,
+    10000000,
+    30000000
+  ],
+  "models": {
+    "regressor_A": {
+      "version": "fairvalue-regressor_A-hgb_tuned-91174c39-20261104",
+      "file": "models/regressor_A.joblib",
+      "feature_set": "full",
+      "model_label": "Model A",
+      "algorithm": "hgb_tuned",
+      "hyperparameters": {
+        "learning_rate": 0.0322472793720565,
+        "max_iter": 500,
+        "max_leaf_nodes": 26,
+        "min_samples_leaf": 16,
+        "l2_regularization": 0.0435664630246515,
+        "max_features": 0.7022297518405309
+      },
+      "features": [
+        "age",
+        "height_in_cm",
+        "appearances",
+        "minutes",
+        "minutes_per_appearance",
+        "start_share",
+        "goals_p90",
+        "assists_p90",
+        "goal_contrib_p90",
+        "yellow_p90",
+        "red_p90",
+        "intl_club_minutes_share",
+        "minutes_last_365",
+        "days_since_last_match",
+        "valuation_club_minutes_share",
+        "position",
+        "sub_position",
+        "foot",
+        "club_ppg",
+        "valuation_league_id"
+      ],
+      "cv_heldout_metrics": {
+        "log_rmse": 0.5287,
+        "log_mae": 0.408,
+        "log_r2": 0.89,
+        "eur_mae": 2349360.2255,
+        "eur_r2": 0.8398
+      }
+    },
+    "classifier_A": {
+      "version": "fairvalue-classifier_A-hgb_classifier-91174c39-20261104",
+      "file": "models/classifier_A.joblib",
+      "feature_set": "full",
+      "model_label": "Model A",
+      "algorithm": "hgb_classifier",
+      "hyperparameters": "sklearn defaults (random_state=42)",
+      "features": [
+        "age",
+        "height_in_cm",
+        "appearances",
+        "minutes",
+        "minutes_per_appearance",
+        "start_share",
+        "goals_p90",
+        "assists_p90",
+        "goal_contrib_p90",
+        "yellow_p90",
+        "red_p90",
+        "intl_club_minutes_share",
+        "minutes_last_365",
+        "days_since_last_match",
+        "valuation_club_minutes_share",
+        "position",
+        "sub_position",
+        "foot",
+        "club_ppg",
+        "valuation_league_id"
+      ],
+      "cv_heldout_metrics": {
+        "accuracy": 0.7931,
+        "balanced_accuracy": 0.7209,
+        "macro_f1": 0.7371,
+        "roc_auc_ovr_macro": 0.9456
+      }
+    },
+    "regressor_B": {
+      "version": "fairvalue-regressor_B-hgb_tuned-91174c39-20261104",
+      "file": "models/regressor_B.joblib",
+      "feature_set": "performance",
+      "model_label": "Model B",
+      "algorithm": "hgb_tuned",
+      "hyperparameters": {
+        "learning_rate": 0.028079685711447,
+        "max_iter": 300,
+        "max_leaf_nodes": 18,
+        "min_samples_leaf": 28,
+        "l2_regularization": 0.0007047560655103,
+        "max_features": 0.5957889183777669
+      },
+      "features": [
+        "age",
+        "height_in_cm",
+        "appearances",
+        "minutes",
+        "minutes_per_appearance",
+        "start_share",
+        "goals_p90",
+        "assists_p90",
+        "goal_contrib_p90",
+        "yellow_p90",
+        "red_p90",
+        "intl_club_minutes_share",
+        "minutes_last_365",
+        "days_since_last_match",
+        "valuation_club_minutes_share",
+        "position",
+        "sub_position",
+        "foot"
+      ],
+      "cv_heldout_metrics": {
+        "log_rmse": 0.9187,
+        "log_mae": 0.7266,
+        "log_r2": 0.6677,
+        "eur_mae": 3812540.5271,
+        "eur_r2": 0.6155
+      }
+    },
+    "classifier_B": {
+      "version": "fairvalue-classifier_B-hgb_classifier-91174c39-20261104",
+      "file": "models/classifier_B.joblib",
+      "feature_set": "performance",
+      "model_label": "Model B",
+      "algorithm": "hgb_classifier",
+      "hyperparameters": "sklearn defaults (random_state=42)",
+      "features": [
+        "age",
+        "height_in_cm",
+        "appearances",
+        "minutes",
+        "minutes_per_appearance",
+        "start_share",
+        "goals_p90",
+        "assists_p90",
+        "goal_contrib_p90",
+        "yellow_p90",
+        "red_p90",
+        "intl_club_minutes_share",
+        "minutes_last_365",
+        "days_since_last_match",
+        "valuation_club_minutes_share",
+        "position",
+        "sub_position",
+        "foot"
+      ],
+      "cv_heldout_metrics": {
+        "accuracy": 0.6646,
+        "balanced_accuracy": 0.5683,
+        "macro_f1": 0.5898,
+        "roc_auc_ovr_macro": 0.8623
+      }
+    }
+  }
+}

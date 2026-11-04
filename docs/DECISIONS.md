@@ -214,6 +214,16 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   opposite of the original hypothesis, and it is reported as found.
 - The design is not revised in response to the result.
 
+## D-026 Supplementary validation: club grouping, clustered CIs, small tier cells — Decided
+- Three checks run as **supplements**; the primary protocol is unchanged (`docs/reports/SUPPLEMENTARY_CHECKS.md`).
+- Grouped-by-club CV: Model A HGB log RMSE is +8.8% for unseen clubs (0.527 → 0.573); Ridge is +1.5%.
+  Unseen-club performance is reported alongside the primary figures. The fairness gap is unchanged.
+- Club-clustered bootstrap: CI widths are 0.85–1.16 × the player-level widths, and the signed gaps
+  stay clearly positive. Model A's ER1a lower bound reaches 0, so ER1a is not described as clearly non-zero.
+- Per-tier EOD: World Class TPR minimum detectable difference is about 16 pp (94 non-UEFA players).
+  World Class and Elite components are reported as imprecise and not interpreted as evidence of
+  fairness or unfairness.
+
 ---
 
 # Issues found in the locked technical spec

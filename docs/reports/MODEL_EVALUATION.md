@@ -44,6 +44,11 @@ comes from held-out (out-of-fold) predictions. Source tables: `reports/models/`.
   the smallest.
 - The residual plot shows diagonal bands because Transfermarkt values are rounded (102 distinct values).
 
+### Generalisation to unseen clubs (supplementary)
+With whole clubs held out, Model A log RMSE rises from 0.527 to 0.573 (+8.8%) and log R² falls from
+0.891 to 0.871 (HGB with median tuned parameters). Ridge only rises 1.5%. The primary figures describe
+players at clubs seen in training. See `SUPPLEMENTARY_CHECKS.md` §1.
+
 ## 2. Tier classification (€2M / €10M / €30M)
 
 | Model | Accuracy | Balanced acc. | Macro F1 | Adjacent-tier acc. | Macro ROC AUC (OvR) | Fold SD acc. |

@@ -30,17 +30,19 @@ describe("Traits radar", () => {
     render(<TraitsRadar traits={traits} peers={peers} position="Attack" playerName="Test" />);
     const list = screen.getByRole("list", { name: "Traits" });
     expect(within(list).getByRole("button", { name: /Goals per 90/ })).toHaveAttribute("aria-pressed", "true");
-    expect(screen.getByText(/1,400/)).toBeInTheDocument();
     await userEvent.click(within(list).getByRole("button", { name: /Starts/ }));
     expect(within(list).getByRole("button", { name: /Starts/ })).toHaveAttribute("aria-pressed", "true");
     expect(screen.getByText("Share of appearances started rather than entered from the bench.")).toBeInTheDocument();
     expect(screen.getByText("70th", { selector: "b" })).toBeInTheDocument();
   });
 
-  it("draws no values when the build has no peer percentiles", () => {
-    render(<TraitsRadar traits={null} peers={null} position="Goalkeeper" playerName="Test" />);
-    expect(screen.getByText("Peer percentiles are not in this build")).toBeInTheDocument();
+  it("draws no radar or percentiles without peer data, but shows the player's own values", () => {
+    const { container } = render(<TraitsRadar traits={null} peers={null} position="Goalkeeper" playerName="Test" raw={{ minutes: 3100, start_share: 0.9 }} />);
+    expect(screen.getByText(/need the full player export/)).toBeInTheDocument();
+    expect(container.querySelector("svg")).toBeNull();
     expect(screen.queryByText(/\d+(st|nd|rd|th)$/)).not.toBeInTheDocument();
+    expect(screen.getByText("3,100")).toBeInTheDocument();
+    expect(screen.getByText("90%")).toBeInTheDocument();
     // Goalkeepers get no scoring axes.
     expect(screen.queryByRole("button", { name: /Goals per 90/ })).not.toBeInTheDocument();
   });

@@ -101,7 +101,7 @@ export default function MethodsPage() {
     <div className="paper">
     <article className={styles.layout}>
       <header className={styles.masthead}>
-        <p className={styles.eyebrow}>
+        <p className={styles.kicker}>
           <b className="num">{room("methods").index}</b> Methods · technical account
         </p>
         <h1 className={styles.title}>How FairValue works</h1>

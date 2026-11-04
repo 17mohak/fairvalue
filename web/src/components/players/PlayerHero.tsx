@@ -1,114 +1,173 @@
-"use client";
-
-import { useReducedMotion } from "motion/react";
 import Link from "next/link";
-import { ViewTransition, useRef, type CSSProperties, type PointerEvent } from "react";
-import { formatEur } from "@/lib/format";
+import { ViewTransition } from "react";
 import { leagueName } from "@/lib/football";
+import { formatEur, integer } from "@/lib/format";
 import type { PlayerProfile } from "@/lib/players";
 import type { Portrait } from "@/lib/portraits";
+import { MiniRuler } from "./MiniRuler";
 import { PortraitSlot } from "./PortraitSlot";
-import { StadiumBackdrop } from "./StadiumBackdrop";
 import styles from "./PlayerHero.module.css";
+
+export interface HeroEstimate {
+  model: "A" | "B";
+  value: number | null;
+  /** held-out (CV, honest) or cached (published served result); null value means "needs the live API". */
+  source: "heldout" | "cached" | "live-only";
+}
 
 interface Props {
   player: PlayerProfile;
   portrait: Portrait | null;
   roomIndex: string;
   valuedLabel: string;
-  /** The estimate shown beside the market value: held-out when available, else served. */
-  estimate: { label: string; value: number } | null;
+  estimates: HeroEstimate[];
 }
 
-/** Cinematic identity block: backdrop, oversized role code, figure, and the player's facts around it. */
-export function PlayerHero({ player: p, portrait, roomIndex, valuedLabel, estimate }: Props) {
-  const reduce = useReducedMotion();
-  const ref = useRef<HTMLElement>(null);
-  const league = leagueName(p.league_id);
+const SOURCE_LABEL = { heldout: "Held-out", cached: "Served · cached research result", "live-only": "Live service only" } as const;
 
-  // Pointer parallax: layers drift a few pixels against each other, which gives the scene depth.
-  const onMove = (e: PointerEvent<HTMLElement>) => {
-    if (reduce || e.pointerType === "touch" || !ref.current) return;
-    const r = ref.current.getBoundingClientRect();
-    ref.current.style.setProperty("--px", ((e.clientX - r.left) / r.width - 0.5).toFixed(3));
-    ref.current.style.setProperty("--py", ((e.clientY - r.top) / r.height - 0.5).toFixed(3));
-  };
-  const onLeave = () => {
-    ref.current?.style.setProperty("--px", "0");
-    ref.current?.style.setProperty("--py", "0");
-  };
-
-  const facts: [string, string][] = [
-    ["Club", p.club ?? "Not in this export"],
-    ["League", league.split(",")[0]!],
-    ["Age at valuation", `${Math.floor(p.age)}`],
-    ["Height", p.height_cm ? `${Math.round(p.height_cm)} cm` : "Not recorded"],
-    ["Preferred foot", p.foot ? p.foot[0]!.toUpperCase() + p.foot.slice(1) : "Not recorded"],
-    ["Valued", valuedLabel],
-  ];
+/** The dossier header: the player's frame, identity, valuation and two-year record in one card. */
+export function PlayerHero({ player: p, portrait, roomIndex, valuedLabel, estimates }: Props) {
+  const league = leagueName(p.league_id).split(",")[0]!;
+  const w = p.window;
+  const shown = estimates.filter((e) => e.value !== null);
+  const primary = shown[0];
 
   return (
-    <section ref={ref} className={styles.hero} onPointerMove={onMove} onPointerLeave={onLeave} aria-labelledby="player-name" style={{ "--px": 0, "--py": 0 } as CSSProperties}>
-      <StadiumBackdrop />
+    <section className={styles.card} aria-labelledby="player-name">
+      <span className={styles.watermark} aria-hidden="true">
+        {p.role_code}
+      </span>
 
-      <ViewTransition name={`glyph-${p.id}`} share="morph" default="none">
-        <span className={styles.glyph} aria-hidden="true">
-          {p.role_code}
-        </span>
-      </ViewTransition>
+      <div className={styles.frame}>
+        <PortraitSlot portrait={portrait} name={p.name} roleCode={p.role_code} />
+      </div>
 
-      <div className={styles.inner}>
-        <div className={styles.identity}>
-          <Link href="/players" className={styles.back}>
-            <span aria-hidden="true">←</span> All players
+      <div className={styles.identity}>
+        <nav className={styles.crumbs} aria-label="Breadcrumb">
+          <Link href="/players">
+            <span className="num">{roomIndex}</span> Players
           </Link>
-          <p className="eyebrow">
-            <b className="num">{roomIndex}</b> Player profile
-          </p>
-          <h1 id="player-name" className={styles.name}>
-            {p.first_name && <span className={styles.first}>{p.first_name}</span>}
-            <ViewTransition name={`name-${p.id}`} share="morph" default="none">
-              <span className={styles.last}>{p.last_name}</span>
-            </ViewTransition>
-          </h1>
-          <p className={styles.role}>
-            <span className={styles.roleCode}>{p.role_code}</span>
-            {p.sub_position} · {p.position}
-          </p>
-          <dl className={styles.facts}>
-            {facts.map(([k, v]) => (
-              <div key={k}>
-                <dt>{k}</dt>
-                <dd data-muted={v.startsWith("Not ") || undefined}>{v}</dd>
-              </div>
-            ))}
-          </dl>
-        </div>
-
-        <div className={styles.stage}>
-          <PortraitSlot portrait={portrait} name={p.name} />
-        </div>
-      </div>
-
-      <div className={styles.dock}>
-        <div className={styles.market}>
-          <p className={styles.dockLabel}>Market value · observed</p>
-          <p className={`${styles.marketValue} num`}>{formatEur(p.market_value_eur)}</p>
-          <p className={styles.dockSub}>
-            {p.market_tier && <span className={styles.tier}>{p.market_tier}</span>}
-            Transfermarkt, the value the model learns to reproduce
-          </p>
-        </div>
-        {estimate && (
-          <div className={styles.model}>
-            <p className={styles.dockLabel}>{estimate.label}</p>
-            <p className={`${styles.modelValue} num`}>{formatEur(estimate.value)}</p>
-            <p className={styles.dockSub}>
-              <span className="num">×{(estimate.value / p.market_value_eur).toFixed(2)}</span> of the market value
-            </p>
+          <span aria-hidden="true">/</span>
+          <span>{league}</span>
+        </nav>
+        <h1 id="player-name" className={styles.name}>
+          {p.first_name && <span className={styles.first}>{p.first_name}</span>}
+          <ViewTransition name={`name-${p.id}`} share="morph" default="none">
+            <span className={styles.last}>{p.last_name}</span>
+          </ViewTransition>
+        </h1>
+        <p className={styles.role}>
+          <ViewTransition name={`glyph-${p.id}`} share="morph" default="none">
+            <span className="fv-role">{p.role_code}</span>
+          </ViewTransition>
+          <span>{p.sub_position}</span>
+          <span className={styles.sep} aria-hidden="true" />
+          <span>{p.position}</span>
+        </p>
+        <dl className={styles.facts}>
+          <div>
+            <dt>Club</dt>
+            <dd data-muted={!p.club || undefined}>{p.club ?? "Not in this build"}</dd>
           </div>
-        )}
+          <div>
+            <dt>League</dt>
+            <dd>{league}</dd>
+          </div>
+          {p.nationality && (
+            <div>
+              <dt>Nationality</dt>
+              <dd>{p.nationality}</dd>
+            </div>
+          )}
+          <div>
+            <dt>Age</dt>
+            <dd className="num">{Math.floor(p.age)}</dd>
+          </div>
+          <div>
+            <dt>Height</dt>
+            <dd className="num" data-muted={!p.height_cm || undefined}>
+              {p.height_cm ? `${Math.round(p.height_cm)} cm` : "–"}
+            </dd>
+          </div>
+          <div>
+            <dt>Foot</dt>
+            <dd>{p.foot ? p.foot[0]!.toUpperCase() + p.foot.slice(1) : "–"}</dd>
+          </div>
+          <div>
+            <dt>Valued</dt>
+            <dd>{valuedLabel}</dd>
+          </div>
+        </dl>
       </div>
+
+      <aside className={styles.value} aria-label="Valuation">
+        <p className="fv-label">Market value · observed</p>
+        <p className={`${styles.market} num`}>{formatEur(p.market_value_eur)}</p>
+        <p className={styles.tierRow}>
+          {p.market_tier && <span className="fv-chip" data-tone="flood">{p.market_tier}</span>}
+          <span>Transfermarkt, the model&apos;s target</span>
+        </p>
+        <MiniRuler
+          showScale
+          marks={[
+            { value: p.market_value_eur, kind: "market", label: "Market value" },
+            ...(primary ? [{ value: primary.value!, kind: "model" as const, label: `Model ${primary.model}` }] : []),
+          ]}
+        />
+        <ul className={styles.estimates}>
+          {estimates.map((e) => (
+            <li key={e.model} data-missing={e.value === null || undefined}>
+              <span className={styles.estModel}>Model {e.model}</span>
+              <span className={styles.estSource}>{SOURCE_LABEL[e.source]}</span>
+              <span className={`${styles.estValue} num`}>{e.value !== null ? formatEur(e.value) : "–"}</span>
+              <span className={`${styles.estRatio} num`}>{e.value !== null ? `×${(e.value / p.market_value_eur).toFixed(2)}` : ""}</span>
+            </li>
+          ))}
+        </ul>
+      </aside>
+
+      <dl className={styles.strip} aria-label="Club football in the two years to the valuation date">
+        <div>
+          <dt>Apps</dt>
+          <dd className="num">{w.appearances}</dd>
+        </div>
+        <div>
+          <dt>Minutes</dt>
+          <dd className="num">{integer(w.minutes)}</dd>
+        </div>
+        {p.position !== "Goalkeeper" && (
+          <>
+            <div>
+              <dt>Goals</dt>
+              <dd className="num">{w.goals ?? "–"}</dd>
+            </div>
+            <div>
+              <dt>Assists</dt>
+              <dd className="num">{w.assists ?? "–"}</dd>
+            </div>
+          </>
+        )}
+        <div>
+          <dt>Started</dt>
+          <dd className="num">
+            {w.started}
+            <small>/{w.appearances}</small>
+          </dd>
+        </div>
+        <div>
+          <dt>Min / app</dt>
+          <dd className="num">{Math.round(w.minutes / Math.max(1, w.appearances))}</dd>
+        </div>
+        <div>
+          <dt>Cards</dt>
+          <dd className="num">
+            {w.yellow_cards ?? "–"}
+            <small>Y</small> {w.red_cards ?? "–"}
+            <small>R</small>
+          </dd>
+        </div>
+        <p className={styles.stripNote}>Club matches, two years to the valuation date</p>
+      </dl>
     </section>
   );
 }

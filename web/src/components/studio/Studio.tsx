@@ -8,8 +8,11 @@ import { Segmented } from "@/components/ui/Segmented";
 import { ApiError, explain, predict } from "@/lib/api/client";
 import { checkService, useServiceStatus } from "@/lib/api/service";
 import type { PlayerField } from "@/lib/api/types";
-import { MODEL_LABELS, SUB_POSITIONS, type ModelId, type Position } from "@/lib/football";
+import showcase from "@/data/players.json";
+import { leagueName, MODEL_LABELS, SUB_POSITIONS, TIER_BOUNDARIES_EUR, TIER_NAMES, type ModelId, type Position } from "@/lib/football";
 import { formatEur } from "@/lib/format";
+import { publishedExplanation, type PlayerProfile } from "@/lib/players";
+import { research } from "@/lib/research";
 import {
   DEFAULT_PLAYER,
   FIELD_SPECS,
@@ -21,10 +24,34 @@ import {
   type ProfileDraft,
 } from "@/lib/profile";
 import { ProfileForm } from "./ProfileForm";
-import { ResultPanel, type StudioResult } from "./ResultPanel";
+import { ResultPanel, type CachedResult, type StudioResult } from "./ResultPanel";
 import styles from "./Studio.module.css";
 
-type Status = "idle" | "loading" | "done" | "error";
+type Status = "idle" | "loading" | "done" | "error" | "cached";
+
+// The eight real players the research run valued and published: real inputs, with a cached
+// served Model A result that can be shown, labelled as such, when the live service is unavailable.
+const RESEARCH = (showcase.players as unknown as PlayerProfile[]).map((p) => ({
+  id: `research-${p.id}`,
+  label: `${p.name} · ${p.role_code}, ${leagueName(p.league_id).split(",")[0]}`,
+  player: p.features,
+  profile: p,
+}));
+
+function cachedFor(id: string): CachedResult | null {
+  const r = RESEARCH.find((x) => x.id === id);
+  const v = r?.profile.estimates.served.A;
+  if (!r || !v) return null;
+  return {
+    name: r.profile.name,
+    slug: r.profile.slug,
+    value: v,
+    tier: TIER_NAMES[TIER_BOUNDARIES_EUR.filter((b) => v >= b).length]!,
+    explanation: publishedExplanation(r.profile, research.models.registry.regressor_A.version),
+  };
+}
+
+const ALL_PRESETS = [...PRESETS, ...RESEARCH];
 
 function asApiError(e: unknown): ApiError {
   return e instanceof ApiError ? e : new ApiError("server", "Something went wrong while valuing this profile.", 0);
@@ -39,6 +66,7 @@ export function Studio() {
   const [formErrors, setFormErrors] = useState<string[]>([]);
   const [status, setStatus] = useState<Status>("idle");
   const [result, setResult] = useState<StudioResult | null>(null);
+  const [cached, setCached] = useState<CachedResult | null>(null);
   const [error, setError] = useState<ApiError | null>(null);
   const [submittedKey, setSubmittedKey] = useState<string | null>(null);
   const { state: service, reason: serviceReason } = useServiceStatus();
@@ -137,6 +165,7 @@ export function Studio() {
       setStatus("error");
       return;
     }
+    setCached(null);
     setResult({
       primary: primary.value,
       explanation: why.status === "fulfilled" ? why.value : null,
@@ -165,14 +194,32 @@ export function Studio() {
 
   function choosePreset(id: string) {
     touched.current = true;
-    const preset = PRESETS.find((p) => p.id === id);
+    const preset = ALL_PRESETS.find((p) => p.id === id);
     if (!preset) return;
     const next = toDraft(preset.player);
     setPresetId(id);
     setDraft(next);
     setErrors({});
     setFormErrors([]);
-    if (result) void run(model, next);
+    // Without a verified live service, a research player opens on its cached published result.
+    if (id.startsWith("research-") && service !== "online") {
+      loadCached(id);
+      return;
+    }
+    if (result || cached) void run(model, next);
+  }
+
+  function loadCached(id: string) {
+    const c = cachedFor(id);
+    if (!c) return;
+    const preset = RESEARCH.find((r) => r.id === id)!;
+    setPresetId(id);
+    setDraft(toDraft(preset.player));
+    setModel("A");
+    setResult(null);
+    setError(null);
+    setCached(c);
+    setStatus("cached");
   }
 
   return (
@@ -192,13 +239,22 @@ export function Studio() {
           </p>
         </div>
         <div className={styles.topline}>
-          <SelectField label="Start from" name="preset" value={presetId} onChange={choosePreset} hint="Illustrative, not real players">
+          <SelectField label="Start from" name="preset" value={presetId} onChange={choosePreset} hint="Research players are real; others illustrative">
             {presetId === "" && <option value="">Your edited profile</option>}
-            {PRESETS.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.label}
-              </option>
-            ))}
+            <optgroup label="Research players (real, published results)">
+              {RESEARCH.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.label}
+                </option>
+              ))}
+            </optgroup>
+            <optgroup label="Illustrative profiles">
+              {PRESETS.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.label}
+                </option>
+              ))}
+            </optgroup>
           </SelectField>
         </div>
 
@@ -251,7 +307,25 @@ export function Studio() {
       </div>
 
       <div className={styles.output} ref={resultRef} aria-label="Valuation result" role="region" tabIndex={0}>
-        <ResultPanel status={status} result={result} error={error} stale={stale} onRetry={() => void run()} />
+        <ResultPanel
+          status={status}
+          result={result}
+          cached={cached}
+          error={error}
+          stale={stale}
+          onRetry={() => void run()}
+          profile={[
+            { label: "Age", value: draft.age || "–" },
+            { label: "Role", value: draft.sub_position || "–" },
+            { label: "League", value: leagueName(draft.valuation_league_id).split(",")[0]! },
+            { label: "Minutes", value: draft.minutes ? Number(draft.minutes).toLocaleString("en-GB") : "–" },
+            { label: "Goals / 90", value: draft.goals_p90 || "–" },
+            { label: "Assists / 90", value: draft.assists_p90 || "–" },
+            { label: "Model", value: MODEL_LABELS[model].name },
+          ]}
+          research={RESEARCH.map((r) => ({ id: r.id, name: r.profile.name, detail: `${r.profile.sub_position} · ${leagueName(r.profile.league_id).split(",")[0]}` }))}
+          onLoadResearch={loadCached}
+        />
       </div>
     </form>
   );

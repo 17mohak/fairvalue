@@ -26,6 +26,8 @@ export interface PlayerProfile {
   league_id: string;
   club: string | null;
   valuation_date: string | null;
+  /** First-listed citizenship, display only (D-037); null in the committed showcase. */
+  nationality: string | null;
   /** Observed Transfermarkt value at the valuation date: the model's target, not an estimate. */
   market_value_eur: number;
   market_tier: TierName | null;
@@ -66,12 +68,21 @@ export interface PlayerSet {
 
 export type PlayerSummary = Pick<
   PlayerProfile,
-  "id" | "slug" | "name" | "first_name" | "last_name" | "position" | "sub_position" | "role_code" | "age" | "league_id" | "club" | "market_value_eur" | "market_tier"
->;
+  | "id" | "slug" | "name" | "first_name" | "last_name" | "position" | "sub_position" | "role_code" | "age" | "league_id" | "club"
+  | "nationality" | "market_value_eur" | "market_tier" | "window"
+> & {
+  /** The best model estimate the build has for Model A: held-out if exported, else the cached served result. */
+  estimate: { value: number; source: "heldout" | "cached" } | null;
+};
 
 export function summary(p: PlayerProfile): PlayerSummary {
-  const { id, slug, name, first_name, last_name, position, sub_position, role_code, age, league_id, club, market_value_eur, market_tier } = p;
-  return { id, slug, name, first_name, last_name, position, sub_position, role_code, age, league_id, club, market_value_eur, market_tier };
+  const { id, slug, name, first_name, last_name, position, sub_position, role_code, age, league_id, club, nationality, market_value_eur, market_tier, window } = p;
+  const h = p.estimates.heldout.A;
+  const c = p.estimates.served.A;
+  return {
+    id, slug, name, first_name, last_name, position, sub_position, role_code, age, league_id, club, nationality, market_value_eur, market_tier, window,
+    estimate: h !== null ? { value: h, source: "heldout" } : c !== null ? { value: c, source: "cached" } : null,
+  };
 }
 
 /** "605184-jean-clair-todibo" or "605184" -> 605184 */
@@ -88,6 +99,7 @@ export interface BoardQuery {
   league: string;
   tier: TierName | "";
   sort: BoardSort;
+  view: "cards" | "table";
 }
 
 const POSITIONS: Position[] = ["Goalkeeper", "Defender", "Midfield", "Attack"];
@@ -104,6 +116,7 @@ export function parseBoardQuery(sp: Record<string, string | string[] | undefined
     league: /^[A-Z0-9]{2,5}$/.test(one("league")) ? one("league") : "",
     tier: TIERS.includes(tier) ? tier : "",
     sort: ["value", "name", "age"].includes(sort) ? sort : "value",
+    view: one("view") === "table" ? "table" : "cards",
   };
 }
 
@@ -138,3 +151,20 @@ export const TRAITS: Record<TraitKey, { label: string; short: string; definition
 };
 
 export const POSITION_PLURAL: Record<Position, string> = { Goalkeeper: "goalkeepers", Defender: "defenders", Midfield: "midfielders", Attack: "attackers" };
+
+/** The published research explanation of a showcase player, in the shape POST /explain returns. */
+export function publishedExplanation(p: PlayerProfile, version: string): import("@/lib/api/types").ExplainResponse | null {
+  const e = p.explanation;
+  if (!e) return null;
+  return {
+    model: e.model,
+    model_version: version,
+    base_log_value: e.base_log_value,
+    base_value_eur: Math.exp(e.base_log_value),
+    predicted_log_value: e.predicted_log_value,
+    predicted_value_eur: Math.exp(e.predicted_log_value),
+    contributions: e.contributions,
+    method: "SHAP TreeExplainer, from the published research run",
+    disclaimer: "",
+  };
+}

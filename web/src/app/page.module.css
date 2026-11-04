@@ -221,7 +221,7 @@
   line-height: 1.02;
 }
 
-.why .prose {
+.why :global(.prose) {
   font-size: 1rem;
 }
 

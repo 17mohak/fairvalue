@@ -330,3 +330,174 @@ table {
     transition-duration: 0.001ms !important;
   }
 }
+
+/* ===================================================================== Console primitives
+   Shared by the analytical rooms (players, studio, observatory). One vocabulary, used at
+   different densities: a panel with a header row, chips, and a source badge that always says
+   whether a figure is live, unverified, a cached research result or unavailable. */
+.fv-panel {
+  position: relative;
+  min-width: 0;
+  border: 1px solid rgb(237 239 230 / 0.075);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgb(237 239 230 / 0.018), transparent 120px), #0e1612;
+}
+
+.fv-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  flex-wrap: wrap;
+  min-height: 3rem;
+  padding: 0.7rem 1.1rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.06);
+}
+
+.fv-panel-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+  text-transform: uppercase;
+  color: #edefe6;
+}
+
+.fv-panel-title small {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #8f9b93;
+}
+
+.fv-panel-body {
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.fv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.12rem 0.5rem;
+  border: 1px solid rgb(237 239 230 / 0.14);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: #c3cbc3;
+}
+
+.fv-chip[data-tone="flood"] {
+  border-color: rgb(233 185 73 / 0.5);
+  color: #e9b949;
+}
+
+.fv-role {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.1rem;
+  height: 1.55rem;
+  padding: 0 0.35rem;
+  border-radius: 4px;
+  background: #e9b949;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  color: #1b1505;
+}
+
+/* Source badge: where a number came from. */
+.fv-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #8f9b93;
+}
+
+.fv-source::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.fv-source[data-source="live"] {
+  color: #3fb68b;
+}
+
+.fv-source[data-source="unverified"] {
+  color: #e9b949;
+}
+
+.fv-source[data-source="cached"] {
+  color: #9fb7d9;
+}
+
+.fv-source[data-source="offline"] {
+  color: #f0907f;
+}
+
+.fv-label {
+  font-size: 0.68rem;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8f9b93;
+}
+
+.fv-skeleton {
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgb(237 239 230 / 0.04) 0%, rgb(237 239 230 / 0.09) 50%, rgb(237 239 230 / 0.04) 100%);
+  background-size: 200% 100%;
+  animation: fv-shimmer 1.3s linear infinite;
+}
+
+@keyframes fv-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Compact page header for the app rooms: a title bar, not a poster. */
+.fv-pagehead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 2rem;
+  padding-block: 1.5rem 1.25rem;
+}
+
+.fv-pagehead h1 {
+  font-size: clamp(1.9rem, 2.6vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.fv-pagehead p {
+  max-width: 60ch;
+  font-size: 0.92rem;
+  color: #8f9b93;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fv-skeleton {
+    animation: none;
+  }
+}

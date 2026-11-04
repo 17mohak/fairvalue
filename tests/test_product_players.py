@@ -91,7 +91,8 @@ def _synthetic():
     names = pd.DataFrame({"player_id": md.player_id, "name": [f"Test Player{i}" for i in md.player_id]})
     vals = pd.DataFrame({"player_id": np.repeat(md.player_id, 2), "date": [pd.Timestamp("2025-01-01"), pd.Timestamp("2026-03-01")] * n,
                          "market_value_in_eur": 1_000_000.0, "current_club_name": "Synthetic FC"})
-    audit = pd.DataFrame({"player_id": md.player_id, "audit_group": ["UEFA", "non-UEFA"] * 20})
+    audit = pd.DataFrame({"player_id": md.player_id, "audit_group": ["UEFA", "non-UEFA"] * 20,
+                          "country_of_citizenship": ["Testland", "Otherland"] * 20})
     heldout = {m: pd.Series(md.market_value_in_eur.to_numpy() * f, index=md.player_id) for m, f in (("A", 0.9), ("B", 0.7))}
     return md, universe, names, vals, audit, heldout
 
@@ -101,7 +102,8 @@ def test_full_export_profiles_traits_and_peers():
     out = P.full(md, *rest)
     assert out["source"] == "full" and len(out["players"]) == len(md)
     p = out["players"][0]
-    assert p["club"] == "Synthetic FC" and p["valuation_date"] == "2026-03-01"
+    assert p["club"] == "Synthetic FC" and p["valuation_date"] == "2026-03-01" and p["nationality"] == "Testland"
+    assert "Testland" not in str(p["features"])  # display only, never a model input
     assert p["estimates"]["heldout"]["A"] == pytest.approx(md.market_value_in_eur[0] * 0.9)
     assert [h["date"] for h in p["history"]] == ["2025-01-01", "2026-03-01"]
     # Percentiles: computed within position, so each position's goals_p90 percentiles span the same grid.

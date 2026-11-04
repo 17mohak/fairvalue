@@ -1,5 +1,5 @@
 .studio {
-  --studio-head: 6rem;
+  --studio-head: 6.75rem;
   width: 100%;
   max-width: var(--page-wide);
   margin-inline: auto;
@@ -7,42 +7,20 @@
 }
 
 .head {
-  display: grid;
-  grid-template-columns: auto auto minmax(0, 1fr);
-  align-items: baseline;
-  column-gap: 1.5rem;
-  align-items: center;
   height: var(--studio-head);
-  padding-block: 1rem;
+  flex-wrap: nowrap;
 }
 
-.title {
-  font-size: clamp(2.25rem, 3.4vw, 3.25rem);
-  font-weight: 700;
-  letter-spacing: -0.015em;
-}
-
-.lede {
-  justify-self: end;
-  max-width: 52ch;
-  font-size: 0.95rem;
-  line-height: 1.45;
-  color: var(--fog);
+.head p {
   text-align: right;
 }
 
 @media (max-width: 1099px) {
   .head {
-    grid-template-columns: 1fr;
-    row-gap: 0.6rem;
     height: auto;
-    padding-block: 2rem 1.75rem;
+    flex-wrap: wrap;
   }
-  .lede {
-    justify-self: start;
+  .head p {
     text-align: left;
-    font-family: var(--font-serif);
-    font-size: 1.0625rem;
-    color: var(--chalk-2);
   }
 }

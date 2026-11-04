@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
-import { room } from "@/lib/rooms";
 import { RoomTransition } from "@/components/site/RoomTransition";
 import { Studio } from "@/components/studio/Studio";
+import { room } from "@/lib/rooms";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
@@ -13,13 +13,16 @@ export default function StudioPage() {
   return (
     <RoomTransition>
       <div className={styles.studio}>
-        <header className={styles.head}>
-          <p className="eyebrow">
-            <b className="num">{room("studio").index}</b> Valuation studio
-          </p>
-          <h1 className={styles.title}>Value a player</h1>
-          <p className={styles.lede}>
-            Describe two seasons of club football. The live model returns a value in euros, its tier, and the inputs that moved it.
+        <header className={`fv-pagehead ${styles.head}`}>
+          <div>
+            <p className="eyebrow">
+              <b className="num">{room("studio").index}</b> Valuation workstation
+            </p>
+            <h1>Valuation studio</h1>
+          </div>
+          <p>
+            Build a profile or load a research player. The served model returns a value, its tier, Model A against Model B, and the SHAP
+            breakdown. Every result says whether it is live, unverified or cached.
           </p>
         </header>
         <Studio />

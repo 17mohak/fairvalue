@@ -331,6 +331,19 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   are excluded. Candidates are found by Transfermarkt ID via Wikidata (P2446 → P18) and reviewed by a
   person before `scripts/portraits/add_portrait.py` adds them (docs/PLAYER_ASSETS.md).
 
+## D-037 Scouting-console design direction — Decided (2026-11-05)
+- The analytical rooms (players, studio, observatory) use one console vocabulary: compact title
+  bars, panels with header rows, chips and a source badge (live, unverified, cached, offline), laid
+  out in grids rather than stacked editorial sections. The overview is the product's front door;
+  methods stays a paper. Identity is kept: pitch greens, chalk, sodium yellow, condensed type.
+- No licensed portrait shows a labelled monogram frame; no person-shaped stand-in.
+- Nationality (first-listed citizenship) is shown on profiles as information only, from the full
+  export; it never enters a model input. The audit group stays in the audit-context panel.
+- The studio offers the eight research players with real inputs. Without a verified live service
+  they open on their published Model A result, badged "Cached research result · not live".
+- New research visual: the SHAP group gap (mean SHAP non-UEFA minus UEFA per input, served model),
+  captioned as a description of predictions, not causes, and not of the error gap.
+
 ---
 
 # Issues found in the locked technical spec

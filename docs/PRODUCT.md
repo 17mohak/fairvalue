@@ -4,7 +4,7 @@ The product layer over the research: a Next.js app in `web/` that talks to the e
 service. It adds no new model and changes no research result (D-032, D-033).
 
 ## What it contains
-Five rooms, each with its own route, layout and interaction model (D-034, D-035):
+Five rooms, each with its own route, layout and interaction model (D-034, D-035; design direction D-037):
 
 | Route | Room | Composition | Data source |
 |---|---|---|---|

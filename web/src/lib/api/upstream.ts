@@ -42,6 +42,20 @@ export async function forward(path: "/predict" | "/explain" | "/health" | "/meta
   }
 }
 
+/** Server-side GET /health with its HTTP status, for verification. Never throws. */
+export async function upstreamHealth(timeoutMs = 2_500): Promise<{ status: number | null; body: unknown }> {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  try {
+    const res = await fetch(`${apiBaseUrl()}/health`, { signal: ctrl.signal, cache: "no-store" });
+    return { status: res.status, body: await res.json().catch(() => null) };
+  } catch {
+    return { status: null, body: null };
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 /** Server-side fetch used by pages (e.g. the landing page's live example). Never throws; null when the API is down. */
 export async function fetchUpstream<T>(path: "/predict" | "/health", body?: unknown, timeoutMs = 2_500): Promise<T | null> {
   const ctrl = new AbortController();

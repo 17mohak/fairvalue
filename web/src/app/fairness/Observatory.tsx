@@ -9,7 +9,7 @@ import { Dumbbell } from "@/components/charts/Dumbbell";
 import { IntervalPlot, type IntervalRow } from "@/components/charts/IntervalPlot";
 import { RoomLink } from "@/components/site/RoomLink";
 import { Segmented } from "@/components/ui/Segmented";
-import { leagueCountry, MODEL_LABELS, type ModelId } from "@/lib/football";
+import { featureLabel, leagueCountry, MODEL_LABELS, type ModelId } from "@/lib/football";
 import { decimal, formatEur, integer, logGapAsPercent, percent, percentagePoints, signed } from "@/lib/format";
 import type { FairnessData, ModelView } from "./data";
 import styles from "./fairness.module.css";
@@ -95,72 +95,88 @@ export function Observatory({ data }: { data: FairnessData }) {
     router.replace(href({ compare: c }), { scroll: false });
   };
 
-  // On narrow screens, bring the stage into view after choosing a view further down.
   const lastView = useRef(view);
   useEffect(() => {
     if (lastView.current === view) return;
     lastView.current = view;
     const el = stageRef.current;
-    if (!el) return;
-    const top = el.getBoundingClientRect().top;
-    if (top < 0) el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+    if (el && el.getBoundingClientRect().top < 0) el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
   }, [view, reduce]);
 
   const ghostLabel = compare ? MODEL_LABELS[other].name : undefined;
   const primaryLabel = MODEL_LABELS[model].name;
+  const vp = { v, o, compare, ghostLabel, primaryLabel };
 
   return (
     <div className={styles.observatory}>
-      {/* ---- Readout ---- */}
-      <header className={styles.readout}>
-        <div className={styles.readoutText}>
+      <header className={`fv-pagehead ${styles.head}`}>
+        <div>
           <p className="eyebrow">
-            <b className="num">{room("observatory").index}</b> Fairness observatory
+            <b className="num">{room("observatory").index}</b> Research instrument
           </p>
-          <h1 className={styles.title}>Does the model miss everyone the same way?</h1>
-          <p className={styles.lede}>
-            {integer(data.population.total)} held-out predictions, {integer(data.population.non_uefa)} of them for players from outside UEFA.
-            Choose an instrument, switch models, and overlay one on the other.
-          </p>
+          <h1>Fairness observatory</h1>
         </div>
-
-        <div className={styles.dial}>
-          <div aria-live="polite" aria-atomic="true">
-            <p className={styles.dialLabel}>Within-league signed gap · {MODEL_LABELS[model].name}</p>
-            <p className={`${styles.dialValue} num`}>
-              <AnimatedSigned value={v.gap.estimate} />
-              <span className="visually-hidden">{signed(v.gap.estimate)}</span>
-            </p>
-            <p className={`${styles.dialCi} num`}>
-              95% CI {signed(v.gap.low)} to {signed(v.gap.high)} · about {logGapAsPercent(v.gap.estimate)} relative
-            </p>
-          </div>
-          <DialGauge model={model} data={data} />
-          <div className={styles.controls}>
-            <Segmented
-              legend="Model"
-              hideLegend
-              name="obs-model"
-              value={model}
-              onChange={setModel}
-              options={[
-                { value: "A", label: "Model A" },
-                { value: "B", label: "Model B" },
-              ]}
-            />
-            <label className={styles.overlay}>
-              <input type="checkbox" checked={compare} onChange={(e) => setCompare(e.target.checked)} />
-              <span className={styles.switch} aria-hidden="true" />
-              Overlay {MODEL_LABELS[other].name}
-            </label>
-            <button type="button" className={styles.defsButton} onClick={() => defsRef.current?.showModal()}>
-              Definitions
-            </button>
-          </div>
+        <div className={styles.controls}>
+          <Segmented
+            legend="Model"
+            hideLegend
+            name="obs-model"
+            value={model}
+            onChange={setModel}
+            options={[
+              { value: "A", label: "Model A" },
+              { value: "B", label: "Model B" },
+            ]}
+          />
+          <label className={styles.overlay}>
+            <input type="checkbox" checked={compare} onChange={(e) => setCompare(e.target.checked)} />
+            <span className={styles.switch} aria-hidden="true" />
+            Overlay {MODEL_LABELS[other].name}
+          </label>
+          <button type="button" className={styles.defsButton} onClick={() => defsRef.current?.showModal()}>
+            Definitions
+          </button>
         </div>
       </header>
 
-      {/* ---- Instrument rail + stage ---- */}
+      {/* ---- Headline gaps: the result the whole observatory is about ---- */}
+      <section className={`fv-panel ${styles.strip}`} aria-label="Headline result">
+        <div className={styles.stripMain} aria-live="polite" aria-atomic="true">
+          <p className="fv-label">Within-league signed gap · {MODEL_LABELS[model].name}</p>
+          <p className={`${styles.stripValue} num`}>
+            <AnimatedSigned value={v.gap.estimate} />
+            <span className="visually-hidden">{signed(v.gap.estimate)}</span>
+          </p>
+          <p className={`${styles.stripCi} num`}>
+            95% CI {signed(v.gap.low)} to {signed(v.gap.high)} · about {logGapAsPercent(v.gap.estimate)}
+          </p>
+        </div>
+        <div className={styles.stripChart}>
+          <GapAxis data={data} model={model} />
+        </div>
+        <dl className={styles.stripFacts}>
+          <div>
+            <dt>Model A − Model B</dt>
+            <dd className="num">{signed(data.aMinusB.estimate)}</dd>
+            <span className="num">
+              {signed(data.aMinusB.low)} to {signed(data.aMinusB.high)}
+            </span>
+          </div>
+          <div>
+            <dt>Accuracy gap (MAE)</dt>
+            <dd className="num">{signed(v.accuracy.maeGap.estimate)}</dd>
+            <span className="num">
+              {signed(v.accuracy.maeGap.low)} to {signed(v.accuracy.maeGap.high)}
+            </span>
+          </div>
+          <div>
+            <dt>Held-out players</dt>
+            <dd className="num">{integer(data.population.total)}</dd>
+            <span>{integer(data.population.non_uefa)} non-UEFA</span>
+          </div>
+        </dl>
+      </section>
+
       <div className={styles.bench}>
         <nav className={styles.rail} aria-label="Instruments">
           <ol>
@@ -169,44 +185,40 @@ export function Observatory({ data }: { data: FairnessData }) {
                 <Link href={href({ view: x.id })} scroll={false} className={styles.railLink} aria-current={x.id === view ? "page" : undefined}>
                   <span className={`${styles.railIndex} num`}>{x.index}</span>
                   <span className={styles.railLabel}>{x.label}</span>
-                  <span className={styles.railQ}>{x.question}</span>
                 </Link>
               </li>
             ))}
           </ol>
-          <p className={styles.railNote}>
-            Observational results on a selected population. Not evidence of discrimination, and no fairness threshold is claimed to be met.
-          </p>
+          <p className={styles.railNote}>Observational, on a selected population. Not evidence of discrimination; no fairness threshold is claimed to be met.</p>
         </nav>
 
         <div className={styles.stage} ref={stageRef}>
           <AnimatePresence mode="wait" initial={false}>
             <motion.section
               key={view}
-              className={styles.panel}
+              className={styles.view}
               aria-labelledby={`view-${view}`}
-              initial={reduce ? false : { opacity: 0, y: 12 }}
+              initial={reduce ? false : { opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={reduce ? undefined : { opacity: 0, y: -8 }}
-              transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+              exit={reduce ? undefined : { opacity: 0, y: -6 }}
+              transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
             >
-              <header className={styles.panelHead}>
-                <p className={`${styles.panelIndex} num`}>
-                  {meta.index} <span>/ 07</span> · {meta.label}
+              <header className={styles.viewHead}>
+                <p className={`${styles.viewIndex} num`}>
+                  {meta.index} / 07 · {meta.label}
                 </p>
                 <h2 id={`view-${view}`} className={styles.h2}>
                   {meta.question}
                 </h2>
               </header>
-              {view === "gap" && <GapView v={v} o={o} model={model} other={other} data={data} compare={compare} ghostLabel={ghostLabel} primaryLabel={primaryLabel} />}
+              {view === "gap" && <GapView {...vp} model={model} data={data} />}
               {view === "value" && <ValueView v={v} />}
-              {view === "leagues" && <LeaguesView v={v} o={o} compare={compare} ghostLabel={ghostLabel} primaryLabel={primaryLabel} />}
-              {view === "subgroups" && <SubgroupsView v={v} o={o} compare={compare} ghostLabel={ghostLabel} primaryLabel={primaryLabel} />}
-              {view === "tiers" && <TiersView v={v} o={o} compare={compare} ghostLabel={ghostLabel} primaryLabel={primaryLabel} />}
-              {view === "robustness" && <RobustnessView v={v} o={o} model={model} data={data} compare={compare} ghostLabel={ghostLabel} primaryLabel={primaryLabel} />}
+              {view === "leagues" && <LeaguesView {...vp} />}
+              {view === "subgroups" && <SubgroupsView {...vp} />}
+              {view === "tiers" && <TiersView {...vp} />}
+              {view === "robustness" && <RobustnessView {...vp} model={model} data={data} />}
               {view === "limits" && <LimitsView data={data} />}
-
-              <footer className={styles.panelFoot}>
+              <footer className={styles.viewFoot}>
                 {at > 0 ? (
                   <Link href={href({ view: VIEWS[at - 1]!.id })} scroll={false} className={styles.step}>
                     ← {VIEWS[at - 1]!.label}
@@ -234,7 +246,7 @@ export function Observatory({ data }: { data: FairnessData }) {
   );
 }
 
-/* ------------------------------------------------------------------ readout */
+/* ------------------------------------------------------------------ pieces */
 
 function AnimatedSigned({ value }: { value: number }) {
   const reduce = useReducedMotion();
@@ -253,33 +265,80 @@ function AnimatedSigned({ value }: { value: number }) {
   return <span aria-hidden="true">{signed(shown)}</span>;
 }
 
-/** Both models on one axis; the selected one is lit. */
-function DialGauge({ model, data }: { model: ModelId; data: FairnessData }) {
-  const d0 = -0.05;
+/** Both models' gaps and the paired difference on one axis, the selected model lit. */
+function GapAxis({ data, model }: { data: FairnessData; model: ModelId }) {
+  const d0 = -0.12;
   const d1 = 0.25;
   const pos = (x: number) => ((x - d0) / (d1 - d0)) * 100;
+  const rows = [
+    { key: "A", label: "Model A", i: data.A.gap, on: model === "A" },
+    { key: "B", label: "Model B", i: data.B.gap, on: model === "B" },
+    { key: "AB", label: "A − B", i: data.aMinusB, on: false, diff: true },
+  ];
   return (
-    <div className={styles.gauge} aria-hidden="true">
-      <span className={styles.gaugeZero} style={{ left: `${pos(0)}%` }}>
-        <i>0</i>
-      </span>
-      {(["A", "B"] as const).map((m) => {
-        const g = data[m].gap;
-        return (
-          <span key={m} className={styles.gaugeRow} data-on={m === model || undefined} data-m={m}>
-            <span className={styles.gaugeCi} style={{ left: `${pos(g.low)}%`, width: `${pos(g.high) - pos(g.low)}%` }} />
-            <span className={styles.gaugeDot} style={{ left: `${pos(g.estimate)}%` }} />
-            <span className={styles.gaugeTag} style={{ left: `${pos(g.high)}%` }}>
-              {m}
-            </span>
+    <div className={styles.axis} role="img" aria-label={rows.map((r) => `${r.label} ${signed(r.i.estimate)} (${signed(r.i.low)} to ${signed(r.i.high)})`).join("; ")}>
+      {rows.map((r) => (
+        <div key={r.key} className={styles.axisRow} data-on={r.on || undefined} data-diff={r.diff || undefined}>
+          <span className={styles.axisLabel}>{r.label}</span>
+          <span className={styles.axisTrack}>
+            <span className={styles.axisZero} style={{ left: `${pos(0)}%` }} />
+            <span className={styles.axisCi} style={{ left: `${pos(r.i.low)}%`, width: `${pos(r.i.high) - pos(r.i.low)}%` }} />
+            <span className={styles.axisDot} style={{ left: `${pos(r.i.estimate)}%` }} />
           </span>
-        );
-      })}
+          <span className={`${styles.axisValue} num`}>{signed(r.i.estimate)}</span>
+        </div>
+      ))}
+      <div className={styles.axisTicks} aria-hidden="true">
+        <span />
+        <span className={styles.axisTickTrack}>
+          {[-0.1, 0, 0.1, 0.2].map((t) => (
+            <i key={t} style={{ left: `${pos(t)}%` }}>
+              {t === 0 ? "0" : signed(t, 1)}
+            </i>
+          ))}
+        </span>
+        <span />
+      </div>
     </div>
   );
 }
 
-/* ------------------------------------------------------------------ views */
+function Panel({ title, note, aside, wide, children }: { title: string; note?: string; aside?: ReactNode; wide?: boolean; children: ReactNode }) {
+  return (
+    <section className={`fv-panel ${wide ? styles.wide : ""}`}>
+      <header className="fv-panel-head">
+        <h3 className="fv-panel-title">
+          {title}
+          {note && <small>{note}</small>}
+        </h3>
+        {aside}
+      </header>
+      <div className="fv-panel-body">{children}</div>
+    </section>
+  );
+}
+
+function Notes({ children }: { children: ReactNode }) {
+  return <div className={`${styles.notes} ${styles.wide}`}>{children}</div>;
+}
+
+/** Horizontal bars diverging from zero; used for the SHAP group gap. */
+function Diverging({ rows, format }: { rows: { key: string; label: string; value: number }[]; format: (v: number) => string }) {
+  const max = Math.max(...rows.map((r) => Math.abs(r.value)), 1e-9);
+  return (
+    <ul className={styles.div}>
+      {rows.map((r) => (
+        <li key={r.key} aria-label={`${r.label}: ${format(r.value)}`}>
+          <span className={styles.divLabel}>{r.label}</span>
+          <span className={styles.divTrack}>
+            <span className={styles.divBar} data-neg={r.value < 0 || undefined} style={{ width: `${(Math.abs(r.value) / max) * 50}%` }} />
+          </span>
+          <span className={`${styles.divValue} num`}>{format(r.value)}</span>
+        </li>
+      ))}
+    </ul>
+  );
+}
 
 interface ViewProps {
   v: ModelView;
@@ -289,97 +348,114 @@ interface ViewProps {
   primaryLabel: string;
 }
 
-function Reading({ children, chart }: { children: ReactNode; chart: ReactNode }) {
+/* ------------------------------------------------------------------ views */
+
+function GapView({ v, o, model, data, compare, ghostLabel, primaryLabel }: ViewProps & { model: ModelId; data: FairnessData }) {
+  const shap = data.shapGap[model];
+  const predGap = shap.reduce((s, r) => s + r.gap, 0);
   return (
-    <div className={styles.reading}>
-      <div className={styles.chart}>{chart}</div>
-      <aside className={`prose ${styles.notes}`}>{children}</aside>
+    <div className={styles.grid}>
+      <Panel title="Residuals by group" note="mean residual and gaps, log scale, 95% CI">
+        <IntervalPlot
+          rows={withGhost(v.residuals, o.residuals, compare)}
+          axisLabel="Residual = actual − predicted. Right of zero: under-predicted"
+          sides={["over-predicted", "under-predicted"]}
+          tableCaption="Mean residuals and gaps"
+          ghostLabel={ghostLabel}
+          primaryLabel={primaryLabel}
+        />
+      </Panel>
+      <Panel title="Same accuracy, opposite direction" note="held-out, by group">
+        <div className={styles.pair}>
+          <p className="fv-label">Mean absolute error</p>
+          <Bars
+            rows={[
+              { key: "u", label: "UEFA", value: v.accuracy.maeUefa, tone: "uefa" },
+              { key: "n", label: "Non-UEFA", value: v.accuracy.maeNon, tone: "non-uefa" },
+            ]}
+            max={Math.max(v.accuracy.maeUefa, v.accuracy.maeNon) * 1.15}
+            format={(x) => decimal(x, 3)}
+          />
+          <p className="fv-label">Mean signed residual</p>
+          <Diverging
+            rows={[
+              { key: "u", label: "UEFA", value: v.residuals[0]!.interval.estimate },
+              { key: "n", label: "Non-UEFA", value: v.residuals[1]!.interval.estimate },
+            ]}
+            format={(x) => signed(x)}
+          />
+        </div>
+        <p className={styles.caption}>
+          Both groups are missed by about the same amount (MAE gap {signed(v.accuracy.maeGap.estimate)}, interval includes zero), but in opposite
+          directions: UEFA players slightly over-predicted, non-UEFA players under-predicted.
+        </p>
+      </Panel>
+      <Panel
+        wide
+        title="What moves the groups' predictions apart"
+        note={`mean SHAP, non-UEFA minus UEFA, served ${MODEL_LABELS[model].name}`}
+        aside={<span className="fv-chip">sums to {signed(predGap)} log units</span>}
+      >
+        <Diverging rows={shap.slice(0, 10).map((r) => ({ key: r.feature, label: featureLabel(r.feature), value: r.gap }))} format={(x) => signed(x)} />
+        <p className={styles.caption}>
+          The served model predicts non-UEFA players {signed(predGap)} log units higher on average; these are the inputs that account for that
+          difference. They describe the model&apos;s arithmetic, not causes, and they are about predictions, not about the gap in errors above.
+        </p>
+      </Panel>
+      <Notes>
+        <p>
+          Under {MODEL_LABELS[model].name}, non-UEFA players&apos; market values sit about {logGapAsPercent(v.gap.estimate)} above the model&apos;s
+          estimate relative to UEFA players in the same leagues (about <span className="num">{formatEur(v.gapEur.estimate)}</span> per player, a
+          figure dominated by expensive players). Removing league and club moves the gap from {signed(data.A.gap.estimate)} to{" "}
+          {signed(data.B.gap.estimate)}: context explains part of it; a clear gap remains.
+        </p>
+      </Notes>
     </div>
   );
 }
 
-function GapView({ v, o, model, other, data, compare, ghostLabel, primaryLabel }: ViewProps & { model: ModelId; other: ModelId; data: FairnessData }) {
+function Bars({ rows, max, format }: { rows: { key: string; label: string; value: number; tone: "uefa" | "non-uefa" }[]; max: number; format: (v: number) => string }) {
   return (
-    <>
-      <Reading
-        chart={
-          <IntervalPlot
-            rows={withGhost(v.residuals, o.residuals, compare)}
-            axisLabel="Mean residual and gap, log scale, 95% CI"
-            sides={["over-predicted", "under-predicted"]}
-            tableCaption="Mean residuals and gaps"
-            ghostLabel={ghostLabel}
-            primaryLabel={primaryLabel}
-          />
-        }
-      >
-        <p>
-          Under {MODEL_LABELS[model].name} the within-league gap is <strong className="num">{signed(v.gap.estimate)}</strong> (95% CI{" "}
-          <span className="num">
-            {signed(v.gap.low)} to {signed(v.gap.high)}
+    <ul className={styles.bars}>
+      {rows.map((r) => (
+        <li key={r.key}>
+          <span className={styles.divLabel}>{r.label}</span>
+          <span className={styles.barTrack}>
+            <span className={styles.barFill} data-tone={r.tone} style={{ width: `${(r.value / max) * 100}%` }} />
           </span>
-          ). Non-UEFA players&apos; Transfermarkt values sit about {logGapAsPercent(v.gap.estimate)} above the model&apos;s estimate, relative to
-          UEFA players in the same leagues. In euros, about <span className="num">{formatEur(v.gapEur.estimate)}</span> per player (
-          <span className="num">
-            {formatEur(v.gapEur.low)} to {formatEur(v.gapEur.high)}
-          </span>
-          ), a figure dominated by expensive players.
-        </p>
-        <p>
-          Accuracy is close: mean absolute error <span className="num">{decimal(v.accuracy.maeUefa, 3)}</span> for UEFA and{" "}
-          <span className="num">{decimal(v.accuracy.maeNon, 3)}</span> for non-UEFA players, a within-league difference of{" "}
-          <span className="num">{signed(v.accuracy.maeGap.estimate)}</span> ({signed(v.accuracy.maeGap.low)} to {signed(v.accuracy.maeGap.high)}).
-          The model misses both groups by similar amounts, in opposite directions.
-        </p>
-        <p>
-          Removing league and club moves the gap from {signed(data.A.gap.estimate)} to {signed(data.B.gap.estimate)}, a paired difference of{" "}
-          {signed(data.aMinusB.estimate)} ({signed(data.aMinusB.low)} to {signed(data.aMinusB.high)}). Context accounts for part of the gap; a
-          clear gap remains. {MODEL_LABELS[other].name}&apos;s gap is {signed(o.gap.estimate)}.
-        </p>
-      </Reading>
-      <dl className={styles.keyFigures}>
-        <div>
-          <dt>UEFA mean residual</dt>
-          <dd className="num" data-tone="uefa">
-            {signed(v.residuals[0]!.interval.estimate)}
-          </dd>
-        </div>
-        <div>
-          <dt>Non-UEFA mean residual</dt>
-          <dd className="num" data-tone="non-uefa">
-            {signed(v.residuals[1]!.interval.estimate)}
-          </dd>
-        </div>
-        <div>
-          <dt>MAE gap</dt>
-          <dd className="num">{signed(v.accuracy.maeGap.estimate)}</dd>
-        </div>
-        <div>
-          <dt>RMSE gap (raw)</dt>
-          <dd className="num">{signed(v.accuracy.rmseGap.estimate)}</dd>
-        </div>
-      </dl>
-    </>
+          <span className={`${styles.divValue} num`}>{format(r.value)}</span>
+        </li>
+      ))}
+    </ul>
   );
 }
 
 function ValueView({ v }: { v: ModelView }) {
   return (
-    <Reading
-      chart={<Dumbbell rows={v.deciles} axisLabel="Mean residual by decile of predicted value (1 = lowest), log scale" tableCaption="Mean residual by predicted-value decile" />}
-    >
-      <p>
-        Residuals drift with value (estimates are pulled towards the middle), and non-UEFA players in this population are worth more on average.
-        So the comparison is repeated inside each tenth of the model&apos;s own predictions. Binning on the prediction, not the actual value, avoids
-        conditioning on the outcome.
-      </p>
-      <p>
-        Non-UEFA players are under-predicted relative to UEFA players in every decile. Pooled within deciles the gap is{" "}
-        <strong className="num">{signed(v.calibration.byDecile.estimate)}</strong> ({signed(v.calibration.byDecile.low)} to{" "}
-        {signed(v.calibration.byDecile.high)}); within league and decile, {signed(v.calibration.byLeagueDecile.estimate)}.
-      </p>
-      <p className={styles.howTo}>Each line joins the two groups&apos; mean residual in one decile. Hover or focus a row for exact values.</p>
-    </Reading>
+    <div className={styles.grid}>
+      <Panel wide title="Residual by decile of predicted value" note="1 = lowest predicted value, log scale">
+        <Dumbbell rows={v.deciles} axisLabel="Mean residual by decile of predicted value (1 = lowest), log scale" tableCaption="Mean residual by predicted-value decile" />
+      </Panel>
+      <Panel title="Gap holding value level fixed" note="pooled within deciles">
+        <IntervalPlot
+          rows={[
+            { key: "primary", label: "Within leagues", sublabel: "primary measure", interval: v.gap, emphasis: true },
+            { key: "dec", label: "Within deciles", sublabel: "same predicted value", interval: v.calibration.byDecile },
+            { key: "ld", label: "Within league and decile", interval: v.calibration.byLeagueDecile },
+          ]}
+          domain={[0, 0.3]}
+          axisLabel="Signed gap, log scale, 95% CI"
+          tableCaption="Gap within deciles"
+        />
+      </Panel>
+      <Notes>
+        <p>
+          Estimates are pulled towards the middle, and non-UEFA players here are worth more on average, so the comparison is repeated inside each
+          tenth of the model&apos;s own predictions. Binning on the prediction, not the actual value, avoids conditioning on the outcome. Non-UEFA
+          players are under-predicted relative to UEFA players in every decile.
+        </p>
+      </Notes>
+    </div>
   );
 }
 
@@ -390,170 +466,162 @@ function listOf(items: string[]): string {
 
 function LeaguesView({ v, o, compare, ghostLabel, primaryLabel }: ViewProps) {
   const [sort, setSort] = useState<LeagueSort>("gap");
-  // Narrative is read from the selected model's league-level estimates (leagues with >= 100 non-UEFA players).
-  const reported = v.leagues.filter((l) => !l.hollow);
-  const largest = [...reported].sort((a, b) => b.interval.estimate - a.interval.estimate).filter((l) => l.interval.low > 0).slice(0, 5);
-  const nearZero = reported.filter((l) => l.interval.low <= 0 && l.interval.high >= 0);
   const rows = [...withGhost(v.leagues, o.leagues, compare)].sort((a, b) =>
     sort === "gap" ? b.interval.estimate - a.interval.estimate : sort === "n" ? (b.n ?? 0) - (a.n ?? 0) : a.label.localeCompare(b.label),
   );
+  const reported = v.leagues.filter((l) => !l.hollow);
+  const largest = [...reported].sort((a, b) => b.interval.estimate - a.interval.estimate).filter((l) => l.interval.low > 0).slice(0, 5);
+  const nearZero = reported.filter((l) => l.interval.low <= 0 && l.interval.high >= 0);
+  const maxN = Math.max(...v.leagues.map((l) => l.n ?? 0));
   return (
-    <Reading
-      chart={
-        <>
-          <div className={styles.chartTools}>
-            <Segmented
-              legend="Sort leagues by"
-              name="league-sort"
-              value={sort}
-              onChange={setSort}
-              options={[
-                { value: "gap", label: "Gap" },
-                { value: "n", label: "Non-UEFA players" },
-                { value: "name", label: "Name" },
-              ]}
-            />
-          </div>
-          <IntervalPlot
-            rows={rows}
-            sides={SIDES}
-            axisLabel="Within-league signed gap, log scale, 95% CI"
-            tableCaption="Signed gap by league"
-            ghostLabel={ghostLabel}
-            primaryLabel={primaryLabel}
+    <div className={styles.grid} data-layout="leagues">
+      <Panel
+        title="Signed gap by league"
+        note="within-league, log scale, 95% CI"
+        aside={
+          <span className={styles.sort}>
+          <Segmented
+            legend="Sort leagues by"
+            hideLegend
+            name="league-sort"
+            value={sort}
+            onChange={setSort}
+            options={[
+              { value: "gap", label: "Gap" },
+              { value: "n", label: "Sample" },
+              { value: "name", label: "A–Z" },
+            ]}
           />
-        </>
-      }
-    >
-      <p>
-        Among leagues with a league-level estimate, under {primaryLabel} the gap is clearly above zero in{" "}
-        {listOf(largest.map((l) => leagueCountry(l.key)))}.
-        {nearZero.length > 0 && <> In {listOf(nearZero.map((l) => leagueCountry(l.key)))} the interval includes zero.</>}
-      </p>
-      <p>
-        Leagues with fewer than 100 non-UEFA players have hollow markers: the audit reports them only as part of the pooled estimate, so read
-        them as descriptive. This shows where the gap sits, not why.
-      </p>
-    </Reading>
+          </span>
+        }
+      >
+        <IntervalPlot rows={rows} sides={SIDES} axisLabel="Within-league signed gap, log scale, 95% CI" tableCaption="Signed gap by league" ghostLabel={ghostLabel} primaryLabel={primaryLabel} />
+      </Panel>
+      <Panel title="Non-UEFA players per league" note="hollow markers: under 100, pooled only">
+        <ul className={styles.bars}>
+          {rows.map((l) => (
+            <li key={l.key} data-hollow={l.hollow || undefined}>
+              <span className={styles.divLabel}>{l.label}</span>
+              <span className={styles.barTrack}>
+                <span className={styles.barFill} data-tone="non-uefa" style={{ width: `${((l.n ?? 0) / maxN) * 100}%` }} />
+              </span>
+              <span className={`${styles.divValue} num`}>{l.n}</span>
+            </li>
+          ))}
+        </ul>
+      </Panel>
+      <Notes>
+        <p>
+          Among leagues with a league-level estimate, under {primaryLabel} the gap is clearly above zero in {listOf(largest.map((l) => leagueCountry(l.key)))}.
+          {nearZero.length > 0 && <> In {listOf(nearZero.map((l) => leagueCountry(l.key)))} the interval includes zero.</>} Leagues with fewer than 100
+          non-UEFA players are descriptive only. This shows where the gap sits, not why.
+        </p>
+      </Notes>
+    </div>
   );
 }
 
 function SubgroupsView({ v, o, compare, ghostLabel, primaryLabel }: ViewProps) {
   return (
-    <Reading
-      chart={
-        <div className={styles.stack}>
-          {v.strata.map((g, i) => (
-            <div key={g.title}>
-              <h3 className={styles.h3}>
-                {g.title}
-                {g.note && <span className={styles.h3Note}>{g.note}</span>}
-              </h3>
-              <IntervalPlot
-                rows={withGhost(g.rows, o.strata[i]!.rows, compare)}
-                domain={[-0.15, 0.3]}
-                axisLabel="Within-league signed gap vs UEFA, log scale"
-                tableCaption={g.title}
-                ghostLabel={i === 0 ? ghostLabel : undefined}
-                primaryLabel={primaryLabel}
-              />
-            </div>
-          ))}
-        </div>
-      }
-    >
-      <p>
-        The gap is larger for recent arrivals and South American players, and smaller for players born in UEFA countries and for those established
-        in these leagues. That fits the idea that migrants reach these leagues through a stricter filter the model cannot see. It does not prove
-        it, and the intervals overlap.
-      </p>
-      <p>Subgroups are descriptive. With this many comparisons, some intervals will exclude zero by chance.</p>
-    </Reading>
+    <div className={styles.grid} data-layout="quad">
+      {v.strata.map((g, i) => (
+        <Panel key={g.title} title={g.title} note={g.note ? `${g.note} · vs UEFA, log scale` : "vs UEFA, log scale"}>
+          <IntervalPlot
+            rows={withGhost(g.rows, o.strata[i]!.rows, compare)}
+            domain={[-0.15, 0.3]}
+            axisLabel="Within-league signed gap vs UEFA"
+            tableCaption={g.title}
+            ghostLabel={i === 0 ? ghostLabel : undefined}
+            primaryLabel={primaryLabel}
+          />
+        </Panel>
+      ))}
+      <Notes>
+        <p>
+          The gap is larger for recent arrivals and South American players, smaller for players born in UEFA countries and for those established in
+          these leagues: consistent with migrants passing a stricter filter the model cannot see, but not proof of it. Subgroups are descriptive;
+          with this many comparisons some intervals exclude zero by chance.
+        </p>
+      </Notes>
+    </div>
   );
 }
 
 function TiersView({ v, o, compare, ghostLabel, primaryLabel }: ViewProps) {
   return (
-    <Reading
-      chart={
-        <div className={styles.stack}>
-          <div className={styles.rates}>
-            <p>
-              <span className={styles.rateLabel}>Wrong tier, UEFA</span>
-              <span className={`${styles.rateValue} num`} data-tone="uefa">
-                {percent(v.tiers.errorUefa)}
-              </span>
-            </p>
-            <p>
-              <span className={styles.rateLabel}>Wrong tier, non-UEFA</span>
-              <span className={`${styles.rateValue} num`} data-tone="non-uefa">
-                {percent(v.tiers.errorNon)}
-              </span>
-            </p>
-          </div>
-          <IntervalPlot
-            rows={withGhost(v.tiers.summary, o.tiers.summary, compare)}
-            format={pp}
-            axisLabel="Non-UEFA minus UEFA, percentage points, 95% CI"
-            sides={["worse for UEFA", "worse for non-UEFA"]}
-            tableCaption="Tier classification error gaps"
-            ghostLabel={ghostLabel}
-            primaryLabel={primaryLabel}
-          />
-          <div>
-            <h3 className={styles.h3}>Correctly identified, by tier</h3>
-            <IntervalPlot
-              rows={withGhost(v.tiers.perTier, o.tiers.perTier, compare)}
-              format={pp}
-              domain={[-0.2, 0.15]}
-              axisLabel="True-positive-rate gap, non-UEFA minus UEFA, percentage points"
-              tableCaption="True-positive-rate gap by tier"
-            />
-          </div>
-        </div>
-      }
-    >
-      <p>
-        The separate tier classifier puts {percent(v.tiers.errorUefa)} of UEFA players and {percent(v.tiers.errorNon)} of non-UEFA players in the
-        wrong tier. The extra errors for non-UEFA players are mostly placements below their actual tier, consistent with the value
-        under-prediction.
-      </p>
-      <p>
-        Per-tier comparisons rest on small groups: only 94 non-UEFA players are World Class and 246 Elite. Those intervals are wide enough to fit
-        no gap or a sizeable one, so they are not read as evidence either way.
-      </p>
-    </Reading>
+    <div className={styles.grid}>
+      <Panel title="Wrong-tier rate" note="separate tier classifier, held-out">
+        <Bars
+          rows={[
+            { key: "u", label: "UEFA", value: v.tiers.errorUefa, tone: "uefa" },
+            { key: "n", label: "Non-UEFA", value: v.tiers.errorNon, tone: "non-uefa" },
+          ]}
+          max={0.4}
+          format={(x) => percent(x)}
+        />
+        <IntervalPlot
+          rows={withGhost(v.tiers.summary, o.tiers.summary, compare)}
+          format={pp}
+          axisLabel="Non-UEFA minus UEFA, percentage points, 95% CI"
+          sides={["worse for UEFA", "worse for non-UEFA"]}
+          tableCaption="Tier classification error gaps"
+          ghostLabel={ghostLabel}
+          primaryLabel={primaryLabel}
+        />
+      </Panel>
+      <Panel title="Correctly identified, by tier" note="true-positive-rate gap, pp">
+        <IntervalPlot
+          rows={withGhost(v.tiers.perTier, o.tiers.perTier, compare)}
+          format={pp}
+          domain={[-0.2, 0.15]}
+          axisLabel="Non-UEFA minus UEFA, percentage points"
+          tableCaption="True-positive-rate gap by tier"
+        />
+      </Panel>
+      <Notes>
+        <p>
+          The extra tier errors for non-UEFA players are mostly placements below their actual tier, consistent with the value under-prediction.
+          Per-tier comparisons rest on small groups (94 non-UEFA World Class, 246 Elite): intervals wide enough to fit no gap or a sizeable one, so
+          they are not read as evidence either way.
+        </p>
+      </Notes>
+    </div>
   );
 }
 
 function RobustnessView({ v, o, model, data, compare, ghostLabel, primaryLabel }: ViewProps & { model: ModelId; data: FairnessData }) {
   return (
-    <Reading
-      chart={
-        <IntervalPlot
-          rows={withGhost(v.robustness, o.robustness, compare)}
-          domain={[0, 0.25]}
-          axisLabel="Within-league signed gap, log scale"
-          tableCaption="Robustness checks"
-          ghostLabel={ghostLabel}
-          primaryLabel={primaryLabel}
+    <div className={styles.grid}>
+      <Panel title="The gap under every check" note="within-league signed gap, log scale">
+        <IntervalPlot rows={withGhost(v.robustness, o.robustness, compare)} domain={[0, 0.25]} axisLabel="Points without whiskers are point estimates" tableCaption="Robustness checks" ghostLabel={ghostLabel} primaryLabel={primaryLabel} />
+      </Panel>
+      <Panel title="Where the largest errors fall" note="Model A, share of non-UEFA players">
+        <Bars
+          rows={[
+            { key: "all", label: "All players", value: data.worstA.overall, tone: "uefa" },
+            { key: "under", label: "Top 5% under-predicted", value: data.worstA.under, tone: "non-uefa" },
+            { key: "over", label: "Top 5% over-predicted", value: data.worstA.over, tone: "non-uefa" },
+          ]}
+          max={0.5}
+          format={(x) => percent(x)}
         />
-      }
-    >
-      <p>
-        The sign of the gap survives every check the audit ran: resampling whole clubs instead of players, comparing players with the same
-        predicted value, raising the minutes threshold to 900, holding out entire clubs, and swapping the algorithm.
-      </p>
-      <p>
-        Players at the same club are not independent (residual intra-club correlation{" "}
-        <span className="num">{decimal(data.icc.find((i) => i.model === model)!.icc_residual_within_club, 2)}</span> under{" "}
-        {MODEL_LABELS[model].name}), which is why the club-clustered interval is shown. Points without whiskers are point estimates.
-      </p>
-      <p>
-        Among Model A&apos;s largest 5% of under-predictions, {percent(data.worstA.under)} are non-UEFA players, against{" "}
-        {percent(data.worstA.overall)} of all players; among the largest over-predictions, {percent(data.worstA.over)}.
-      </p>
-    </Reading>
+        <dl className={styles.facts}>
+          <div>
+            <dt>Residual correlation within clubs</dt>
+            <dd className="num">{decimal(data.icc.find((i) => i.model === model)!.icc_residual_within_club, 2)}</dd>
+          </div>
+        </dl>
+        <p className={styles.caption}>
+          Players at the same club are not independent, which is why the club-clustered interval is shown alongside the player bootstrap.
+        </p>
+      </Panel>
+      <Notes>
+        <p>
+          The sign of the gap survives resampling whole clubs, comparing players with the same predicted value, a 900-minute threshold, clubs the
+          model never saw, and every algorithm tried.
+        </p>
+      </Notes>
+    </div>
   );
 }
 
@@ -561,11 +629,11 @@ function LimitsView({ data }: { data: FairnessData }) {
   return (
     <div className={styles.limits}>
       <div>
-        <h3 className={styles.h3}>Supported, within this population</h3>
+        <h3 className="fv-panel-title">Supported, within this population</h3>
         <ul>
           <li>
-            A nationality-blind model trained on performance, profile and context under-predicts non-UEFA players&apos; Transfermarkt values
-            relative to UEFA players in the same leagues and at the same predicted value.
+            A nationality-blind model trained on performance, profile and context under-predicts non-UEFA players&apos; Transfermarkt values relative
+            to UEFA players in the same leagues and at the same predicted value.
           </li>
           <li>Absolute accuracy is similar for both groups.</li>
           <li>League mix, value level, the minutes threshold and familiarity with the club do not explain it. It is concentrated in a subset of leagues.</li>
@@ -573,7 +641,7 @@ function LimitsView({ data }: { data: FairnessData }) {
         </ul>
       </div>
       <div>
-        <h3 className={styles.h3}>Not established</h3>
+        <h3 className="fv-panel-title">Not established</h3>
         <ul data-kind="no">
           <li>That anyone discriminates, in either direction.</li>
           <li>That nationality causes higher or lower valuations.</li>
@@ -582,7 +650,7 @@ function LimitsView({ data }: { data: FairnessData }) {
         </ul>
       </div>
       <div>
-        <h3 className={styles.h3}>Explanations the study cannot separate</h3>
+        <h3 className="fv-panel-title">Explanations it cannot separate</h3>
         <ol>
           <li>Selection: non-UEFA players pass a stricter filter to reach these leagues, on qualities the data does not record.</li>
           <li>Excluded variables: caps were left out as a nationality proxy; contract and agent data are unavailable.</li>
@@ -591,9 +659,8 @@ function LimitsView({ data }: { data: FairnessData }) {
         </ol>
       </div>
       <p className={styles.scope}>
-        Population: {integer(data.population.total)} players ({integer(data.population.non_uefa)} non-UEFA) at clubs in 14 European first
-        divisions, valued June 2025 to June 2026, with at least 450 club minutes in two years. A selected population, not the global market. Full
-        write-up: <code>docs/reports/FAIRNESS_AUDIT.md</code>.
+        Population: {integer(data.population.total)} players ({integer(data.population.non_uefa)} non-UEFA) at clubs in 14 European first divisions,
+        valued June 2025 to June 2026, with at least 450 club minutes in two years. Full write-up: <code>docs/reports/FAIRNESS_AUDIT.md</code>.
       </p>
     </div>
   );

@@ -16,7 +16,8 @@ _Last updated: 2026-11-04 (end of session 1)_
 | Primary model | Optuna-tuned HGB (Model A log RMSE 0.529, R² 0.890) | `reports/models/primary_model.json` |
 | MLflow | 10 runs in `fairvalue-m3-baselines` (local `mlruns/`, git-ignored) | `python -m mlflow ui --backend-store-uri mlruns` |
 | Fairness | Signed residual gaps, MAE/RMSE gaps, league/strata tables, calibration check, ER1a/ER1b | `reports/fairness/`, `docs/reports/FAIRNESS_AUDIT.md` |
-| Tests | 63 passing (unit + real-data) | `pytest -q` |
+| Supplementary checks | Club-grouped CV, club-clustered CIs, tier-cell power (D-026) | `docs/reports/SUPPLEMENTARY_CHECKS.md` |
+| Tests | 65 passing (unit + real-data) | `pytest -q` |
 | Reviews | Two independent read-only reviews; all findings addressed | DECISIONS D-015, D-023 |
 
 ## Key results so far (held-out, within the selected population)
@@ -31,9 +32,8 @@ _Last updated: 2026-11-04 (end of session 1)_
   under-tiering non-UEFA players.
 
 ## Blockers
-- None technical.
-- The project lives in a temporary session folder. Move it to a permanent location before the next
-  session.
+- **Permanent folder not yet chosen.** The project is still in the temporary session folder. Milestone 5
+  starts only after it has moved and the copy is verified (owner's instruction).
 - No GitHub remote. Pushing, GHCR and hosting all need approval.
 
 ## Next steps (in order)

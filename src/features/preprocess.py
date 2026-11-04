@@ -106,3 +106,18 @@ def build_preprocessor(feature_set: str = "full") -> ColumnTransformer:
 
 def feature_columns(feature_set: str = "full") -> list[str]:
     return FEATURES_FULL if feature_set == "full" else FEATURES_PERFORMANCE
+
+
+def original_feature(transformed: str, originals: list[str]) -> str:
+    """Map a ColumnTransformer output name back to the raw feature it came from.
+
+    Used to sum SHAP values of one-hot, missing-indicator and age^2 columns back to the input
+    feature (offline in src.fairness.explain_shap and online in the API's /explain).
+    """
+    kind, name = transformed.split("__", 1)
+    if kind == "num":
+        if name.startswith("missingindicator_"):
+            return name.removeprefix("missingindicator_")
+        return "age" if name == "age_squared" else name
+    matches = [o for o in originals if name.startswith(o + "_")]
+    return max(matches, key=len)

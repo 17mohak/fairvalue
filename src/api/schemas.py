@@ -90,3 +90,61 @@ class HealthResponse(BaseModel):
     models_loaded: list[str]
     model_versions: dict[str, str]
     dataset_sha256_16: str | None
+
+
+# Transfermarkt's position -> sub-position taxonomy, as observed in the training data
+# (13 sub-positions). Used by GET /metadata so clients can offer only combinations the model has
+# seen; /predict still accepts any sub-position the fitted encoder knows.
+SUB_POSITIONS_BY_POSITION: dict[str, list[str]] = {
+    "Goalkeeper": ["Goalkeeper"],
+    "Defender": ["Centre-Back", "Left-Back", "Right-Back"],
+    "Midfield": ["Defensive Midfield", "Central Midfield", "Attacking Midfield",
+                 "Left Midfield", "Right Midfield"],
+    "Attack": ["Centre-Forward", "Left Winger", "Right Winger", "Second Striker"],
+}
+
+EXPLAIN_METHOD = (
+    "SHAP TreeExplainer (path-dependent) on the served gradient-boosting regressor, log-value scale. "
+    "One-hot, missing-indicator and age-squared columns are summed back to the input feature. "
+    "Contributions add up exactly to the prediction: base + sum = predicted log value. "
+    "They describe how this model arrived at this estimate, not what causes market value."
+)
+
+
+class FeatureContribution(BaseModel):
+    feature: str
+    value: float | str | None = Field(..., description="Input value the model saw (derived features included)")
+    contribution: float = Field(..., description="SHAP value on the ln(EUR) scale; + raises the estimate")
+
+
+class ExplainResponse(BaseModel):
+    model: Literal["A", "B"]
+    model_version: str
+    base_log_value: float = Field(..., description="Model's average output over training data, ln(EUR)")
+    base_value_eur: float
+    predicted_log_value: float
+    predicted_value_eur: float
+    contributions: list[FeatureContribution] = Field(..., description="Sorted by absolute contribution")
+    method: str = EXPLAIN_METHOD
+    disclaimer: str = DISCLAIMER
+
+
+class ModelInfo(BaseModel):
+    label: str
+    version: str
+    algorithm: str
+    feature_set: str
+    features: list[str]
+    cv_heldout_metrics: dict[str, float]
+
+
+class MetadataResponse(BaseModel):
+    leagues: list[str]
+    sub_positions_by_position: dict[str, list[str]]
+    tier_names: list[str]
+    tier_boundaries_eur: list[float]
+    models: dict[str, ModelInfo]
+    explain_available: bool
+    dataset_sha256_16: str | None
+    n_training_rows: int | None
+    disclaimer: str = DISCLAIMER

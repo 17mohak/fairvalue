@@ -1,0 +1,94 @@
+.figure {
+  position: relative;
+  margin: 0;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.cutout {
+  position: relative;
+  z-index: 1;
+  display: block;
+  height: 100%;
+  width: auto;
+  max-width: none;
+  object-fit: contain;
+  /* Rim light from the floodlights, then a cool fill from the opposite side. */
+  filter: drop-shadow(14px -6px 22px rgb(233 185 73 / 0.28)) drop-shadow(-10px 0 30px rgb(68 149 220 / 0.12)) saturate(1.02) contrast(1.04);
+}
+
+.figure[data-kind="photo"] .cutout {
+  border-radius: var(--radius-m);
+  mask-image: linear-gradient(180deg, #000 70%, transparent);
+  -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent);
+}
+
+.silhouette {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  width: auto;
+  filter: drop-shadow(18px -10px 30px rgb(233 185 73 / 0.14));
+}
+
+.figure[data-kind="none"][data-size="hero"] .silhouette {
+  height: 84%;
+}
+
+.backglow {
+  position: absolute;
+  left: 50%;
+  top: 4%;
+  width: 92%;
+  height: 78%;
+  transform: translateX(-46%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(255 214 128 / 0.22), rgb(233 185 73 / 0.06) 55%, transparent);
+  filter: blur(6px);
+}
+
+.figure[data-size="card"] .backglow {
+  opacity: 0.6;
+}
+
+.floor {
+  position: absolute;
+  bottom: -2%;
+  left: 50%;
+  width: 70%;
+  height: 9%;
+  transform: translateX(-50%);
+  border-radius: 50%;
+  background: radial-gradient(closest-side, rgb(0 0 0 / 0.6), transparent);
+}
+
+.pending,
+.credit {
+  position: absolute;
+  z-index: 2;
+  left: 50%;
+  top: 18%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  padding: 0.3rem 0.65rem;
+  border: 1px dashed rgb(237 239 230 / 0.3);
+  border-radius: 999px;
+  background: rgb(7 13 10 / 0.7);
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  color: #c3cbc3;
+}
+
+.credit {
+  top: auto;
+  bottom: 8.5rem;
+  border-style: solid;
+  max-width: 22rem;
+  white-space: normal;
+}
+
+.figure[data-size="card"] .silhouette {
+  opacity: 0.5;
+}

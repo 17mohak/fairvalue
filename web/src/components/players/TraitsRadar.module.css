@@ -1,0 +1,318 @@
+.radar {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+  gap: 1.5rem 2rem;
+  align-items: center;
+}
+
+.chart {
+  position: relative;
+  min-width: 0;
+}
+
+.svg {
+  display: block;
+  width: 100%;
+  max-width: 30rem;
+  margin-inline: auto;
+  overflow: visible;
+  font-family: var(--font-display);
+}
+
+.ring {
+  fill: none;
+  stroke: rgb(237 239 230 / 0.08);
+  stroke-width: 1;
+}
+
+.ring:nth-of-type(odd) {
+  fill: rgb(237 239 230 / 0.015);
+}
+
+.ring[data-median] {
+  stroke: rgb(237 239 230 / 0.32);
+  stroke-dasharray: 3 5;
+}
+
+.ringLabel {
+  font-family: var(--font-ui);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  fill: rgb(237 239 230 / 0.45);
+}
+
+.spoke {
+  stroke: rgb(237 239 230 / 0.1);
+  stroke-width: 1;
+  transition: stroke 200ms var(--ease-out);
+}
+
+.spoke[data-active] {
+  stroke: rgb(233 185 73 / 0.7);
+}
+
+.shape {
+  fill: rgb(233 185 73 / 0.16);
+  stroke: #e9b949;
+  stroke-width: 2;
+  stroke-linejoin: round;
+  filter: drop-shadow(0 0 14px rgb(233 185 73 / 0.35));
+}
+
+.vertex {
+  fill: #0a110d;
+  stroke: #e9b949;
+  stroke-width: 2;
+  transition: r 200ms var(--ease-out);
+}
+
+.vertex[data-active] {
+  fill: #e9b949;
+}
+
+.axisLabel {
+  transition: opacity 200ms var(--ease-out);
+}
+
+.axisValue {
+  font-size: 22px;
+  font-weight: 700;
+  fill: #edefe6;
+}
+
+.axisName {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  fill: #8f9b93;
+}
+
+.axisLabel[data-active] .axisValue {
+  fill: #e9b949;
+}
+
+.axisLabel[data-active] .axisName {
+  fill: #edefe6;
+}
+
+.radar:not([data-ready]) .svg {
+  opacity: 0.7;
+  max-width: 22rem;
+}
+
+.pending {
+  position: relative;
+  margin: 0.5rem auto 0;
+  max-width: 28rem;
+  display: grid;
+  align-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1.1rem;
+  border: 1px dashed rgb(237 239 230 / 0.25);
+  border-radius: var(--radius-m);
+  background: rgb(10 17 13 / 0.86);
+  font-size: 0.82rem;
+  line-height: 1.5;
+  color: #c3cbc3;
+  text-align: center;
+}
+
+.pending code {
+  font-size: 0.78rem;
+  color: #e9b949;
+}
+
+.pendingTitle {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: #edefe6;
+}
+
+/* ---- Side: axis list and detail ---- */
+.side {
+  display: grid;
+  gap: 1rem;
+  min-width: 0;
+}
+
+.peerNote {
+  font-size: 0.85rem;
+  color: #8f9b93;
+}
+
+.axes {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.axisButton {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 5.5rem 3rem;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  border: 0;
+  border-left: 2px solid transparent;
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+  background: transparent;
+  text-align: left;
+  color: #c3cbc3;
+  cursor: pointer;
+  transition: background-color 160ms var(--ease-out), border-color 160ms var(--ease-out), color 160ms var(--ease-out);
+}
+
+.axisButton:hover,
+.axisButton[data-active] {
+  background: rgb(233 185 73 / 0.07);
+  color: #edefe6;
+}
+
+.axisButton[aria-pressed="true"] {
+  border-left-color: #e9b949;
+}
+
+.axisButtonName {
+  font-size: 0.92rem;
+}
+
+.bar {
+  position: relative;
+  height: 5px;
+  border-radius: 3px;
+  background: rgb(237 239 230 / 0.08);
+  overflow: hidden;
+}
+
+.bar span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 3px;
+  background: #e9b949;
+  transition: width 500ms var(--ease-out);
+}
+
+.bar::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -2px;
+  bottom: -2px;
+  width: 1px;
+  background: rgb(237 239 230 / 0.4);
+}
+
+.axisButtonValue {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.detail {
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem 1.1rem 1.1rem;
+  border: 1px solid rgb(237 239 230 / 0.1);
+  border-radius: var(--radius-m);
+  background: rgb(7 13 10 / 0.6);
+}
+
+.detailName {
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 600;
+}
+
+.detailDef {
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #8f9b93;
+}
+
+.detailFigures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  font-size: 0.8rem;
+  color: #8f9b93;
+}
+
+.detailFigures b {
+  margin-right: 0.3rem;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #edefe6;
+}
+
+.detailFigures span:first-child b {
+  color: #e9b949;
+}
+
+.detailMissing {
+  font-size: 0.85rem;
+  color: #6c786f;
+}
+
+.strip {
+  margin: 0.5rem 0 0;
+}
+
+.stripTrack {
+  position: relative;
+  height: 1.6rem;
+}
+
+.band {
+  position: absolute;
+  top: 0.45rem;
+  height: 0.7rem;
+  background: rgb(237 239 230 / 0.1);
+  border-right: 1px solid #0a110d;
+}
+
+.band[data-mid] {
+  background: rgb(237 239 230 / 0.18);
+}
+
+.median {
+  position: absolute;
+  top: 0.15rem;
+  bottom: 0.15rem;
+  width: 2px;
+  margin-left: -1px;
+  background: rgb(237 239 230 / 0.7);
+}
+
+.marker {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: #e9b949;
+  box-shadow: 0 0 0 3px #0a110d, 0 0 16px rgb(233 185 73 / 0.6);
+  transition: left 500ms var(--ease-out);
+}
+
+.stripAxis {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  color: #6c786f;
+}
+
+@media (max-width: 860px) {
+  .radar {
+    grid-template-columns: 1fr;
+  }
+}

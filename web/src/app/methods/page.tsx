@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { room } from "@/lib/rooms";
 import Link from "next/link";
 import { RoomTransition } from "@/components/site/RoomTransition";
 import { BarList } from "@/components/charts/BarList";
@@ -101,7 +102,7 @@ export default function MethodsPage() {
     <article className={styles.layout}>
       <header className={styles.masthead}>
         <p className={styles.eyebrow}>
-          <b className="num">04</b> Methods · technical account
+          <b className="num">{room("methods").index}</b> Methods · technical account
         </p>
         <h1 className={styles.title}>How FairValue works</h1>
         <p className={styles.lede}>

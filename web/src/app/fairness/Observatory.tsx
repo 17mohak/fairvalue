@@ -1,6 +1,7 @@
 "use client";
 
 import { AnimatePresence, animate, motion, useReducedMotion } from "motion/react";
+import { room } from "@/lib/rooms";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
@@ -114,7 +115,7 @@ export function Observatory({ data }: { data: FairnessData }) {
       <header className={styles.readout}>
         <div className={styles.readoutText}>
           <p className="eyebrow">
-            <b className="num">03</b> Fairness observatory
+            <b className="num">{room("observatory").index}</b> Fairness observatory
           </p>
           <h1 className={styles.title}>Does the model miss everyone the same way?</h1>
           <p className={styles.lede}>

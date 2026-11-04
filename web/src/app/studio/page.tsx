@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { room } from "@/lib/rooms";
 import { RoomTransition } from "@/components/site/RoomTransition";
 import { Studio } from "@/components/studio/Studio";
 import styles from "./page.module.css";
@@ -14,7 +15,7 @@ export default function StudioPage() {
       <div className={styles.studio}>
         <header className={styles.head}>
           <p className="eyebrow">
-            <b className="num">02</b> Valuation studio
+            <b className="num">{room("studio").index}</b> Valuation studio
           </p>
           <h1 className={styles.title}>Value a player</h1>
           <p className={styles.lede}>

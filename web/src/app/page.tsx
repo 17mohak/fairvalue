@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { room } from "@/lib/rooms";
 import { GapGlyph } from "@/components/charts/GapGlyph";
 import { RoomLink } from "@/components/site/RoomLink";
 import { RoomTransition } from "@/components/site/RoomTransition";
@@ -27,7 +28,7 @@ export default function Home() {
         <section className={styles.hero} aria-labelledby="hero-title">
           <div className={styles.heroText}>
             <p className="eyebrow">
-              <b className="num">01</b> Football market intelligence
+              <b className="num">{room("overview").index}</b> Football market intelligence
             </p>
             <h1 id="hero-title" className={styles.title}>
               Price the player.
@@ -164,14 +165,30 @@ export default function Home() {
         <section className={styles.rooms} aria-labelledby="rooms-title">
           <div className={styles.roomsHead}>
             <h2 id="rooms-title" className={styles.h2}>
-              Three ways in
+              Four ways in
             </h2>
             <p>Each part of FairValue is its own workspace.</p>
           </div>
           <ol className={styles.roomList}>
             <li>
+              <RoomLink href="/players" className={styles.room}>
+                <span className={`${styles.roomIndex} num`}>{room("players").index}</span>
+                <span className={styles.roomName}>Players</span>
+                <span className={styles.roomSummary}>
+                  Real players from the research population: observed market value next to the model&apos;s estimates, what moved them, and how
+                  each player ranks among positional peers.
+                </span>
+                <span className={styles.roomGlyph} aria-hidden="true">
+                  <RadarGlyph />
+                </span>
+                <span className={styles.roomArrow} aria-hidden="true">
+                  →
+                </span>
+              </RoomLink>
+            </li>
+            <li>
               <RoomLink href="/studio" className={styles.room}>
-                <span className={`${styles.roomIndex} num`}>02</span>
+                <span className={`${styles.roomIndex} num`}>{room("studio").index}</span>
                 <span className={styles.roomName}>Valuation studio</span>
                 <span className={styles.roomSummary}>
                   Build a profile, value it with the live model, compare Model A with Model B and see the SHAP breakdown of that one estimate.
@@ -186,7 +203,7 @@ export default function Home() {
             </li>
             <li>
               <RoomLink href="/fairness" className={styles.room}>
-                <span className={`${styles.roomIndex} num`}>03</span>
+                <span className={`${styles.roomIndex} num`}>{room("observatory").index}</span>
                 <span className={styles.roomName}>Fairness observatory</span>
                 <span className={styles.roomSummary}>
                   Gaps by league, value level, subgroup and tier, every robustness check, and what the audit cannot establish.
@@ -201,7 +218,7 @@ export default function Home() {
             </li>
             <li>
               <RoomLink href="/methods" className={styles.room}>
-                <span className={`${styles.roomIndex} num`}>04</span>
+                <span className={`${styles.roomIndex} num`}>{room("methods").index}</span>
                 <span className={styles.roomName}>Methods</span>
                 <span className={styles.roomSummary}>
                   Provenance, population, features, nested cross-validation, model selection, explainability, monitoring and limitations.
@@ -218,6 +235,20 @@ export default function Home() {
         </section>
       </div>
     </RoomTransition>
+  );
+}
+
+function RadarGlyph() {
+  const pts = [0, 1, 2, 3, 4, 5].map((i) => {
+    const a = (Math.PI * 2 * i) / 6 - Math.PI / 2;
+    const r = [15, 11, 17, 9, 14, 12][i]!;
+    return `${60 + Math.cos(a) * r},${20 + Math.sin(a) * r}`;
+  });
+  return (
+    <svg viewBox="0 0 120 40" width="120" height="40">
+      <polygon points="60,2 75.6,11 75.6,29 60,38 44.4,29 44.4,11" fill="none" stroke="currentColor" strokeWidth="1" />
+      <polygon points={pts.join(" ")} fill="rgb(233 185 73 / 0.25)" stroke="var(--flood)" strokeWidth="1.25" />
+    </svg>
   );
 }
 

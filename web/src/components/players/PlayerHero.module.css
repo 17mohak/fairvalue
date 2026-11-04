@@ -1,0 +1,316 @@
+/* The player hero: a lit night scene the player stands in, with identity arranged around them.
+   Layers move against each other on pointer movement (--px/--py in -0.5..0.5). */
+
+.hero {
+  position: relative;
+  isolation: isolate;
+  min-height: clamp(640px, 92vh, 940px);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  overflow: hidden;
+  color: #edefe6;
+}
+
+.glyph {
+  position: absolute;
+  z-index: 1;
+  right: -2vw;
+  top: 50%;
+  font-family: var(--font-display);
+  font-size: clamp(16rem, 42vw, 44rem);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(237 239 230 / 0.07);
+  background: linear-gradient(170deg, rgb(233 185 73 / 0.1), rgb(237 239 230 / 0.02) 55%, transparent 80%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  transform: translate(calc(var(--px) * -18px), calc(-50% + var(--py) * -10px));
+  transition: transform 600ms var(--ease-out);
+  user-select: none;
+  animation: glyph-in 1100ms var(--ease-out) both;
+}
+
+@keyframes glyph-in {
+  from {
+    opacity: 0;
+    translate: 6vw 0;
+  }
+}
+
+.inner {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr);
+  width: 100%;
+  max-width: var(--page-wide);
+  margin-inline: auto;
+  padding: clamp(1.25rem, 3vw, 2.25rem) var(--gutter) 0;
+}
+
+/* ---- Identity ---- */
+.identity {
+  display: grid;
+  align-content: center;
+  gap: 1.1rem;
+  padding-bottom: 7.5rem;
+  transform: translate(calc(var(--px) * 6px), calc(var(--py) * 4px));
+  transition: transform 600ms var(--ease-out);
+}
+
+.back {
+  justify-self: start;
+  display: inline-flex;
+  gap: 0.5rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #e9b949;
+  text-decoration: none;
+}
+
+.back:hover span {
+  transform: translateX(-3px);
+}
+
+.back span {
+  display: inline-block;
+  transition: transform 200ms var(--ease-out);
+}
+
+.name {
+  display: grid;
+  gap: 0.2rem;
+  margin-top: 0.5rem;
+}
+
+.first {
+  font-family: var(--font-ui);
+  font-size: clamp(1.5rem, 2.4vw, 2.25rem);
+  font-weight: 400;
+  letter-spacing: 0;
+  color: #c3cbc3;
+  animation: rise 700ms var(--ease-out) 120ms both;
+}
+
+.last {
+  font-size: clamp(4rem, 9vw, 9rem);
+  font-weight: 700;
+  line-height: 0.86;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-shadow: 0 10px 40px rgb(0 0 0 / 0.5);
+  animation: rise 800ms var(--ease-out) 200ms both;
+  overflow-wrap: anywhere;
+}
+
+.role {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 1.375rem;
+  font-weight: 500;
+  color: #c3cbc3;
+  animation: rise 700ms var(--ease-out) 300ms both;
+}
+
+.roleCode {
+  padding: 0.1rem 0.5rem;
+  border-radius: var(--radius-s);
+  background: #e9b949;
+  font-weight: 700;
+  color: #1b1505;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 11rem));
+  gap: 0;
+  margin: 0.75rem 0 0;
+  animation: rise 700ms var(--ease-out) 380ms both;
+}
+
+.facts div {
+  display: grid;
+  align-content: start;
+  gap: 0.25rem;
+  padding: 0.7rem 1.25rem 0.7rem 0;
+  border-top: 1px solid rgb(237 239 230 / 0.08);
+}
+
+.facts dt {
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #8f9b93;
+}
+
+.facts dd {
+  margin: 0;
+  font-size: 0.98rem;
+  font-weight: 500;
+  color: #edefe6;
+}
+
+.facts dd[data-muted] {
+  font-weight: 400;
+  color: #6c786f;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+/* ---- Figure ---- */
+.stage {
+  position: relative;
+  align-self: end;
+  height: clamp(520px, 80vh, 840px);
+  margin-right: -4vw;
+  transform: translate(calc(var(--px) * -10px), calc(var(--py) * -6px));
+  transition: transform 600ms var(--ease-out);
+  animation: figure-in 1100ms var(--ease-out) 150ms both;
+}
+
+@keyframes figure-in {
+  from {
+    opacity: 0;
+    filter: blur(8px);
+    translate: 0 24px;
+  }
+}
+
+/* ---- Value dock: overlaps the bottom of the scene ---- */
+.dock {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  width: calc(100% - 2 * var(--gutter));
+  max-width: calc(var(--page-wide) - 2 * var(--gutter));
+  margin: -6.5rem auto 0;
+  border: 1px solid rgb(237 239 230 / 0.14);
+  border-radius: var(--radius-m);
+  background: rgb(10 17 13 / 0.72);
+  backdrop-filter: blur(16px) saturate(1.3);
+  -webkit-backdrop-filter: blur(16px) saturate(1.3);
+  box-shadow: 0 30px 60px -30px rgb(0 0 0 / 0.7);
+  animation: rise 800ms var(--ease-out) 500ms both;
+}
+
+.market,
+.model {
+  display: grid;
+  gap: 0.25rem;
+  padding: 1.25rem 1.6rem 1.3rem;
+}
+
+.model {
+  border-left: 1px solid rgb(237 239 230 / 0.1);
+}
+
+.dockLabel {
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #8f9b93;
+}
+
+.marketValue {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 0.9;
+  color: #e9b949;
+}
+
+.modelValue {
+  font-family: var(--font-display);
+  font-size: clamp(2.25rem, 3.4vw, 3.25rem);
+  font-weight: 600;
+  line-height: 0.95;
+  color: #edefe6;
+}
+
+.dockSub {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.82rem;
+  color: #8f9b93;
+}
+
+.tier {
+  padding: 0.05rem 0.55rem;
+  border: 1px solid #e9b949;
+  border-radius: 999px;
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #e9b949;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 960px) {
+  .hero {
+    min-height: 0;
+  }
+  .inner {
+    grid-template-columns: 1fr;
+  }
+  .identity {
+    padding-bottom: 0;
+    order: 1;
+  }
+  .stage {
+    order: 0;
+    height: clamp(320px, 62vw, 480px);
+    margin: -1rem -8vw 0 auto;
+    width: min(100%, 26rem);
+  }
+  .glyph {
+    top: 26%;
+    font-size: clamp(12rem, 64vw, 26rem);
+  }
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .dock {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+}
+
+@media (max-width: 560px) {
+  .market,
+  .model {
+    flex: 1 1 100%;
+    padding: 1rem 1.1rem;
+  }
+  .model {
+    border-left: 0;
+    border-top: 1px solid rgb(237 239 230 / 0.1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glyph,
+  .identity,
+  .stage {
+    transform: none;
+    transition: none;
+  }
+  .glyph {
+    transform: translateY(-50%);
+  }
+}

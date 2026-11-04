@@ -1,7 +1,7 @@
-// The four environments of the product, in navigation order. The order also sets the direction
+// The five environments of the product, in navigation order. The order also sets the direction
 // of route transitions: moving to a later room slides forward, an earlier one slides back.
 
-export type RoomId = "overview" | "studio" | "observatory" | "methods";
+export type RoomId = "overview" | "players" | "studio" | "observatory" | "methods";
 
 export interface Room {
   id: RoomId;
@@ -16,10 +16,15 @@ export interface Room {
 
 export const ROOMS: Room[] = [
   { id: "overview", index: "01", href: "/", label: "Overview", short: "Overview", summary: "What FairValue predicts and what the audit found." },
-  { id: "studio", index: "02", href: "/studio", label: "Valuation studio", short: "Studio", summary: "Build a player profile and value it with the live model." },
-  { id: "observatory", index: "03", href: "/fairness", label: "Fairness observatory", short: "Observatory", summary: "Explore the UEFA / non-UEFA error gap, with its uncertainty." },
-  { id: "methods", index: "04", href: "/methods", label: "Methods", short: "Methods", summary: "Data, models, validation, explainability and limits." },
+  { id: "players", index: "02", href: "/players", label: "Players", short: "Players", summary: "Real players from the research population, valued and explained." },
+  { id: "studio", index: "03", href: "/studio", label: "Valuation studio", short: "Studio", summary: "Build a player profile and value it with the live model." },
+  { id: "observatory", index: "04", href: "/fairness", label: "Fairness observatory", short: "Observatory", summary: "Explore the UEFA / non-UEFA error gap, with its uncertainty." },
+  { id: "methods", index: "05", href: "/methods", label: "Methods", short: "Methods", summary: "Data, models, validation, explainability and limits." },
 ];
+
+export function room(id: RoomId): Room {
+  return ROOMS.find((r) => r.id === id)!;
+}
 
 export function roomForPath(path: string): Room {
   const match = ROOMS.slice(1).find((r) => path === r.href || path.startsWith(`${r.href}/`));

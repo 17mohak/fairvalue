@@ -29,6 +29,7 @@ export function BoardControls({ query, leagues, total }: { query: BoardQuery; le
     if (next.league) params.set("league", next.league);
     if (next.tier) params.set("tier", next.tier);
     if (next.sort !== "value") params.set("sort", next.sort);
+    if (next.view !== "cards") params.set("view", next.view);
     const s = params.toString();
     start(() => router.replace(s ? `${path}?${s}` : path, { scroll: false }));
   };
@@ -92,6 +93,14 @@ export function BoardControls({ query, leagues, total }: { query: BoardQuery; le
           <option value="age">Age</option>
         </select>
       </label>
+
+      <div className={styles.views} role="group" aria-label="View">
+        {(["cards", "table"] as const).map((v) => (
+          <button key={v} type="button" aria-pressed={query.view === v} onClick={() => go({ view: v })}>
+            {v === "cards" ? "Cards" : "Table"}
+          </button>
+        ))}
+      </div>
 
       <p className={styles.total} aria-live="polite">
         <span className="num">{total}</span> {total === 1 ? "player" : "players"}

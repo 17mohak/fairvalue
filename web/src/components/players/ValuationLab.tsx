@@ -8,12 +8,14 @@ import { useServiceStatus } from "@/lib/api/service";
 import type { ExplainResponse, PredictResponse } from "@/lib/api/types";
 import { MODEL_LABELS, type ModelId } from "@/lib/football";
 import { formatEur } from "@/lib/format";
-import type { PlayerProfile } from "@/lib/players";
+import { publishedExplanation, type PlayerProfile } from "@/lib/players";
 import styles from "./ValuationLab.module.css";
 
 type Live = { status: "loading" | "online" | "offline"; predict: Partial<Record<ModelId, PredictResponse>>; explain: Partial<Record<ModelId, ExplainResponse>> };
 
 interface Props {
+  /** Grid placement for the two panels this component renders. */
+  areas?: { compare?: string; explain?: string };
   player: PlayerProfile;
   /** Held-out log MAE per model (registry), for the typical-miss band. */
   mae: Record<ModelId, number>;
@@ -22,24 +24,7 @@ interface Props {
 
 const ratio = (a: number, b: number) => `×${(a / b).toFixed(2)}`;
 
-/** The committed research explanation, in the shape the live endpoint returns. */
-function offlineExplanation(p: PlayerProfile, version: string): ExplainResponse | null {
-  const e = p.explanation;
-  if (!e) return null;
-  return {
-    model: e.model,
-    model_version: version,
-    base_log_value: e.base_log_value,
-    base_value_eur: Math.exp(e.base_log_value),
-    predicted_log_value: e.predicted_log_value,
-    predicted_value_eur: Math.exp(e.predicted_log_value),
-    contributions: e.contributions,
-    method: "SHAP TreeExplainer, from the published research run",
-    disclaimer: "",
-  };
-}
-
-export function ValuationLab({ player: p, mae, regressorVersion }: Props) {
+export function ValuationLab({ player: p, mae, regressorVersion, areas = {} }: Props) {
   const service = useServiceStatus();
   const [model, setModel] = useState<ModelId>("A");
   const [live, setLive] = useState<Live>({ status: "loading", predict: {}, explain: {} });
@@ -79,120 +64,130 @@ export function ValuationLab({ player: p, mae, regressorVersion }: Props) {
   // service that does not match the research registry, or the published research result (cached).
   const verified = service.state === "online";
   const liveLabel = verified ? "live" : "live, unverified";
-  const servedSource = (m: ModelId) => (live.predict[m] ? liveLabel : p.estimates.served[m] ? "cached research result" : null);
+  const servedSource = (m: ModelId) => (live.predict[m] ? liveLabel : p.estimates.served[m] ? "cached" : null);
   const best = (m: ModelId) => p.estimates.heldout[m] ?? served(m);
   const selected = best(model);
-  const explanation = live.explain[model] ?? (model === "A" ? offlineExplanation(p, regressorVersion.A) : null);
+  const explanation = live.explain[model] ?? (model === "A" ? publishedExplanation(p, regressorVersion.A) : null);
   const anyHeldout = p.estimates.heldout.A !== null || p.estimates.heldout.B !== null;
 
+  const source: "live" | "unverified" | "cached" | "offline" | "checking" =
+    live.status === "loading" ? "checking" : live.status === "online" ? (verified ? "live" : "unverified") : p.estimates.served.A !== null ? "cached" : "offline";
+  const SOURCE_TEXT = { checking: "Checking API", live: "Live API", unverified: "Unverified API", cached: "Cached research result", offline: "API offline" };
+
   return (
-    <div className={styles.lab}>
-      <div className={styles.columns} role="radiogroup" aria-label="Model shown on the scale and in the explanation">
-        <div className={styles.market}>
-          <p className={styles.colLabel}>Market value</p>
-          <p className={styles.colHint}>Observed · Transfermarkt</p>
-          <p className={`${styles.big} num`}>{formatEur(p.market_value_eur)}</p>
-          <p className={styles.colFoot}>{p.market_tier} tier · the target, not an estimate</p>
-        </div>
-        {(["A", "B"] as const).map((m) => {
-          const h = p.estimates.heldout[m];
-          const s = served(m);
-          return (
-            <button
-              key={m}
-              type="button"
-              role="radio"
-              aria-checked={model === m}
-              className={styles.modelCol}
-              data-active={model === m || undefined}
-              onClick={() => setModel(m)}
-            >
-              <span className={styles.colLabel}>{MODEL_LABELS[m].name}</span>
-              <span className={styles.colHint}>{m === "A" ? "with league and club" : "performance only"}</span>
-              <span className={styles.estimateRow} data-primary={h !== null || undefined}>
-                <span className={styles.estimateKind}>Held-out</span>
-                {h !== null ? (
-                  <>
-                    <span className={`${styles.estimateValue} num`}>{formatEur(h)}</span>
-                    <span className={`${styles.estimateRatio} num`}>{ratio(h, p.market_value_eur)}</span>
-                  </>
-                ) : (
-                  <span className={styles.estimateMissing}>full export only</span>
-                )}
-              </span>
-              <span className={styles.estimateRow} data-primary={h === null || undefined}>
-                <span className={styles.estimateKind}>Served{servedSource(m) ? ` · ${servedSource(m)}` : ""}</span>
-                {s !== null && s !== undefined ? (
-                  <>
-                    <span className={`${styles.estimateValue} num`}>{formatEur(s)}</span>
-                    <span className={`${styles.estimateRatio} num`}>{ratio(s, p.market_value_eur)}</span>
-                  </>
-                ) : (
-                  <span className={styles.estimateMissing}>{live.status === "loading" ? "asking the model…" : "service offline"}</span>
-                )}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+    <>
+      <section className={`fv-panel ${areas.compare ?? ""}`} aria-labelledby="mm-title">
+        <header className="fv-panel-head">
+          <h2 id="mm-title" className="fv-panel-title">
+            Model A vs Model B <small>against the observed {formatEur(p.market_value_eur)}</small>
+          </h2>
+          <span className="fv-source" data-source={source}>
+            {SOURCE_TEXT[source]}
+          </span>
+        </header>
+        <div className={`fv-panel-body ${styles.lab}`}>
+          <div className={styles.columns} role="radiogroup" aria-label="Model shown on the scale and in the explanation">
+            {(["A", "B"] as const).map((m) => {
+              const h = p.estimates.heldout[m];
+              const s = served(m);
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  role="radio"
+                  aria-checked={model === m}
+                  className={styles.modelCol}
+                  data-active={model === m || undefined}
+                  onClick={() => setModel(m)}
+                >
+                  <span className={styles.colLabel}>{MODEL_LABELS[m].name}</span>
+                  <span className={styles.colHint}>{m === "A" ? "with league and club" : "performance only"}</span>
+                  <span className={styles.estimateRow} data-primary={h !== null || undefined}>
+                    <span className={styles.estimateKind}>Held-out</span>
+                    {h !== null ? (
+                      <>
+                        <span className={`${styles.estimateValue} num`}>{formatEur(h)}</span>
+                        <span className={`${styles.estimateRatio} num`}>{ratio(h, p.market_value_eur)}</span>
+                      </>
+                    ) : (
+                      <span className={styles.estimateMissing}>full export only</span>
+                    )}
+                  </span>
+                  <span className={styles.estimateRow} data-primary={h === null || undefined}>
+                    <span className={styles.estimateKind}>Served{servedSource(m) ? ` · ${servedSource(m)}` : ""}</span>
+                    {s !== null && s !== undefined ? (
+                      <>
+                        <span className={`${styles.estimateValue} num`}>{formatEur(s)}</span>
+                        <span className={`${styles.estimateRatio} num`}>{ratio(s, p.market_value_eur)}</span>
+                      </>
+                    ) : (
+                      <span className={styles.estimateMissing}>{live.status === "loading" ? "asking the model…" : "needs the live service"}</span>
+                    )}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
 
-      <p className={styles.status} data-state={live.status === "online" && !verified ? "unverified" : live.status} aria-live="polite">
-        <i aria-hidden="true" />
-        {live.status === "loading"
-          ? "Asking the prediction API…"
-          : live.status === "online"
-            ? verified
-              ? `Live: served estimates from the prediction API (${live.predict.A?.model_version.regressor ?? live.predict.B?.model_version.regressor}).`
-              : `Live, but unverified: ${service.reason} Treat these served figures with caution.`
-            : p.estimates.served.A !== null
-              ? "Prediction API offline. The served Model A figure and its explanation are the published research results (cached), not a live answer. Model B needs the live service."
-              : "Prediction API offline. No served estimates are available; held-out estimates come from the export."}
-      </p>
+          {selected !== null && selected !== undefined && (
+            <div className={styles.ruler}>
+              <ValueRuler
+                ariaLabel={`${MODEL_LABELS[model].name} estimate ${formatEur(selected)} against the observed market value ${formatEur(p.market_value_eur)}`}
+                marker={{ value: selected, label: `${MODEL_LABELS[model].name} ${formatEur(selected)}`, variant: "primary" }}
+                ghost={{ value: p.market_value_eur, label: `Market ${formatEur(p.market_value_eur)}`, variant: "ghost" }}
+                band={[selected / Math.exp(mae[model]), selected * Math.exp(mae[model])]}
+              />
+            </div>
+          )}
 
-      {selected !== null && selected !== undefined && (
-        <div className={styles.ruler}>
-          <ValueRuler
-            ariaLabel={`${MODEL_LABELS[model].name} estimate ${formatEur(selected)} against the observed market value ${formatEur(p.market_value_eur)}`}
-            marker={{ value: selected, label: `${MODEL_LABELS[model].name} ${formatEur(selected)}`, variant: "primary" }}
-            ghost={{ value: p.market_value_eur, label: `Market ${formatEur(p.market_value_eur)}`, variant: "ghost" }}
-            band={[selected / Math.exp(mae[model]), selected * Math.exp(mae[model])]}
-          />
-          <p className={styles.rulerNote}>
-            Shaded: {MODEL_LABELS[model].name}&apos;s typical miss on unseen players (a factor of {Math.exp(mae[model]).toFixed(2)} either way). Hollow
-            marker: the observed market value.
+          <p className={styles.status} data-state={live.status === "online" && !verified ? "unverified" : live.status} aria-live="polite">
+            <i aria-hidden="true" />
+            {live.status === "loading"
+              ? "Asking the prediction API…"
+              : live.status === "online"
+                ? verified
+                  ? `Live: served estimates from the prediction API (${live.predict.A?.model_version.regressor ?? live.predict.B?.model_version.regressor}).`
+                  : `Live, but unverified: ${service.reason} Treat these served figures with caution.`
+                : p.estimates.served.A !== null
+                  ? "Prediction API offline. The served Model A figure and its explanation are the published research results (cached), not a live answer. Model B needs the live service."
+                  : "Prediction API offline. No served estimates are available; held-out estimates come from the export."}
+          </p>
+          <p className={styles.integrity}>
+            <strong>Held-out</strong> estimates come from cross-validation, with this player outside the training data: the honest comparison.{" "}
+            <strong>Served</strong> models were refitted on every player, this one included, so they sit closer to the market.
+            Shaded band: {MODEL_LABELS[model].name}&apos;s typical miss (×{Math.exp(mae[model]).toFixed(2)} either way).
           </p>
         </div>
-      )}
-
-      <div className={styles.integrity}>
-        <p>
-          <strong>Held-out</strong> estimates come from cross-validation, where this player was not in the training data. They are the honest
-          comparison with the market value.{" "}
-          <strong>Served</strong> estimates come from the deployed models, which were refitted on every player, this one included, so they sit
-          closer to the market value than a genuine prediction would.
-          {!anyHeldout && " This build has no held-out estimates: they are added by the full player export."}
-        </p>
-      </div>
-
-      <section className={styles.why} aria-labelledby="why-title">
-        <div className={styles.whyHead}>
-          <h3 id="why-title" className={styles.h3}>
-            {served(model) ? `Why the served ${MODEL_LABELS[model].name} says ${formatEur(served(model)!)}` : `What moves the served ${MODEL_LABELS[model].name}`}
-          </h3>
-          <p>
-            SHAP contributions for this player&apos;s own inputs, from{" "}
-            {live.explain[model] ? (verified ? "the live explanation endpoint" : "the live but unverified explanation endpoint") : explanation ? "the published research results (cached)" : "the live endpoint"}. Effects multiply;
-            they describe the model&apos;s arithmetic, not what causes market value.
-          </p>
-        </div>
-        {explanation ? (
-          <ContributionChart explanation={explanation} top={8} />
-        ) : (
-          <p className={styles.unavailable}>
-            {live.status === "loading" ? "Loading the explanation…" : `No ${MODEL_LABELS[model].name} explanation is available while the prediction API is offline.`}
-          </p>
-        )}
       </section>
-    </div>
+
+      <section className={`fv-panel ${areas.explain ?? ""}`} aria-labelledby="why-title">
+        <header className="fv-panel-head">
+          <h2 id="why-title" className="fv-panel-title">
+            {served(model) ? `Why ${MODEL_LABELS[model].name} says ${formatEur(served(model)!)}` : `What moves ${MODEL_LABELS[model].name}`}
+            <small>SHAP, this player&apos;s own inputs</small>
+          </h2>
+          <div className={styles.toggle} role="radiogroup" aria-label="Explain model">
+            {(["A", "B"] as const).map((m) => (
+              <button key={m} type="button" role="radio" aria-checked={model === m} onClick={() => setModel(m)}>
+                {MODEL_LABELS[m].name}
+              </button>
+            ))}
+          </div>
+        </header>
+        <div className="fv-panel-body">
+          <p className={styles.whyNote}>
+            From {live.explain[model] ? (verified ? "the live explanation endpoint" : "the live but unverified explanation endpoint") : explanation ? "the published research results (cached)" : "the live endpoint"}.
+            Effects multiply from the average training player; they describe the model&apos;s arithmetic, not what causes market value.
+          </p>
+          {explanation ? (
+            <ContributionChart explanation={explanation} top={8} />
+          ) : (
+            <p className={styles.unavailable}>
+              {live.status === "loading" ? "Loading the explanation…" : `No ${MODEL_LABELS[model].name} explanation is available while the prediction API is offline.`}
+            </p>
+          )}
+        </div>
+      </section>
+    </>
   );
 }

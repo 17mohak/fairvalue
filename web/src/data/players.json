@@ -19,6 +19,7 @@
       "league_id": "RU1",
       "club": null,
       "valuation_date": null,
+      "nationality": null,
       "market_value_eur": 600000.0,
       "market_tier": "Emerging",
       "features": {
@@ -189,6 +190,7 @@
       "league_id": "IT1",
       "club": null,
       "valuation_date": null,
+      "nationality": null,
       "market_value_eur": 4000000.0,
       "market_tier": "Established",
       "features": {
@@ -359,6 +361,7 @@
       "league_id": "GB1",
       "club": null,
       "valuation_date": null,
+      "nationality": null,
       "market_value_eur": 22000000.0,
       "market_tier": "Elite",
       "features": {
@@ -529,6 +532,7 @@
       "league_id": "IT1",
       "club": null,
       "valuation_date": null,
+      "nationality": null,
       "market_value_eur": 38000000.0,
       "market_tier": "World Class",
       "features": {
@@ -699,6 +703,7 @@
       "league_id": "GB1",
       "club": null,
       "valuation_date": null,
+      "nationality": null,
       "market_value_eur": 500000.0,
       "market_tier": "Emerging",
       "features": {
@@ -869,6 +874,7 @@
       "league_id": "L1",
       "club": null,
       "valuation_date": null,
+      "nationality": null,
       "market_value_eur": 4000000.0,
       "market_tier": "Established",
       "features": {
@@ -1039,6 +1045,7 @@
       "league_id": "ES1",
       "club": null,
       "valuation_date": null,
+      "nationality": null,
       "market_value_eur": 20000000.0,
       "market_tier": "Elite",
       "features": {
@@ -1209,6 +1216,7 @@
       "league_id": "IT1",
       "club": null,
       "valuation_date": null,
+      "nationality": null,
       "market_value_eur": 32000000.0,
       "market_tier": "World Class",
       "features": {

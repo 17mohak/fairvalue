@@ -6,7 +6,7 @@
 
 .columns {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   border: 1px solid rgb(237 239 230 / 0.1);
   border-radius: var(--radius-m);
   overflow: hidden;
@@ -27,13 +27,17 @@
 
 .modelCol {
   border: 0;
-  border-left: 1px solid rgb(237 239 230 / 0.1);
+  background: transparent;
   background: transparent;
   color: inherit;
   font: inherit;
   cursor: pointer;
   box-shadow: inset 0 -2px 0 transparent;
   transition: background-color 180ms var(--ease-out), box-shadow 180ms var(--ease-out);
+}
+
+.modelCol + .modelCol {
+  border-left: 1px solid rgb(237 239 230 / 0.1);
 }
 
 .modelCol:hover {
@@ -66,7 +70,7 @@
 .big {
   margin-top: 0.6rem;
   font-family: var(--font-display);
-  font-size: 2.75rem;
+  font-size: 2.4rem;
   font-weight: 700;
   line-height: 0.95;
   color: #e9b949;
@@ -170,12 +174,9 @@
 }
 
 .integrity {
-  padding: 0.9rem 1.1rem;
-  border-left: 2px solid #e9b949;
-  background: rgb(233 185 73 / 0.05);
-  font-size: 0.85rem;
-  line-height: 1.55;
-  color: #c3cbc3;
+  font-size: 0.76rem;
+  line-height: 1.5;
+  color: #8f9b93;
 }
 
 .integrity strong {
@@ -216,15 +217,6 @@
   .columns {
     grid-template-columns: 1fr 1fr;
   }
-  .market {
-    grid-column: 1 / -1;
-  }
-  .modelCol:nth-child(2) {
-    border-left: 0;
-  }
-  .modelCol {
-    border-top: 1px solid rgb(237 239 230 / 0.1);
-  }
   .estimateRow {
     grid-template-columns: minmax(0, 1fr) auto;
     row-gap: 0.1rem;
@@ -241,4 +233,39 @@
   .estimateRow[data-primary] .estimateValue {
     font-size: 1.5rem;
   }
+}
+
+.lab {
+  gap: 1.1rem;
+}
+
+.toggle {
+  display: flex;
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid rgb(237 239 230 / 0.1);
+  border-radius: 999px;
+}
+
+.toggle button {
+  padding: 0.25rem 0.75rem;
+  border: 0;
+  border-radius: 999px;
+  background: transparent;
+  font-family: var(--font-display);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #8f9b93;
+  cursor: pointer;
+}
+
+.toggle button[aria-checked="true"] {
+  background: #e9b949;
+  color: #1b1505;
+}
+
+.whyNote {
+  margin-bottom: 0.9rem;
+  font-size: 0.78rem;
+  color: #8f9b93;
 }

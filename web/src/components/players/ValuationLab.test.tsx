@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import showcase from "@/data/players.json";
 import { resetServiceStatus, setServiceStatus } from "@/lib/api/service";
@@ -21,12 +21,13 @@ describe("Valuation lab", () => {
     render(<ValuationLab {...props} />);
     expect(await screen.findByText(/Prediction API offline/)).toBeInTheDocument();
     expect(screen.getByText(/published research results \(cached\), not a live answer/)).toBeInTheDocument();
-    expect(screen.getByText("Served · cached research result")).toBeInTheDocument();
+    expect(screen.getByText("Served · cached")).toBeInTheDocument();
+    expect(screen.getByText("Cached research result")).toBeInTheDocument(); // the panel's source badge
     expect(screen.queryByText(/Served · live/)).not.toBeInTheDocument();
     expect(screen.getAllByText("€16.5M").length).toBeGreaterThan(0); // reports/explainability, served Model A
     expect(screen.getByText("Average training player")).toBeInTheDocument(); // the offline SHAP waterfall
     // Model B has no offline figure: it says so rather than inventing one.
-    await userEvent.click(screen.getByRole("radio", { name: /Model B/ }));
+    await userEvent.click(within(screen.getByRole("radiogroup", { name: "Explain model" })).getByRole("radio", { name: "Model B" }));
     expect(screen.getByText(/No Model B explanation is available/)).toBeInTheDocument();
   });
 

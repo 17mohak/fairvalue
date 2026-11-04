@@ -137,6 +137,21 @@ describe("Valuation studio", () => {
     expect(await screen.findByText("Unverified service.")).toBeInTheDocument();
   });
 
+  it("offers the published research results, labelled cached, when the service is offline", async () => {
+    mockApi(() => new Response(JSON.stringify({ detail: "down", service: { state: "offline", reason: "unreachable" } }), { status: 503 }));
+    render(<Studio />);
+    expect(await screen.findByText("Model service offline")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: "Value this player" }));
+    expect(await screen.findByText("The valuation service is offline")).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("button", { name: /Santiago Castro/ }));
+    expect(await screen.findByText("Cached research result · not live")).toBeInTheDocument();
+    expect(screen.getAllByText("€39.7M").length).toBeGreaterThan(0); // reports/explainability, served Model A
+    expect(screen.queryByText(/Live prediction/)).not.toBeInTheDocument();
+    // Choosing a research player from the menu while offline opens its cached result directly.
+    await userEvent.selectOptions(screen.getByRole("combobox", { name: /Start from/ }), "research-605184");
+    expect((await screen.findAllByText("€16.5M")).length).toBeGreaterThan(0);
+  });
+
   it("keeps roles consistent when the position changes", async () => {
     mockApi(realApi);
     render(<Studio />);

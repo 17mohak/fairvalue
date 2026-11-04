@@ -13,7 +13,7 @@ describe("player helpers", () => {
 
   it("falls back to safe defaults for unknown board parameters", () => {
     const q = parseBoardQuery({ position: "Striker", tier: "Legend", sort: "residual", league: "<script>", q: "x".repeat(200) });
-    expect(q).toEqual({ q: "x".repeat(60), position: "", league: "", tier: "", sort: "value" });
+    expect(q).toEqual({ q: "x".repeat(60), position: "", league: "", tier: "", sort: "value", view: "cards" });
   });
 
   it("filters by accent-insensitive name, position and tier, sorted by observed value", () => {

@@ -137,7 +137,7 @@ def tier_of(value_eur: float | None) -> str | None:
     return TIER_NAMES[int(np.searchsorted(TIER_BOUNDARIES_EUR, value_eur, side="right"))]
 
 
-def base_profile(pid: int, name: str, row: dict, market_value: float, group: str) -> dict:
+def base_profile(pid: int, name: str, row: dict, market_value: float, group: str, nationality: str | None = None) -> dict:
     first, last = split_name(name)
     return {
         "id": int(pid),
@@ -147,6 +147,8 @@ def base_profile(pid: int, name: str, row: dict, market_value: float, group: str
         "foot": _clean(row.get("foot")), "height_cm": _clean(row.get("height_in_cm")),
         "age": round(float(row["age"]), 2), "league_id": row["valuation_league_id"],
         "club": None, "valuation_date": None,
+        # First-listed citizenship, shown as profile information only (D-037). Never a model input.
+        "nationality": nationality,
         "market_value_eur": float(market_value), "market_tier": tier_of(float(market_value)),
         "features": api_features(row),
         "window": window_stats(row),
@@ -249,6 +251,7 @@ def full(md: pd.DataFrame, universe: pd.DataFrame, names: pd.DataFrame, valuatio
     club = universe.set_index("player_id")["valuation_club_name"]
     name = names.set_index("player_id")["name"]
     group = audit.set_index("player_id")["audit_group"]
+    nation = audit.set_index("player_id")["country_of_citizenship"] if "country_of_citizenship" in audit else pd.Series(dtype=object)
     hist = valuations[valuations.player_id.isin(md.player_id)].sort_values(["player_id", "date"])
     hist_by = {pid: g for pid, g in hist.groupby("player_id")}
 
@@ -256,7 +259,8 @@ def full(md: pd.DataFrame, universe: pd.DataFrame, names: pd.DataFrame, valuatio
     for i, r in md.iterrows():
         row = r.to_dict()
         pid = int(row["player_id"])
-        p = base_profile(pid, str(name.get(pid, f"Player {pid}")), row, row["market_value_in_eur"], str(group.get(pid, "")))
+        p = base_profile(pid, str(name.get(pid, f"Player {pid}")), row, row["market_value_in_eur"], str(group.get(pid, "")),
+                         _clean(nation.get(pid)))
         p["club"] = _clean(club.get(pid))
         p["valuation_date"] = pd.Timestamp(row["valuation_date"]).date().isoformat()
         if heldout:
@@ -289,7 +293,7 @@ def main() -> None:
 
     md = pd.read_parquet(PROCESSED_DIR / "model_dataset.parquet")
     universe = pd.read_parquet(PROCESSED_DIR / "player_universe.parquet", columns=["player_id", "valuation_club_name"])
-    audit = pd.read_parquet(PROCESSED_DIR / "audit_lookup.parquet", columns=["player_id", "audit_group"])
+    audit = pd.read_parquet(PROCESSED_DIR / "audit_lookup.parquet", columns=["player_id", "audit_group", "country_of_citizenship"])
     names = pd.read_csv(RAW_DIR / "players.csv.gz", usecols=["player_id", "name"])  # image_url deliberately not read
     vals = pd.read_csv(RAW_DIR / "player_valuations.csv.gz", usecols=["player_id", "date", "market_value_in_eur", "current_club_name"],
                        parse_dates=["date"])

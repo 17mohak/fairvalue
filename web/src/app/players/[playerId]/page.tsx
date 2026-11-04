@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ViewTransition } from "react";
-import { PlayerHero } from "@/components/players/PlayerHero";
+import { PlayerHero, type HeroEstimate } from "@/components/players/PlayerHero";
 import { PortraitSlot } from "@/components/players/PortraitSlot";
 import { TraitsRadar } from "@/components/players/TraitsRadar";
 import { ValuationLab } from "@/components/players/ValuationLab";
@@ -10,7 +10,7 @@ import { RoomLink } from "@/components/site/RoomLink";
 import { RoomTransition } from "@/components/site/RoomTransition";
 import { leagueName } from "@/lib/football";
 import { formatEur, integer, signed } from "@/lib/format";
-import { idFromParam, type PlayerProfile } from "@/lib/players";
+import { idFromParam, POSITION_PLURAL, type PlayerProfile, type TraitKey } from "@/lib/players";
 import { neighbours, playerById, playerSet } from "@/lib/players.server";
 import { portraitFor } from "@/lib/portraits";
 import { heldOutLogMae, research } from "@/lib/research";
@@ -48,176 +48,122 @@ export default async function PlayerPage({ params }: Params) {
   const valued = p.valuation_date
     ? new Date(`${p.valuation_date}T00:00:00Z`).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" })
     : windowLabel();
-  const heroEstimate =
-    p.estimates.heldout.A !== null
-      ? { label: "Model A · held-out estimate", value: p.estimates.heldout.A }
-      : p.estimates.served.A !== null
-        ? { label: "Model A · served, in-sample · cached research result", value: p.estimates.served.A }
-        : null;
+  const heroEstimates: HeroEstimate[] = (["A", "B"] as const).map((m) =>
+    p.estimates.heldout[m] !== null
+      ? { model: m, value: p.estimates.heldout[m], source: "heldout" }
+      : p.estimates.served[m] !== null
+        ? { model: m, value: p.estimates.served[m], source: "cached" }
+        : { model: m, value: null, source: "live-only" },
+  );
   const gap = research.headline.A.signed_gap_league_stratified;
   const residual = p.estimates.heldout.A !== null ? Math.log(p.market_value_eur) - Math.log(p.estimates.heldout.A) : null;
-  const w = p.window;
   const more = neighbours(p.id, 4);
+  const hasHistory = !!p.history && p.history.length > 1;
+  const raw = Object.fromEntries(
+    (["goals_p90", "assists_p90", "minutes", "start_share", "minutes_last_365", "intl_club_minutes_share"] as TraitKey[]).map((k) => [k, p.features[k] as number]),
+  ) as Partial<Record<TraitKey, number>>;
 
   return (
     <RoomTransition>
       <article className={styles.profile}>
-        <PlayerHero player={p} portrait={portrait} roomIndex={room("players").index} valuedLabel={valued} estimate={heroEstimate} />
+        <PlayerHero player={p} portrait={portrait} roomIndex={room("players").index} valuedLabel={valued} estimates={heroEstimates} />
 
-        <section className={styles.strip} aria-label="Club football in the two years to the valuation date">
-          <p className={styles.stripLabel}>Two years to the valuation date</p>
-          <dl>
-            <div>
-              <dt>Appearances</dt>
-              <dd className="num">{w.appearances}</dd>
-            </div>
-            <div>
-              <dt>Minutes</dt>
-              <dd className="num">{integer(w.minutes)}</dd>
-            </div>
-            {p.position !== "Goalkeeper" && (
-              <>
-                <div>
-                  <dt>Goals</dt>
-                  <dd className="num">{w.goals ?? "–"}</dd>
-                </div>
-                <div>
-                  <dt>Assists</dt>
-                  <dd className="num">{w.assists ?? "–"}</dd>
-                </div>
-              </>
-            )}
-            <div>
-              <dt>Started</dt>
-              <dd className="num">
-                {w.started}
-                <small>/{w.appearances}</small>
-              </dd>
-            </div>
-            <div>
-              <dt>Cards</dt>
-              <dd className="num">
-                {w.yellow_cards ?? "–"}
-                <small> Y</small> {w.red_cards ?? "–"}
-                <small> R</small>
-              </dd>
-            </div>
-          </dl>
-        </section>
+        <div className={styles.grid} data-history={hasHistory || undefined}>
+          <ValuationLab
+            areas={{ compare: styles.compare, explain: styles.explain }}
+            player={p}
+            mae={{ A: heldOutLogMae("A"), B: heldOutLogMae("B") }}
+            regressorVersion={{ A: research.models.registry.regressor_A.version, B: research.models.registry.regressor_B.version }}
+          />
 
-        <div className={styles.body}>
-          <section className={styles.panel} aria-labelledby="sec-value">
-            <header className={styles.panelHead}>
-              <p className={styles.panelNo}>01</p>
-              <h2 id="sec-value" className={styles.h2}>
-                Market and model
-              </h2>
-              <p className={styles.panelLede}>
-                The observed value next to what each model estimates from this player&apos;s data. Click a model to put it on the scale and
-                explain it.
-              </p>
-            </header>
-            <ValuationLab
-              player={p}
-              mae={{ A: heldOutLogMae("A"), B: heldOutLogMae("B") }}
-              regressorVersion={{ A: research.models.registry.regressor_A.version, B: research.models.registry.regressor_B.version }}
-            />
-          </section>
-
-          <section className={styles.panel} aria-labelledby="sec-traits">
-            <header className={styles.panelHead}>
-              <p className={styles.panelNo}>02</p>
-              <h2 id="sec-traits" className={styles.h2}>
+          <section className={`fv-panel ${styles.traits}`} aria-labelledby="traits-title">
+            <header className="fv-panel-head">
+              <h2 id="traits-title" className="fv-panel-title">
                 Player traits
+                <small>{peers ? `percentiles vs ${integer(peers.n)} ${POSITION_PLURAL[p.position]}` : "model inputs, two years"}</small>
               </h2>
-              <p className={styles.panelLede}>
-                Percentiles among positional peers on the model&apos;s own inputs. The dataset has no passing, progression or defensive
-                actions, so no trait claims to measure them.
-              </p>
+              {!peers && <span className="fv-chip">No peer data in this build</span>}
             </header>
-            <TraitsRadar traits={p.traits} peers={peers} position={p.position} playerName={p.name} />
+            <div className="fv-panel-body">
+              <TraitsRadar traits={p.traits} peers={peers} position={p.position} playerName={p.name} raw={raw} />
+              <p className={styles.panelFoot}>No passing, progression or defensive actions exist in the dataset, so no trait claims to measure them.</p>
+            </div>
           </section>
 
-          {p.history && p.history.length > 1 && (
-            <section className={styles.panel} aria-labelledby="sec-history">
-              <header className={styles.panelHead}>
-                <p className={styles.panelNo}>03</p>
-                <h2 id="sec-history" className={styles.h2}>
-                  Valuation history
+          {hasHistory && (
+            <section className={`fv-panel ${styles.history}`} aria-labelledby="history-title">
+              <header className="fv-panel-head">
+                <h2 id="history-title" className="fv-panel-title">
+                  Valuation history <small>every Transfermarkt valuation on record</small>
                 </h2>
-                <p className={styles.panelLede}>Every Transfermarkt valuation on record. The highlighted point is the one the model was trained to reproduce.</p>
               </header>
-              <ValueHistory history={p.history} valuationDate={p.valuation_date} heldout={p.estimates.heldout.A} />
+              <div className="fv-panel-body">
+                <ValueHistory history={p.history!} valuationDate={p.valuation_date} heldout={p.estimates.heldout.A} />
+              </div>
             </section>
           )}
 
-          <section className={`${styles.panel} ${styles.audit}`} aria-labelledby="sec-audit">
-            <header className={styles.panelHead}>
-              <p className={styles.panelNo}>{p.history && p.history.length > 1 ? "04" : "03"}</p>
-              <h2 id="sec-audit" className={styles.h2}>
-                Audit context
+          <section className={`fv-panel ${styles.audit}`} aria-labelledby="audit-title">
+            <header className="fv-panel-head">
+              <h2 id="audit-title" className="fv-panel-title">
+                Audit context <small>group-level, not about this player</small>
               </h2>
             </header>
-            <div className={styles.auditGrid}>
+            <div className="fv-panel-body">
               <dl className={styles.auditFacts}>
                 <div>
                   <dt>Audit group</dt>
                   <dd>{p.audit.group ?? "Not assigned"}</dd>
                 </div>
                 <div>
-                  <dt>Group-level gap, Model A</dt>
-                  <dd className="num">{signed(gap.estimate)}</dd>
+                  <dt>Population gap, Model A</dt>
+                  <dd className="num">
+                    {signed(gap.estimate)} <small>95% CI {signed(gap.low)} to {signed(gap.high)}</small>
+                  </dd>
                 </div>
                 <div>
                   <dt>This player, market vs held-out A</dt>
-                  <dd className="num">{residual !== null ? signed(residual) : "full export only"}</dd>
+                  <dd className="num">{residual !== null ? signed(residual) : <small>full export only</small>}</dd>
                 </div>
               </dl>
-              <div className="prose">
-                <p>
-                  The audit group comes from the player&apos;s first-listed citizenship and is used only to compare groups. The model never sees
-                  it. Across the population, non-UEFA players&apos; market values sit about {Math.round(Math.expm1(gap.estimate) * 100)}% above
-                  Model A&apos;s held-out estimates, relative to UEFA players in the same leagues.
-                </p>
-                <p>
-                  One player&apos;s residual says nothing about that pattern: individual estimates typically miss by a factor of{" "}
-                  {Math.exp(heldOutLogMae("A")).toFixed(2)} either way. Nor is any of this evidence of discrimination: the target is
-                  Transfermarkt&apos;s own valuation, which may itself be biased. <RoomLink href="/fairness">See the observatory</RoomLink>.
-                </p>
-              </div>
+              <p className={styles.auditNote}>
+                The group comes from first-listed citizenship and is never a model input. Across the population, non-UEFA players&apos; market values
+                sit about {Math.round(Math.expm1(gap.estimate) * 100)}% above Model A&apos;s held-out estimates, relative to UEFA players in the same
+                leagues. One player&apos;s residual says nothing about that pattern (typical miss ×{Math.exp(heldOutLogMae("A")).toFixed(2)}), and none
+                of it is evidence of discrimination: the target may itself be biased. <RoomLink href="/fairness">Open the observatory</RoomLink>
+              </p>
             </div>
           </section>
         </div>
 
         <section className={styles.more} aria-labelledby="more-title">
-          <div className={styles.moreHead}>
-            <h2 id="more-title" className={styles.h2}>
-              More players
+          <header className={styles.moreHead}>
+            <h2 id="more-title" className="fv-panel-title">
+              More players <small>{set.source === "showcase" ? "research showcase" : "nearest by market value"}</small>
             </h2>
             <RoomLink href="/players" className={styles.moreAll}>
               All players →
             </RoomLink>
-          </div>
+          </header>
           <ul className={styles.moreList}>
             {more.map((q) => (
               <li key={q.id}>
                 <RoomLink href={`/players/${q.slug}`} className={styles.moreCard}>
-                  <span className={styles.moreFigure} aria-hidden="true">
-                    <PortraitSlot portrait={portraitFor(q.id)} name={q.name} size="card" />
+                  <span className={styles.moreThumb}>
+                    <PortraitSlot portrait={portraitFor(q.id)} name={q.name} roleCode={q.role_code} size="thumb" />
                   </span>
-                  <ViewTransition name={`glyph-${q.id}`} share="morph" default="none">
-                    <span className={styles.moreGlyph} aria-hidden="true">
-                      {q.role_code}
+                  <span className={styles.moreText}>
+                    <span className={styles.moreName}>
+                      <ViewTransition name={`name-${q.id}`} share="morph" default="none">
+                        <b>{q.last_name}</b>
+                      </ViewTransition>
+                      <ViewTransition name={`glyph-${q.id}`} share="morph" default="none">
+                        <span className="fv-role">{q.role_code}</span>
+                      </ViewTransition>
                     </span>
-                  </ViewTransition>
-                  <span className={styles.moreName}>
-                    <small>{q.first_name}</small>
-                    <ViewTransition name={`name-${q.id}`} share="morph" default="none">
-                      <b>{q.last_name}</b>
-                    </ViewTransition>
-                  </span>
-                  <span className={styles.moreMeta}>
-                    {q.sub_position} · {q.club ?? leagueName(q.league_id).split(",")[0]}
+                    <span className={styles.moreMeta}>
+                      {q.club ?? leagueName(q.league_id).split(",")[0]} · {Math.floor(q.age)}
+                    </span>
                   </span>
                   <span className={`${styles.moreValue} num`}>{formatEur(q.market_value_eur)}</span>
                 </RoomLink>
@@ -226,7 +172,7 @@ export default async function PlayerPage({ params }: Params) {
           </ul>
           <p className={styles.provenance}>
             {set.source === "showcase" ? "Research showcase: " : "Full player export: "}
-            {set.selection} Generated by <code>{set.generated_by.split(" (")[0]}</code>.
+            {set.selection}
           </p>
         </section>
       </article>

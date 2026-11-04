@@ -1,0 +1,5 @@
+{
+  "policy": "Only images with a licence on the allow-list, a named author, a source URL and the attribution text may be listed. Never use Transfermarkt's image_url, club media-kit images or agency photos without a written licence. See docs/PLAYER_ASSETS.md.",
+  "allowed_licences": ["CC0-1.0", "CC-BY-4.0", "CC-BY-SA-4.0", "owned"],
+  "portraits": []
+}

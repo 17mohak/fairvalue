@@ -1,0 +1,96 @@
+{
+  "source": "dcaribou/transfermarkt-datasets (public R2 bucket)",
+  "source_note": "Upstream updates paused; snapshot current to 2026-07-06 per maintainer README.",
+  "tables": [
+    {
+      "table": "players",
+      "url": "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/players.csv.gz",
+      "file": "players.csv.gz",
+      "bytes": 4389958,
+      "sha256": "d22e407981d5b51a79bf8ff59835729f3526f7dc3495a6d8ed2f852ed2e86403",
+      "server_last_modified": "Sat, 05 Sep 2026 09:12:22 GMT",
+      "downloaded_at_utc": "2026-11-04T15:11:15+00:00"
+    },
+    {
+      "table": "appearances",
+      "url": "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/appearances.csv.gz",
+      "file": "appearances.csv.gz",
+      "bytes": 45253638,
+      "sha256": "e096c2b158fc3d52c4550526c4d4850dd62f31007652f4bcae112eadb1646802",
+      "server_last_modified": "Sat, 05 Sep 2026 09:11:59 GMT",
+      "downloaded_at_utc": "2026-11-04T15:11:20+00:00"
+    },
+    {
+      "table": "game_events",
+      "url": "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/game_events.csv.gz",
+      "file": "game_events.csv.gz",
+      "bytes": 45466137,
+      "sha256": "80eb3b2a85c780b2caaf1e8850c3d16de7f8b1240b53aaf415bdc56b641d7d68",
+      "server_last_modified": "Sat, 05 Sep 2026 09:12:14 GMT",
+      "downloaded_at_utc": "2026-11-04T15:11:25+00:00"
+    },
+    {
+      "table": "clubs",
+      "url": "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/clubs.csv.gz",
+      "file": "clubs.csv.gz",
+      "bytes": 51281,
+      "sha256": "aa57ab56e87faffaea1e8697439a32caf10116d8f2f2dfb3a57193c0bb1d641b",
+      "server_last_modified": "Sat, 05 Sep 2026 09:12:01 GMT",
+      "downloaded_at_utc": "2026-11-04T15:11:26+00:00"
+    },
+    {
+      "table": "competitions",
+      "url": "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/competitions.csv.gz",
+      "file": "competitions.csv.gz",
+      "bytes": 2242,
+      "sha256": "8924ddfbc0e9989f4a42a3c32ebb6faa671614625086d7fa84353f955352ea88",
+      "server_last_modified": "Sat, 05 Sep 2026 09:12:02 GMT",
+      "downloaded_at_utc": "2026-11-04T15:11:26+00:00"
+    },
+    {
+      "table": "games",
+      "url": "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/games.csv.gz",
+      "file": "games.csv.gz",
+      "bytes": 4995595,
+      "sha256": "142561989017d379bcf9e72bad0b87e0996bae0e7b710ebb3def9255f464c741",
+      "server_last_modified": "Sat, 05 Sep 2026 09:12:20 GMT",
+      "downloaded_at_utc": "2026-11-04T15:11:27+00:00"
+    },
+    {
+      "table": "player_valuations",
+      "url": "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/player_valuations.csv.gz",
+      "file": "player_valuations.csv.gz",
+      "bytes": 7197935,
+      "sha256": "608e32e5ad2231074f3505c469ad727be66d7e6efda6af918afd85379439631d",
+      "server_last_modified": "Sat, 05 Sep 2026 09:12:22 GMT",
+      "downloaded_at_utc": "2026-11-04T15:11:28+00:00"
+    },
+    {
+      "table": "transfers",
+      "url": "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/transfers.csv.gz",
+      "file": "transfers.csv.gz",
+      "bytes": 5809514,
+      "sha256": "90326983daf7e6ac7aabdfe62b90936d9bf1dd2171e53dec75c3751eb1620a83",
+      "server_last_modified": "Sat, 05 Sep 2026 09:12:23 GMT",
+      "downloaded_at_utc": "2026-11-04T15:11:29+00:00"
+    },
+    {
+      "table": "countries",
+      "url": "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/countries.csv.gz",
+      "file": "countries.csv.gz",
+      "bytes": 2878,
+      "sha256": "4b6310f95f41cc81d5f5907d6436f921159cfb180adbc526b5f71c28b6ac8209",
+      "server_last_modified": "Sat, 05 Sep 2026 09:12:02 GMT",
+      "downloaded_at_utc": "2026-11-04T15:11:30+00:00"
+    },
+    {
+      "table": "national_teams",
+      "url": "https://pub-e682421888d945d684bcae8890b0ec20.r2.dev/data/national_teams.csv.gz",
+      "file": "national_teams.csv.gz",
+      "bytes": 6952,
+      "sha256": "24ddf7b5c432143e3b471e0fd5f6a46713914609566403a735674d1a1cf1f939",
+      "server_last_modified": "Sat, 05 Sep 2026 09:12:20 GMT",
+      "downloaded_at_utc": "2026-11-04T15:11:30+00:00"
+    }
+  ]
+}

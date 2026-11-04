@@ -1,0 +1,8 @@
+# Minimal runtime for the prediction API container (no training/MLOps libraries).
+# Versions must match requirements.txt so pickled pipelines load identically.
+numpy==2.1.3
+pandas==2.2.3
+scikit-learn==1.6.1
+fastapi==0.115.6
+uvicorn==0.32.1
+pydantic==2.14.2

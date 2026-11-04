@@ -42,8 +42,7 @@ _Last updated: 2026-11-05_
   owner's approval.
 - **Hosting (Railway/Render) and GHCR image publishing:** not done; needs approval, and free-tier terms
   must be checked first.
-- **Academic report:** update its wording (frozen dataset, real sizes, scope statement, results, reversed
-  hypothesis finding).
+- **Academic report:** already submitted by the owner; no update planned from this repository.
 
 ## How to resume
 - Start Docker Desktop first if you need the container (the engine runs after enabling virtualization).

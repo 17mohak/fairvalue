@@ -15,7 +15,7 @@ Research design locked 2026-11-04 (`docs/RESEARCH_DESIGN.md`, D-011).
 | 7 | MLOps and monitoring | **Done (CI not yet run)** | Evidently + PSI drift simulation, retraining policy, quality gates, GitHub Actions workflow |
 | 8 | Responsible AI documentation | **Done** | model card, data card, EU AI Act assessment |
 | 9 | Release (needs approval) | Not started | GitHub remote + first CI run; GHCR image; Railway/Render deployment |
-| 10 | Report integration | Not started | update the academic report wording and figures from `reports/` |
+| 10 | Report integration | Not needed | the academic report was already submitted by the owner |
 
 Pushing to GitHub, publishing to GHCR and hosting on Railway/Render need explicit approval.
 

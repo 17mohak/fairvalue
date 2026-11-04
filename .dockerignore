@@ -1,0 +1,5 @@
+*
+!requirements-api.txt
+!src/
+!models/
+src/**/__pycache__

@@ -18,7 +18,7 @@ from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 
 from src.api.schemas import DISCLAIMER, HealthResponse, PredictRequest, PredictResponse
 from src.features.preprocess import assert_no_demographic_columns, feature_columns
@@ -42,7 +42,7 @@ def known_sub_positions(pipe) -> set:
     """Sub-positions the fitted encoder has seen (others would be silently ignored, so reject)."""
     enc = pipe["pre"].named_transformers_["cat"]["onehot"]
     cols = pipe["pre"].transformers_[1][2]
-    return set(enc.categories_[cols.index("sub_position")]) - {"missing"}
+    return set(enc.categories_[cols.index("sub_position")])
 
 
 @asynccontextmanager
@@ -56,10 +56,12 @@ app = FastAPI(title="FairValue market value API", version="0.1.0",
 
 
 @app.get("/health", response_model=HealthResponse)
-def health() -> HealthResponse:
+def health(response: Response) -> HealthResponse:
     reg = STATE["registry"] or {}
     versions = {k: v["version"] for k, v in reg.get("models", {}).items() if k in STATE["models"]}
     ok = {"regressor_A", "classifier_A"} <= set(STATE["models"])
+    if not ok:
+        response.status_code = 503  # lets the Docker HEALTHCHECK fail when models are missing
     return HealthResponse(status="ok" if ok else "degraded", models_loaded=sorted(STATE["models"]),
                           model_versions=versions, dataset_sha256_16=reg.get("dataset_sha256_16"))
 
@@ -71,7 +73,7 @@ def predict(req: PredictRequest) -> PredictResponse:
     if reg is None or clf is None:
         raise HTTPException(status_code=503, detail=f"Model {req.model} is not loaded")
     feats = req.player.to_features()
-    if feats["sub_position"] is not None and feats["sub_position"] not in known_sub_positions(reg):
+    if feats["sub_position"] not in known_sub_positions(reg):
         raise HTTPException(status_code=422, detail=f"Unknown sub_position '{feats['sub_position']}'; "
                                                     f"expected one of {sorted(known_sub_positions(reg))}")
     cols = feature_columns(fs)

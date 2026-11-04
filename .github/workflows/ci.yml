@@ -52,4 +52,6 @@ jobs:
           for i in $(seq 1 30); do curl -sf localhost:8000/health && break; sleep 2; done
           curl -sf -X POST localhost:8000/predict -H 'Content-Type: application/json' \
             -d '{"player": {"age": 24.5, "height_in_cm": 181, "position": "Attack", "sub_position": "Centre-Forward", "foot": "right", "valuation_league_id": "ES1", "club_ppg": 1.6, "appearances": 60, "minutes": 4200, "start_share": 0.8, "goals_p90": 0.45, "assists_p90": 0.15, "minutes_last_365": 2300, "days_since_last_match": 7}}'
-          docker rm -f api
+      - name: Remove test container
+        if: always()
+        run: docker rm -f api || true

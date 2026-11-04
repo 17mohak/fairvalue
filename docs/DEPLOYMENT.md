@@ -12,6 +12,8 @@
 |---|---|
 | `GET /health` | Status, loaded models, model versions, dataset fingerprint |
 | `POST /predict` | `{"player": {...}, "model": "A"}` → `predicted_value_eur`, `predicted_tier`, `classifier_tier`, `tier_probabilities`, `model_version`, `disclaimer` |
+| `POST /explain` | same body → per-feature SHAP contributions (log scale) that add up to the prediction; 501 if `shap` is not installed (D-033) |
+| `GET /metadata` | leagues, sub-positions by position, tier boundaries, model versions and held-out metrics |
 
 **Validation (Pydantic, `src/api/schemas.py`):**
 - Inputs must fall inside the approved population: age 15–45, minutes ≥ 450, one of the 14 leagues,
@@ -55,3 +57,8 @@ docker run -p 8000:8000 fairvalue-api
 - Free-tier terms must be checked at that point.
 - Model files are build inputs. A CI publish job would need to train/refit first (as the CI job
   already does) or pull versioned models from a release artefact.
+
+## Web app and full stack
+The Next.js front end has its own image (`web/Dockerfile`). `docker compose up --build` runs both
+services (API :8000, web :3000); the web app reaches the API at `FAIRVALUE_API_URL`. Details in
+`docs/PRODUCT.md`. Hosting and image publishing still need owner approval.

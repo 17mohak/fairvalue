@@ -263,6 +263,24 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
 - `scripts/run_pipeline.sh` runs the full analysis only with `WITH_DICE=1`.
 - The completed full run is kept as the reported result. No result was altered.
 
+## D-032 Web product layer on top of the research — Decided (2026-11-05)
+- A Next.js app in `web/` (TypeScript, CSS modules, Motion; tests with Vitest) is the product front end.
+  The browser calls the app's own `/api/*` routes, which proxy to FastAPI server-side
+  (`FAIRVALUE_API_URL`), so the backend address stays private and CORS stays off by default.
+- Research figures reach the web app only through `python -m src.product.export`, which reshapes
+  committed `reports/` tables, the model registry and the API's OpenAPI schema into
+  `web/src/data/*.json`. A test fails if those files are stale. The app computes no new results.
+- No retraining, no change to the population, metrics, features or the locked design (D-011).
+
+## D-033 Per-prediction SHAP endpoint — Decided (2026-11-05)
+- `POST /explain` runs SHAP TreeExplainer on the served regressor, the same method as the offline
+  analysis (D-027), and returns contributions summed back to input features.
+- It refuses (HTTP 500) if base + contributions differ from the prediction by more than 1e-4, so a
+  wrong explanation is never shown. `shap` is optional at runtime: without it `/explain` returns 501
+  and `/predict` is unaffected. `shap==0.46.0` is added to `requirements-api.txt` (same pin as
+  `requirements.txt`).
+- `GET /metadata` exposes valid inputs and model versions. `/predict` behaviour is unchanged.
+
 ---
 
 # Issues found in the locked technical spec

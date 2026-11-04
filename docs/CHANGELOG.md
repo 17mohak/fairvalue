@@ -1,5 +1,19 @@
 # Development changelog
 
+## 2026-11-05: Product experience (branch `feat/product-experience`, not pushed)
+- **API:** `POST /explain` (per-prediction SHAP, additivity enforced) and `GET /metadata` (D-033);
+  optional CORS via `FAIRVALUE_CORS_ORIGINS`; `original_feature` moved to `src/features/preprocess.py`.
+- **Export:** `src/product/export.py` writes `web/src/data/{research,openapi,catalog}.json` from
+  committed outputs; staleness test added (D-032).
+- **Web app (`web/`):** landing page with a live estimate, valuation studio, fairness explorer and
+  methods page. See `docs/PRODUCT.md`.
+- **Containers:** `web/Dockerfile` (Next.js standalone) and `docker-compose.yml`. The compose stack was
+  built and smoke-tested locally: predict and explain through the proxy, 422 on a nationality field,
+  all pages 200, clean 503 when the API is stopped.
+- **CI:** new `web` job (typecheck, tests, build); the Docker job also smoke-tests `/explain` and the
+  compose stack. Not yet run on GitHub (branch not pushed).
+- **Tests:** Python 94 passed, 10 skipped (no dataset in the new checkout); web 39 passed.
+
 ## 2026-11-05: GitHub and first CI run
 - Private repository `17mohak/fairvalue` created (owner-approved); `main` pushed.
 - First CI run passed both jobs in about 6 minutes: unit tests; data acquisition reproduced the committed

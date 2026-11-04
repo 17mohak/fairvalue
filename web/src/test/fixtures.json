@@ -1,0 +1,148 @@
+{
+ "predict_A": {
+  "predicted_value_eur": 17056329.0,
+  "predicted_tier": "Elite",
+  "classifier_tier": "Elite",
+  "tier_probabilities": {
+   "Emerging": 0.0019,
+   "Established": 0.1462,
+   "Elite": 0.5371,
+   "World Class": 0.3149
+  },
+  "model": "A",
+  "model_version": {
+   "regressor": "fairvalue-regressor_A-hgb_tuned-91174c39-20261104",
+   "classifier": "fairvalue-classifier_A-hgb_classifier-91174c39-20261104"
+  },
+  "disclaimer": "Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
+ },
+ "explain_A": {
+  "model": "A",
+  "model_version": "fairvalue-regressor_A-hgb_tuned-91174c39-20261104",
+  "base_log_value": 14.592338859577463,
+  "base_value_eur": 2174564.2542878794,
+  "predicted_log_value": 16.65203188323748,
+  "predicted_value_eur": 17056329.0,
+  "contributions": [
+   {
+    "feature": "valuation_league_id",
+    "value": "ES1",
+    "contribution": 0.40106676849956857
+   },
+   {
+    "feature": "age",
+    "value": 24.5,
+    "contribution": 0.392132411602507
+   },
+   {
+    "feature": "goal_contrib_p90",
+    "value": 0.6,
+    "contribution": 0.2629085959781362
+   },
+   {
+    "feature": "appearances",
+    "value": 60.0,
+    "contribution": 0.1849842663598814
+   },
+   {
+    "feature": "minutes_last_365",
+    "value": 2300.0,
+    "contribution": 0.15611328604294133
+   },
+   {
+    "feature": "goals_p90",
+    "value": 0.45,
+    "contribution": 0.14073762561662584
+   },
+   {
+    "feature": "club_ppg",
+    "value": 1.6,
+    "contribution": 0.1356263368855602
+   },
+   {
+    "feature": "intl_club_minutes_share",
+    "value": 0.1,
+    "contribution": 0.1345534519409681
+   },
+   {
+    "feature": "start_share",
+    "value": 0.8,
+    "contribution": 0.10491731004840134
+   },
+   {
+    "feature": "minutes",
+    "value": 4200.0,
+    "contribution": 0.08379497614927404
+   },
+   {
+    "feature": "minutes_per_appearance",
+    "value": 70.0,
+    "contribution": 0.04378822835669424
+   },
+   {
+    "feature": "days_since_last_match",
+    "value": 7.0,
+    "contribution": 0.04155682114828536
+   },
+   {
+    "feature": "yellow_p90",
+    "value": 0.1,
+    "contribution": -0.027937753862945714
+   },
+   {
+    "feature": "valuation_club_minutes_share",
+    "value": 1.0,
+    "contribution": 0.024542423308653735
+   },
+   {
+    "feature": "height_in_cm",
+    "value": 181.0,
+    "contribution": -0.012480221520692055
+   },
+   {
+    "feature": "sub_position",
+    "value": "Centre-Forward",
+    "contribution": -0.009070424409254122
+   },
+   {
+    "feature": "position",
+    "value": "Attack",
+    "contribution": -0.0016802279854318033
+   },
+   {
+    "feature": "foot",
+    "value": "right",
+    "contribution": 0.0015120287042527634
+   },
+   {
+    "feature": "assists_p90",
+    "value": 0.15,
+    "contribution": 0.0013842886078494774
+   },
+   {
+    "feature": "red_p90",
+    "value": 0.0,
+    "contribution": 0.001242832188741126
+   }
+  ],
+  "method": "SHAP TreeExplainer (path-dependent) on the served gradient-boosting regressor, log-value scale. One-hot, missing-indicator and age-squared columns are summed back to the input feature. Contributions add up exactly to the prediction: base + sum = predicted log value. They describe how this model arrived at this estimate, not what causes market value.",
+  "disclaimer": "Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
+ },
+ "predict_B": {
+  "predicted_value_eur": 11925697.0,
+  "predicted_tier": "Elite",
+  "classifier_tier": "Elite",
+  "tier_probabilities": {
+   "Emerging": 0.0329,
+   "Established": 0.2595,
+   "Elite": 0.6607,
+   "World Class": 0.0468
+  },
+  "model": "B",
+  "model_version": {
+   "regressor": "fairvalue-regressor_B-hgb_tuned-91174c39-20261104",
+   "classifier": "fairvalue-classifier_B-hgb_classifier-91174c39-20261104"
+  },
+  "disclaimer": "Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
+ }
+}

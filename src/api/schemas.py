@@ -23,6 +23,10 @@ DISCLAIMER = (
 )
 
 
+# Cross-field rule: minutes per appearance must stay within the training range.
+MINUTES_PER_APPEARANCE_RANGE = (14.0, 101.25)
+
+
 class PlayerFeatures(BaseModel):
     """Match statistics are for club competitions in the 730 days up to the valuation date."""
 
@@ -57,7 +61,8 @@ class PlayerFeatures(BaseModel):
     def consistent(self):
         if self.minutes_last_365 > self.minutes:
             raise ValueError("minutes_last_365 cannot exceed minutes (two-year total)")
-        if not 14 <= self.minutes / self.appearances <= 101.25:
+        lo, hi = MINUTES_PER_APPEARANCE_RANGE
+        if not lo <= self.minutes / self.appearances <= hi:
             raise ValueError("minutes per appearance must be within the training range 14-101.25")
         return self
 

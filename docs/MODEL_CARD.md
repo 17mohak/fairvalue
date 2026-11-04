@@ -90,5 +90,6 @@ Gap = non-UEFA − UEFA; residual = actual − predicted (positive = under-predi
 - Re-run the fairness audit after any retraining (`docs/MONITORING.md`, policy T1–T3).
 - Report the unseen-club figures if the model is ever applied to new clubs.
 - EUR predictions are median-type (exp of log prediction, no smearing correction).
-- Explanations: SHAP and DiCE results are in `docs/reports/EXPLAINABILITY.md`. DiCE results are
+- Explanations (`docs/reports/EXPLAINABILITY.md`): league and age drive most of the difference between
+  groups' predictions (SHAP). DiCE (720 queries) shows no consistent group difference in distance to the next tier. DiCE results are
   feature-based counterfactuals, not nationality interventions.

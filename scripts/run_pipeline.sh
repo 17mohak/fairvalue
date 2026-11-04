@@ -20,6 +20,6 @@ step "fairness audit";       "$PY" -W ignore -m src.fairness.audit --boot 2000
 step "supplementary checks"; "$PY" -W ignore -m src.fairness.supplementary --boot 2000
 step "SHAP";                 "$PY" -W ignore -m src.fairness.explain_shap
 step "drift + policy";       "$PY" -W ignore -m src.monitoring.drift
-step "DiCE";                 "$PY" -W ignore -m src.fairness.counterfactuals --per-cell 60
+if [ "${WITH_DICE:-0}" = "1" ]; then step "DiCE (full, ~80 min)"; "$PY" -W ignore -m src.fairness.counterfactuals --per-cell 60 --max-minutes 0 --models AB --tag ""; else step "DiCE (bounded demo)"; "$PY" -W ignore -m src.fairness.counterfactuals; fi
 step "tests";                "$PY" -m pytest -q -W ignore
 step "done"

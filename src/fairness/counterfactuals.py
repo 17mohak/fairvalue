@@ -1,7 +1,13 @@
 """Feature-based DiCE counterfactuals on the tier classifier (Milestone 5, D-022).
 
 Usage:
-    python -m src.fairness.counterfactuals [--per-cell 60]
+    python -m src.fairness.counterfactuals                    # bounded demo: Model A, 5 per cell, <= 10 min
+    python -m src.fairness.counterfactuals --per-cell 60 --max-minutes 0 --models AB --tag ""   # full (~80 min)
+
+Why it is slow: DiCE's random method samples candidate feature vectors and scores each batch with
+the full sklearn pipeline (preprocessing + 500-tree gradient boosting), retrying until enough valid
+counterfactuals are found. Upper tiers and the consistency constraints make valid candidates rare, so
+some players need many rounds. Runs are bounded by --max-minutes and checkpointed per player.
 
 What this is (and is not)
     * Question: "for this player, what change in MATCH STATISTICS would move the model's
@@ -29,13 +35,16 @@ Outputs: reports/explainability/dice_*.csv
 """
 
 import argparse
+import json
 import logging
+import time
+from pathlib import Path
 
 import dice_ml
 import numpy as np
 import pandas as pd
 
-from src.config import RANDOM_SEED, REPORTS_DIR, get_logger
+from src.config import PROCESSED_DIR, RANDOM_SEED, REPORTS_DIR, get_logger
 from src.fairness.scope_analysis import load as load_universe
 from src.fairness.scope_analysis import within_league
 from src.features.preprocess import CONTEXT_CATEGORICAL, PERFORMANCE_CATEGORICAL, feature_columns
@@ -89,7 +98,10 @@ def matched_player_ids() -> set:
     return ids
 
 
-def run(feature_set: str, df: pd.DataFrame, is_n: np.ndarray, matched: set, per_cell: int) -> pd.DataFrame:
+def run(feature_set: str, df: pd.DataFrame, is_n: np.ndarray, matched: set, per_cell: int,
+        deadline: float | None = None, checkpoint=None) -> tuple[pd.DataFrame, bool]:
+    """Return (results, complete). Stops early at `deadline` (time.monotonic()); each finished
+    player is appended to `checkpoint` (CSV) so an interrupted run keeps its work."""
     cols = feature_columns(feature_set)
     dice_cols = [c for c in cols if c not in DERIVED]
     categorical = [c for c in PERFORMANCE_CATEGORICAL + CONTEXT_CATEGORICAL if c in dice_cols]
@@ -116,6 +128,9 @@ def run(feature_set: str, df: pd.DataFrame, is_n: np.ndarray, matched: set, per_
             idx = np.where(eligible & g_mask & (pred == k))[0]
             pick = rng.choice(idx, size=min(per_cell, len(idx)), replace=False)
             for i in pick:
+                if deadline is not None and time.monotonic() > deadline:
+                    log.warning("Time limit reached: stopping early (results are INCOMPLETE)")
+                    return pd.DataFrame(rows), False
                 q = df[dice_cols].iloc[[i]]
                 out = {"model": LABEL[feature_set], "player_id": int(df.player_id.iloc[i]), "group": g_name,
                        "predicted_tier": TIER_NAMES[k], "target_tier": TIER_NAMES[k + 1], "found": False}
@@ -129,8 +144,11 @@ def run(feature_set: str, df: pd.DataFrame, is_n: np.ndarray, matched: set, per_
                         q, total_CFs=N_CFS, desired_class=int(k + 1), features_to_vary=MUTABLE,
                         permitted_range=own, random_seed=RANDOM_SEED, verbose=False)
                     cfs = res.cf_examples_list[0].final_cfs_df
-                except Exception as exc:  # DiCE raises when no counterfactual is found
-                    out["note"] = type(exc).__name__
+                except Exception as exc:
+                    # DiCE signals "no counterfactual found" by raising UserConfigValidationException
+                    # ("No counterfactuals found for any of the query points"); other errors are kept as-is.
+                    name = type(exc).__name__
+                    out["note"] = "no_counterfactual_found" if name == "UserConfigValidationException" else name
                     cfs = None
                 if cfs is not None and len(cfs):
                     cfs = cfs[dice_cols].astype({c: float for c in continuous})
@@ -148,8 +166,10 @@ def run(feature_set: str, df: pd.DataFrame, is_n: np.ndarray, matched: set, per_
                             "delta_minutes": d["minutes"], "delta_start_share": d["start_share"],
                             "base_goal_contrib_p90": float(q.goals_p90.iloc[0] + q.assists_p90.iloc[0])}
                 rows.append(out)
+                if checkpoint is not None:
+                    pd.DataFrame([out]).to_csv(checkpoint, mode="a", header=not Path(checkpoint).exists(), index=False)
             log.info("%s %s %s: %d players", LABEL[feature_set], g_name, TIER_NAMES[k], len(pick))
-    return pd.DataFrame(rows)
+    return pd.DataFrame(rows), True
 
 
 def compare(res: pd.DataFrame, n_boot: int = 2000) -> pd.DataFrame:
@@ -174,21 +194,46 @@ def compare(res: pd.DataFrame, n_boot: int = 2000) -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def main(per_cell: int = 60) -> None:
+def main(per_cell: int = 5, max_minutes: float = 10, models: str = "A", tag: str = "_demo") -> None:
+    """Bounded by default: a small demonstration that cannot block the pipeline.
+
+    The full analysis reported in docs/reports/EXPLAINABILITY.md used
+    `--per-cell 60 --max-minutes 0 --models AB --tag ""` (about 80 minutes on the development laptop).
+    """
     OUT.mkdir(parents=True, exist_ok=True)
     df = load_training_data()
-    from src.config import PROCESSED_DIR
     audit = pd.read_parquet(PROCESSED_DIR / "audit_lookup.parquet")[["player_id", "audit_group"]]
     is_n = df[["player_id"]].merge(audit, on="player_id", how="left").audit_group.eq("non-UEFA").to_numpy()
     matched = matched_player_ids()
     log.info("Matched players available: %d", len(matched))
-    res = pd.concat([run(fs, df, is_n, matched, per_cell) for fs in ["full", "performance"]], ignore_index=True)
-    res.to_csv(OUT / "dice_counterfactuals.csv", index=False)
-    compare(res, n_boot=1000).round(4).to_csv(OUT / "dice_group_comparison.csv", index=False)
-    log.info("Wrote DiCE outputs to %s", OUT)
+    start = time.monotonic()
+    deadline = start + 60 * max_minutes if max_minutes and max_minutes > 0 else None
+    checkpoint = OUT / f"dice_counterfactuals{tag}.partial.csv"
+    checkpoint.unlink(missing_ok=True)
+    parts, complete = [], True
+    for fs in [f for f, m in [("full", "A"), ("performance", "B")] if m in models]:
+        part, done = run(fs, df, is_n, matched, per_cell, deadline, checkpoint)
+        parts.append(part)
+        if not done:
+            complete = False
+            break
+    res = pd.concat(parts, ignore_index=True)
+    res.to_csv(OUT / f"dice_counterfactuals{tag}.csv", index=False)
+    if len(res) and res.group.nunique() == 2:
+        compare(res, n_boot=1000).round(4).to_csv(OUT / f"dice_group_comparison{tag}.csv", index=False)
+    meta = {"complete": complete, "per_cell": per_cell, "models": models, "max_minutes": max_minutes,
+            "n_queries": int(len(res)), "n_found": int(res.found.sum()) if len(res) else 0,
+            "elapsed_minutes": round((time.monotonic() - start) / 60, 1)}
+    (OUT / f"dice_run_meta{tag}.json").write_text(json.dumps(meta, indent=2))
+    checkpoint.unlink(missing_ok=True)
+    log.info("Wrote DiCE outputs (%s) to %s: %s", "complete" if complete else "INCOMPLETE", OUT, meta)
 
 
 if __name__ == "__main__":
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--per-cell", type=int, default=60)
-    main(ap.parse_args().per_cell)
+    ap = argparse.ArgumentParser(description="Bounded feature-based DiCE (default: small demo).")
+    ap.add_argument("--per-cell", type=int, default=5, help="players per group x tier cell")
+    ap.add_argument("--max-minutes", type=float, default=10, help="wall-clock limit; 0 = no limit")
+    ap.add_argument("--models", default="A", help="'A', 'B' or 'AB'")
+    ap.add_argument("--tag", default="_demo", help="output file suffix ('' for the full analysis)")
+    a = ap.parse_args()
+    main(a.per_cell, a.max_minutes, a.models, a.tag)

@@ -256,6 +256,13 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   club context and held fixed, consistent with RESEARCH_DESIGN §8.
 - Minutes are bounded by minutes in the last 365 days and by the training maximum minutes per appearance.
 
+## D-031 DiCE is bounded and non-blocking — Decided (2026-11-05)
+- The full DiCE analysis (720 queries) took 83 minutes, so DiCE must not block the pipeline or deployment.
+- The module now has a wall-clock limit (`--max-minutes`), per-player checkpointing, and a small
+  default demonstration. Runs that stop at the limit are labelled incomplete in `dice_run_meta*.json`.
+- `scripts/run_pipeline.sh` runs the full analysis only with `WITH_DICE=1`.
+- The completed full run is kept as the reported result. No result was altered.
+
 ---
 
 # Issues found in the locked technical spec

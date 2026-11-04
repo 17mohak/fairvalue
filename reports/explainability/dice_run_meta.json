@@ -1,0 +1,12 @@
+{
+  "complete": true,
+  "per_cell": 60,
+  "models": "AB",
+  "max_minutes": 0,
+  "n_queries": 720,
+  "n_found": 469,
+  "not_found_note": "note=UserConfigValidationException means DiCE found no counterfactual (its own message: No counterfactuals found for any of the query points)",
+  "elapsed_minutes_from_pipeline_log": 83.2,
+  "started": "2026-11-05 00:10:44",
+  "finished": "2026-11-05 01:33:58"
+}

@@ -1,6 +1,7 @@
 "use client";
 
 import { motion, useReducedMotion } from "motion/react";
+import { decimal } from "@/lib/format";
 import styles from "./BarList.module.css";
 
 export interface BarItem {
@@ -11,7 +12,8 @@ export interface BarItem {
 }
 
 /** Horizontal magnitude bars in one neutral hue, values labelled at the bar end. */
-export function BarList({ items, format, caption, highlight }: { items: BarItem[]; format: (v: number) => string; caption?: string; highlight?: string }) {
+/** `digits` (not a formatter function) so server components can render it. */
+export function BarList({ items, digits = 2, caption, highlight }: { items: BarItem[]; digits?: number; caption?: string; highlight?: string }) {
   const reduce = useReducedMotion();
   const max = Math.max(...items.map((i) => i.value), 1e-9);
   return (
@@ -30,7 +32,7 @@ export function BarList({ items, format, caption, highlight }: { items: BarItem[
                 transition={{ duration: 0.5, delay: reduce ? 0 : i * 0.035, ease: [0.22, 1, 0.36, 1] }}
               />
             </span>
-            <span className={`${styles.value} num`}>{format(item.value)}</span>
+            <span className={`${styles.value} num`}>{decimal(item.value, digits)}</span>
           </li>
         ))}
       </ul>

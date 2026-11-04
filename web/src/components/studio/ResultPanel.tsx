@@ -193,7 +193,7 @@ export function ResultPanel({ status, result, error, stale, onRetry }: Props) {
                       items={shapGlobal(model)
                         .slice(0, 10)
                         .map((r) => ({ key: r.feature, label: featureLabel(r.feature), value: r.mean_abs }))}
-                      format={(v) => decimal(v, 2)}
+                      digits={2}
                       highlight={explanation?.contributions[0]?.feature}
                       caption={
                         explanation?.contributions[0]

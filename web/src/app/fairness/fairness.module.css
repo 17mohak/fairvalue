@@ -1,0 +1,197 @@
+.intro {
+  display: grid;
+  gap: 1rem;
+  padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 3vw, 2rem);
+}
+
+.title {
+  font-size: var(--step-5);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lede {
+  max-width: 60ch;
+  font-family: var(--font-serif);
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  color: var(--chalk-2);
+}
+
+.bar {
+  position: sticky;
+  top: 3.75rem;
+  z-index: 30;
+  background: var(--turf-900);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-block: 1px solid var(--rule);
+}
+
+.barInner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.25rem;
+}
+
+.sectionNav {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  gap: 1.1rem;
+  overflow-x: auto;
+  scrollbar-width: none;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.sectionNav a {
+  color: var(--fog);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.sectionNav a:hover {
+  color: var(--chalk);
+}
+
+.modelSwitch {
+  flex: 0 0 13rem;
+}
+
+.modelNote {
+  margin-top: 1.25rem;
+  font-size: var(--step--1);
+  color: var(--fog);
+}
+
+.section {
+  padding-top: clamp(3.5rem, 7vw, 5.5rem);
+  scroll-margin-top: 7.5rem;
+}
+
+.h2 {
+  max-width: 24ch;
+  margin-bottom: 1.75rem;
+  font-size: var(--step-4);
+}
+
+.h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  font-size: var(--step-1);
+}
+
+.h3Note {
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  font-weight: 400;
+  color: var(--fog);
+}
+
+.twoCol {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: start;
+}
+
+.stack {
+  display: grid;
+  gap: 2.25rem;
+}
+
+.defs {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 1.5rem 2.5rem;
+  margin: 0;
+}
+
+.defs div {
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--rule-strong);
+}
+
+.defs dt {
+  margin-bottom: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.defs dd {
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.6;
+  color: var(--chalk-2);
+}
+
+.defs strong {
+  color: var(--flood);
+  font-weight: 600;
+}
+
+.meaning {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem 2.5rem;
+}
+
+.meaning ul,
+.meaning ol {
+  margin: 0;
+  padding-left: 1.1rem;
+  display: grid;
+  gap: 0.65rem;
+  font-family: var(--font-serif);
+  font-size: 0.975rem;
+  line-height: 1.6;
+  color: var(--chalk-2);
+}
+
+.meaning li::marker {
+  color: var(--fog-2);
+}
+
+.scope {
+  margin-top: 2.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--rule);
+  max-width: 80ch;
+  font-size: var(--step--1);
+  line-height: 1.6;
+  color: var(--fog);
+}
+
+.scope code {
+  font-size: 0.8125rem;
+  color: var(--chalk-2);
+}
+
+@media (min-width: 960px) {
+  .twoCol {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    gap: 4rem;
+  }
+  .defs {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .meaning {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .modelSwitch {
+    flex-basis: 9.5rem;
+  }
+  .barInner {
+    gap: 0.75rem;
+  }
+}

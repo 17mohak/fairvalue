@@ -1,0 +1,304 @@
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0 4rem;
+}
+
+.intro {
+  display: grid;
+  gap: 1rem;
+  padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(1.5rem, 3vw, 2.5rem);
+}
+
+.title {
+  font-size: var(--step-5);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.lede {
+  max-width: 60ch;
+  font-family: var(--font-serif);
+  font-size: 1.1875rem;
+  line-height: 1.55;
+  color: var(--chalk-2);
+}
+
+.toc ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.25rem;
+  font-family: var(--font-display);
+  font-size: 1rem;
+}
+
+.toc a {
+  color: var(--fog);
+  text-decoration: none;
+}
+
+.toc a:hover {
+  color: var(--chalk);
+}
+
+.body {
+  min-width: 0;
+}
+
+.section {
+  padding-top: clamp(3rem, 6vw, 4.5rem);
+  scroll-margin-top: 5rem;
+  display: grid;
+  gap: 1.25rem;
+}
+
+.h2 {
+  font-size: var(--step-3);
+}
+
+.h3 {
+  margin-bottom: 0.75rem;
+  font-size: var(--step-1);
+}
+
+.note {
+  max-width: 70ch;
+  font-size: var(--step--1);
+  line-height: 1.55;
+  color: var(--fog);
+}
+
+.note code,
+.limits code {
+  font-size: 0.8125rem;
+  color: var(--chalk-2);
+}
+
+.funnel {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.funnelRow {
+  display: grid;
+  grid-template-columns: minmax(9rem, 30%) minmax(0, 1fr) 7.5rem;
+  align-items: center;
+  gap: 1rem;
+}
+
+.funnelLabel {
+  font-size: var(--step--1);
+  color: var(--chalk-2);
+}
+
+.funnelLabel::first-letter {
+  text-transform: uppercase;
+}
+
+.funnelBar {
+  display: flex;
+  gap: 2px;
+  height: 14px;
+}
+
+.funnelUefa,
+.funnelNon {
+  display: block;
+  flex-basis: 0;
+  min-width: 2px;
+}
+
+.funnelUefa {
+  background: var(--uefa);
+  border-radius: 2px 0 0 2px;
+}
+
+.funnelNon {
+  background: var(--non-uefa);
+  border-radius: 0 2px 2px 0;
+}
+
+.funnelValue {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.funnelValue span {
+  font-family: var(--font-ui);
+  font-size: var(--step--2);
+  font-weight: 400;
+  color: var(--fog);
+}
+
+.legend {
+  display: flex;
+  gap: 1.25rem;
+  font-size: var(--step--1);
+  color: var(--chalk-2);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.keyUefa,
+.keyNon {
+  width: 10px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+
+.keyUefa {
+  background: var(--uefa);
+}
+
+.keyNon {
+  background: var(--non-uefa);
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  font-size: var(--step--1);
+}
+
+.caption {
+  caption-side: top;
+  padding-bottom: 0.6rem;
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--chalk);
+}
+
+.table th,
+.table td {
+  padding: 0.55rem 1rem 0.55rem 0;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  vertical-align: top;
+  font-weight: 400;
+  color: var(--chalk-2);
+}
+
+.table thead th {
+  font-size: var(--step--2);
+  color: var(--fog);
+  border-bottom-color: var(--rule-strong);
+  white-space: nowrap;
+}
+
+.table tbody th {
+  color: var(--chalk);
+  white-space: nowrap;
+}
+
+.table tr[data-primary] th,
+.table tr[data-primary] td {
+  color: var(--chalk);
+  background: var(--flood-soft);
+}
+
+.shapGrid,
+.twoTables {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2rem 3rem;
+}
+
+.limits {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  margin: 0;
+}
+
+.limits div {
+  display: grid;
+  grid-template-columns: minmax(8rem, 22%) minmax(0, 1fr);
+  gap: 1rem;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.limits dt {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+}
+
+.limits dd {
+  margin: 0;
+  font-size: var(--step--1);
+  line-height: 1.55;
+  color: var(--chalk-2);
+}
+
+.code {
+  margin: 0;
+  padding: 1.1rem 1.25rem;
+  overflow-x: auto;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-m);
+  background: var(--turf-950);
+  font-size: 0.8125rem;
+  line-height: 1.7;
+  color: var(--chalk-2);
+}
+
+@media (min-width: 1024px) {
+  .layout {
+    grid-template-columns: 13rem minmax(0, 1fr);
+  }
+  .intro {
+    grid-column: 1 / -1;
+  }
+  .toc {
+    position: sticky;
+    top: 5.5rem;
+    align-self: start;
+    padding-top: clamp(3rem, 6vw, 4.5rem);
+  }
+  .toc ol {
+    flex-direction: column;
+    gap: 0.55rem;
+    padding-left: 1rem;
+    border-left: 1px solid var(--rule-strong);
+  }
+  .shapGrid,
+  .twoTables {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .funnelRow {
+    grid-template-columns: minmax(0, 1fr) 6rem;
+  }
+  .funnelBar {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+  .limits div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.25rem;
+  }
+}

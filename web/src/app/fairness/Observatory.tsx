@@ -52,8 +52,19 @@ export function Observatory({ data }: { data: FairnessData }) {
   const defsRef = useRef<HTMLDialogElement>(null);
 
   const view: ViewId = isView(params.get("view")) ? (params.get("view") as ViewId) : "gap";
-  const model: ModelId = isModel(params.get("model")) ? (params.get("model") as ModelId) : "A";
-  const compare = params.get("compare") === "1";
+  const urlModel: ModelId = isModel(params.get("model")) ? (params.get("model") as ModelId) : "A";
+  const urlCompare = params.get("compare") === "1";
+
+  // The URL is the source of truth; local copies let the controls respond on the click itself
+  // instead of after the navigation round-trip, and follow the URL on back/forward.
+  const [model, setModelLocal] = useState(urlModel);
+  const [compare, setCompareLocal] = useState(urlCompare);
+  const [synced, setSynced] = useState({ urlModel, urlCompare });
+  if (synced.urlModel !== urlModel || synced.urlCompare !== urlCompare) {
+    setSynced({ urlModel, urlCompare });
+    setModelLocal(urlModel);
+    setCompareLocal(urlCompare);
+  }
   const other: ModelId = model === "A" ? "B" : "A";
   const v = data[model];
   const o = data[other];
@@ -74,8 +85,14 @@ export function Observatory({ data }: { data: FairnessData }) {
 
   // Model and overlay are settings of the instrument, so they replace the history entry;
   // switching views pushes one, so back and forward step through views.
-  const setModel = (m: ModelId) => router.replace(href({ model: m }), { scroll: false });
-  const setCompare = (c: boolean) => router.replace(href({ compare: c }), { scroll: false });
+  const setModel = (m: ModelId) => {
+    setModelLocal(m);
+    router.replace(href({ model: m }), { scroll: false });
+  };
+  const setCompare = (c: boolean) => {
+    setCompareLocal(c);
+    router.replace(href({ compare: c }), { scroll: false });
+  };
 
   // On narrow screens, bring the stage into view after choosing a view further down.
   const lastView = useRef(view);
@@ -106,15 +123,17 @@ export function Observatory({ data }: { data: FairnessData }) {
           </p>
         </div>
 
-        <div className={styles.dial} aria-live="polite">
-          <p className={styles.dialLabel}>Within-league signed gap · {MODEL_LABELS[model].name}</p>
-          <p className={`${styles.dialValue} num`}>
-            <AnimatedSigned value={v.gap.estimate} />
-            <span className="visually-hidden">{signed(v.gap.estimate)}</span>
-          </p>
-          <p className={`${styles.dialCi} num`}>
-            95% CI {signed(v.gap.low)} to {signed(v.gap.high)} · about {logGapAsPercent(v.gap.estimate)} relative
-          </p>
+        <div className={styles.dial}>
+          <div aria-live="polite" aria-atomic="true">
+            <p className={styles.dialLabel}>Within-league signed gap · {MODEL_LABELS[model].name}</p>
+            <p className={`${styles.dialValue} num`}>
+              <AnimatedSigned value={v.gap.estimate} />
+              <span className="visually-hidden">{signed(v.gap.estimate)}</span>
+            </p>
+            <p className={`${styles.dialCi} num`}>
+              95% CI {signed(v.gap.low)} to {signed(v.gap.high)} · about {logGapAsPercent(v.gap.estimate)} relative
+            </p>
+          </div>
           <DialGauge model={model} data={data} />
           <div className={styles.controls}>
             <Segmented

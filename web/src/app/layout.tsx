@@ -28,7 +28,7 @@ export const viewport: Viewport = { themeColor: "#0f1713", colorScheme: "dark" }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-GB" className={`${barlowCondensed.variable} ${barlow.variable} ${sourceSerif.variable}`}>
+    <html lang="en-GB" data-scroll-behavior="smooth" className={`${barlowCondensed.variable} ${barlow.variable} ${sourceSerif.variable}`}>
       <body>
         <a className="skip-link" href="#main">
           Skip to content

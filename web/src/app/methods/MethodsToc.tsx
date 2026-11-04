@@ -14,22 +14,30 @@ export function MethodsToc({ items }: { items: TocItem[] }) {
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    const sections = items.map((i) => document.getElementById(i.id)).filter((el): el is HTMLElement => !!el);
-    // A section counts as "being read" once its heading passes the upper third of the viewport.
-    const io = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.filter((e) => e.isIntersecting).sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
-        if (visible[0]) setActive(visible[0].target.id);
-      },
-      { rootMargin: "-15% 0px -70% 0px" },
-    );
-    sections.forEach((s) => io.observe(s));
+    // Track section headings: the active section is the last one whose heading has passed the
+    // upper fifth of the viewport. At the very bottom of the page the last section wins, even
+    // when it is too short for its heading to get that far.
+    const headings = items
+      .map((i) => document.getElementById(i.id)?.querySelector("h2"))
+      .filter((el): el is HTMLHeadingElement => !!el);
+    const pick = () => {
+      const atBottom = window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 4;
+      if (atBottom) return setActive(items[items.length - 1]?.id);
+      let current = items[0]?.id;
+      headings.forEach((h, i) => {
+        if (h.getBoundingClientRect().top < window.innerHeight * 0.2) current = items[i]?.id;
+      });
+      setActive(current);
+    };
+    const io = new IntersectionObserver(pick, { rootMargin: "0px 0px -80% 0px", threshold: [0, 1] });
+    headings.forEach((h) => io.observe(h));
 
     const body = document.getElementById("methods-body");
     let frame = 0;
     const onScroll = () => {
       cancelAnimationFrame(frame);
       frame = requestAnimationFrame(() => {
+        pick();
         if (!body) return;
         const r = body.getBoundingClientRect();
         const total = r.height - window.innerHeight * 0.6;

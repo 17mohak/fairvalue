@@ -57,18 +57,29 @@ const ALG: Record<string, string> = {
   hgb_tuned: "Gradient boosting, Optuna",
 };
 
-const LIMITATIONS: [string, string][] = [
-  ["Coverage", "Match data exists only for 14 European leagues; 79% of currently valued non-UEFA players fall outside the population."],
-  ["Survivorship", "Non-UEFA players who reach these leagues are positively selected (median value €2.5M vs €2.0M for UEFA)."],
-  ["The target", "Transfermarkt values are crowd estimates. The model can reproduce any bias in them; the audit measures model against target only."],
-  ["Proxies remain", "Allowed features still predict UEFA membership (AUC 0.67). Nationality-blind is not group-blind."],
-  ["Context", "League and club strength are reputation proxies. Model B exists to measure their effect."],
-  ["Thin defensive data", "No tackles or passes: defenders and goalkeepers are described mostly by minutes and context."],
-  ["Frozen snapshot", "Upstream updates paused in 2026; drift is simulated from history, not observed live."],
-  ["Unseen clubs", "Error rises 8.7% for clubs absent from training; headline metrics describe known clubs."],
-  ["Small tiers", "Only 94 World Class and 246 Elite non-UEFA players; per-tier fairness metrics are imprecise."],
-  ["Intervals", "Bootstrap intervals ignore refit variance and are somewhat too narrow."],
-];
+// Limitation figures are read from research.json where it carries them; the wording follows
+// docs/KNOWN_LIMITATIONS.md.
+function limitations(): [string, string][] {
+  const groups = research.population.value_by_group;
+  const median = (g: string) => formatEur(groups.find((x) => x.group === g)!.median, 1);
+  const auc = research.population.proxy_auc.find((a) => a.feature_set === "Model A features")!.auc;
+  const cv = (scheme: string) =>
+    research.models.grouped_cv.find((g) => g.model === "A" && g.algorithm === "hgb (median tuned params)" && g.cv_scheme === scheme)!.log_rmse_mean_fold;
+  const unseen = (cv("grouped by club") / cv("standard (players)") - 1) * 100;
+  const tierN = (t: string) => research.tiers.power.find((x) => x.model === "A" && x.rate === "TPR" && x.tier === t)!.n_non_uefa;
+  return [
+    ["Coverage", "Match data exists only for 14 European leagues; 79% of currently valued non-UEFA players play in leagues without it and are excluded."],
+    ["Survivorship", `Non-UEFA players who reach these leagues are positively selected (median value ${median("non-UEFA")} vs ${median("UEFA")} for UEFA).`],
+    ["The target", "Transfermarkt values are crowd estimates. The model can reproduce any bias in them; the audit measures model against target only."],
+    ["Proxies remain", `Allowed features still predict UEFA membership (AUC ${decimal(auc, 2)}). Nationality-blind is not group-blind.`],
+    ["Context", "League and club strength are reputation proxies. Model B exists to measure their effect."],
+    ["Thin defensive data", "No tackles or passes: defenders and goalkeepers are described mostly by minutes and context."],
+    ["Frozen snapshot", "Upstream updates paused in 2026; drift is simulated from history, not observed live."],
+    ["Unseen clubs", `Error rises ${unseen.toFixed(1)}% for clubs absent from training; headline metrics describe known clubs.`],
+    ["Small tiers", `Only ${tierN("World Class")} World Class and ${tierN("Elite")} Elite non-UEFA players; per-tier fairness metrics are imprecise.`],
+    ["Intervals", "Bootstrap intervals ignore refit variance and are somewhat too narrow."],
+  ];
+}
 
 export default function MethodsPage() {
   const funnel = research.population.funnel;
@@ -94,8 +105,8 @@ export default function MethodsPage() {
         </p>
         <h1 className={styles.title}>How FairValue works</h1>
         <p className={styles.lede}>
-          How the data was chosen, how the models were trained and judged, and where the results stop applying. Every figure on this page is
-          read from the generated research outputs.
+          How the data was chosen, how the models were trained and judged, and where the results stop applying. Figures come from the generated
+          research outputs; method details follow the repository&apos;s research design and reports.
         </p>
         <dl className={styles.meta}>
           <div>
@@ -452,7 +463,7 @@ export default function MethodsPage() {
             Limitations
           </h2>
           <dl className={styles.limits}>
-            {LIMITATIONS.map(([k, v]) => (
+            {limitations().map(([k, v]) => (
               <div key={k}>
                 <dt>{k}</dt>
                 <dd>{v}</dd>

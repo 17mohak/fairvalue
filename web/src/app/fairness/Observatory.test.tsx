@@ -58,8 +58,10 @@ describe("Fairness observatory", () => {
     render(<Observatory data={data} />);
     await userEvent.click(screen.getByRole("radio", { name: "Model B" }));
     expect(nav.replace).toHaveBeenCalledWith("/fairness?model=B", { scroll: false });
-    await userEvent.click(screen.getByRole("checkbox", { name: /Overlay Model B/ }));
-    expect(nav.replace).toHaveBeenLastCalledWith("/fairness?compare=1", { scroll: false });
+    // The control responds immediately, before the URL round-trip completes.
+    expect(screen.getByText(/Within-league signed gap · Model B/)).toBeInTheDocument();
+    await userEvent.click(screen.getByRole("checkbox", { name: /Overlay Model A/ }));
+    expect(nav.replace).toHaveBeenLastCalledWith("/fairness?model=B&compare=1", { scroll: false });
   });
 });
 

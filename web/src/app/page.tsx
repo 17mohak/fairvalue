@@ -129,7 +129,7 @@ export default function Home() {
           </h2>
           <article>
             <p className={styles.kicker}>Why value footballers</p>
-            <h3 className={styles.h3}>Where a player plays explains more than how they play.</h3>
+            <h3 className={styles.h3}>How a player plays sets most of the price. Where they play moves it a long way.</h3>
             <p className="prose">
               Market values anchor how clubs, media and fans talk about what a player is worth. FairValue learns to reproduce
               Transfermarkt&apos;s community valuations from appearances, minutes, goal output, age and role. With the league and the

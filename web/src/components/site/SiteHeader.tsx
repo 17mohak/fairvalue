@@ -39,6 +39,13 @@ export function SiteHeader() {
   useEffect(() => {
     if (!open) return;
     document.body.style.overflow = "hidden";
+    // Everything behind the sheet is taken out of the tab order and the accessibility tree.
+    const behind = [document.getElementById("main"), document.querySelector("body > footer")].filter((el): el is HTMLElement => !!el);
+    behind.forEach((el) => (el.inert = true));
+    // Widening past the mobile breakpoint hides the toggle, so close the sheet too.
+    const wide = window.matchMedia("(min-width: 900px)");
+    const onWide = () => wide.matches && setOpen(false);
+    wide.addEventListener("change", onWide);
     menuRef.current?.querySelector<HTMLElement>("a")?.focus();
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -49,6 +56,8 @@ export function SiteHeader() {
     window.addEventListener("keydown", onKey);
     return () => {
       document.body.style.overflow = "";
+      behind.forEach((el) => (el.inert = false));
+      wide.removeEventListener("change", onWide);
       window.removeEventListener("keydown", onKey);
     };
   }, [open]);

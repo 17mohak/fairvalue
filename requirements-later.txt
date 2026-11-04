@@ -1,9 +1,2 @@
-# NOT YET INSTALLED OR TESTED. Planned for later milestones (see docs/ROADMAP.md).
-# Versions will be pinned in requirements.txt when each component is implemented.
-shap
-dice-ml
+# NOT YET INSTALLED OR TESTED. Planned for Milestone 7 (see docs/ROADMAP.md).
 evidently
-fastapi
-pydantic
-uvicorn
-httpx

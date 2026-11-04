@@ -1,0 +1,23 @@
+metric,value
+DriftedColumnsCount(drift_share=0.5),"{'count': 2.0, 'share': 0.09523809523809523}"
+ValueDrift(column=age),0.020873115793026663
+ValueDrift(column=height_in_cm),0.02752380492254307
+ValueDrift(column=appearances),0.020941832490580344
+ValueDrift(column=minutes),0.021145991760305623
+ValueDrift(column=minutes_per_appearance),0.0512096194805018
+ValueDrift(column=start_share),0.047156256648159214
+ValueDrift(column=goals_p90),0.012807928207260212
+ValueDrift(column=assists_p90),0.02063647343626094
+ValueDrift(column=goal_contrib_p90),0.015917596041752885
+ValueDrift(column=yellow_p90),0.0676751894821495
+ValueDrift(column=red_p90),0.1732291327839545
+ValueDrift(column=intl_club_minutes_share),0.08294771714132426
+ValueDrift(column=minutes_last_365),0.02366308733693248
+ValueDrift(column=days_since_last_match),0.07965279893982201
+ValueDrift(column=valuation_club_minutes_share),0.033192166540306385
+ValueDrift(column=club_ppg),0.10633559883818297
+ValueDrift(column=log_value),0.030107155847514108
+ValueDrift(column=position),0.006357403130577345
+ValueDrift(column=sub_position),0.015538685009021244
+ValueDrift(column=foot),0.001203579271299097
+ValueDrift(column=valuation_league_id),0.019129161564024996

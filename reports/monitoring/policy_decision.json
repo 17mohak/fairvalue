@@ -1,0 +1,17 @@
+{
+  "decision": "NO ACTION",
+  "triggers": [],
+  "warnings": [],
+  "rmse_degradation_pct": 7.180929797174662,
+  "evidently": {
+    "drifted_columns": 2.0,
+    "drifted_share": 0.09523809523809523,
+    "n_columns": 21
+  },
+  "required_after_retrain": [],
+  "reference_window": "(2024-06-12, 2025-06-12]",
+  "current_window": "(2025-06-12, 2026-06-12]",
+  "n_reference": 5278,
+  "n_current": 5820,
+  "overlap_players": 4296
+}

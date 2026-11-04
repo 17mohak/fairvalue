@@ -1,5 +1,30 @@
 # Development changelog
 
+## 2026-11-05: Completing the player experience (branch `feat/multipage-experience`, not pushed)
+- **Service status (D-036):**
+  - `/api/health` verifies the upstream against the research registry and returns a verdict:
+    online, unverified or offline.
+  - One shared status feeds the masthead, studio and profiles. The studio auto-values only a
+    verified service.
+  - Served figures are labelled live, live and unverified, or cached research result.
+  - Fixes a QA stub being shown as "Model online".
+- **Real-data verification:**
+  - `python -m src.product.verify_players` runs 24 checks, 27 with `--api`. It proves held-out
+    estimates, percentiles and histories belong to the right players.
+  - It reproduces the registry's held-out metrics, the published raw gaps and the published
+    position counts.
+  - Steps and expected output are in `docs/PLAYER_EXPORT_VERIFICATION.md`. Not yet run on real data.
+- **Portraits:**
+  - `scripts/portraits/find_candidates.py` finds candidates via Wikidata P2446 → P18 and checks
+    each Commons file's licence. The output is a review sheet only.
+  - `scripts/portraits/add_portrait.py` checks licence, transparency and size, then writes the
+    manifest entry.
+  - Allow-list widened to every CC BY / BY-SA version. The shortlist is in `docs/PLAYER_ASSETS.md`.
+  - The attribution credit moved off the figure.
+- **Tests:** Python +20 (verifier passes a correct export and fails four kinds of misalignment;
+  licence rules; candidate verdicts; image checks); web 67 (+8: verification rules, masthead states,
+  unverified handling).
+
 ## 2026-11-05: Player experience (branch `feat/multipage-experience`, not pushed)
 - **Rooms:** `/players` board and `/players/[id]` profile added as room 02 (D-035); room numbers now
   come from the registry.

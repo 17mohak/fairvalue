@@ -315,6 +315,22 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   silhouette holds the slot. Shirt numbers are not in the acquired tables (game_lineups is not
   downloaded), so the oversized glyph is the player's role code.
 
+## D-036 Service status is verified, not assumed — Decided (2026-11-05)
+- The site calls the prediction service **online** only when `/health` reports all four registered
+  model versions and the dataset fingerprint from `models/model_registry.json`. A service that
+  answers with anything else is **unverified** (amber, never green); unreachable or not loaded is
+  **offline**. The check runs server-side in `web/src/app/api/health/route.ts`.
+- One client-side status feeds the masthead, studio and profiles. A failed prediction marks the
+  service offline at once; a success after an outage triggers a re-check rather than an assumption.
+- Every served figure says where it came from: **live** (the verified service), **live, unverified**,
+  or **cached research result** (published in `reports/`). Offline states name what is missing.
+- Reason: during QA a replay stub answered `/health` and the site showed "Model online" for it.
+  Test tooling must identify itself and must never pass as the model service.
+- Portrait licences: the allow-list covers CC0, Public Domain Mark, CC BY and CC BY-SA 2.0–4.0, and
+  `owned`. These all allow reuse in a product and derivative cutouts. NC, ND, fair use and GFDL-only
+  are excluded. Candidates are found by Transfermarkt ID via Wikidata (P2446 → P18) and reviewed by a
+  person before `scripts/portraits/add_portrait.py` adds them (docs/PLAYER_ASSETS.md).
+
 ---
 
 # Issues found in the locked technical spec

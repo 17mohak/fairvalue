@@ -29,7 +29,15 @@ reports, the registry or the API schema. Nothing in the web app computes a new r
 - Default build: the eight-player research showcase (committed). Full board: run
   `python -m src.product.players` after `src.data.build_dataset` (and `src.models.train` for held-out
   estimates); it writes `web/src/data/generated/players.json`, which the app prefers when present.
-- Portraits: see `docs/PLAYER_ASSETS.md` (licence allow-list, cutout spec, manifest, tests).
+- Verify a full export against its sources: `python -m src.product.verify_players [--api URL]`
+  (`docs/PLAYER_EXPORT_VERIFICATION.md`).
+- Portraits: see `docs/PLAYER_ASSETS.md` (licence allow-list, Wikidata/Commons finder, add helper, tests).
+
+## Service status
+The masthead says **Model online** only when the API reports the registered model versions and
+dataset fingerprint; **Model unverified** when something else answers; **Model offline** otherwise
+(D-036). Profiles and the studio label each served figure as live, live and unverified, or a cached
+research result.
 
 ## Explanations
 `POST /explain` (src/api/explain.py) runs SHAP TreeExplainer on the served regressor, the same

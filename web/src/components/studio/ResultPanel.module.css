@@ -58,6 +58,18 @@
   transition: opacity 200ms var(--ease-out), filter 200ms var(--ease-out);
 }
 
+.result[data-stale] .value,
+.result[data-stale] .duel,
+.result[data-stale] .rulerWrap,
+.result[data-stale] .section {
+  opacity: 0.55;
+  transition: opacity 200ms var(--ease-out);
+}
+
+.empty[data-muted] {
+  opacity: 0.6;
+}
+
 .result[data-dim] {
   opacity: 0.5;
   filter: saturate(0.6);

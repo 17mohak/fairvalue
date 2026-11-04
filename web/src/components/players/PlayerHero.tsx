@@ -62,7 +62,7 @@ export function PlayerHero({ player: p, portrait, roomIndex, valuedLabel, estima
           </ViewTransition>
           <span>{p.sub_position}</span>
           <span className={styles.sep} aria-hidden="true" />
-          <span>{p.position}</span>
+          <span className={styles.group}>{p.position}</span>
         </p>
         <dl className={styles.facts}>
           <div>

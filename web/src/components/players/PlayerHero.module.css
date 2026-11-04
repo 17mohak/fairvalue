@@ -325,6 +325,32 @@
     grid-area: role;
     font-size: 1rem;
   }
+  /* The narrow column fits the role code and sub-position; the broad group is implied by it. */
+  .role .sep,
+  .role .group {
+    display: none;
+  }
+  /* Source labels get their own line instead of being cut off. */
+  .estimates li {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "model value ratio"
+      "source source source";
+    row-gap: 0.15rem;
+  }
+  .estModel {
+    grid-area: model;
+  }
+  .estSource {
+    grid-area: source;
+    white-space: normal;
+  }
+  .estValue {
+    grid-area: value;
+  }
+  .estRatio {
+    grid-area: ratio;
+  }
   .facts {
     grid-area: facts;
     grid-template-columns: repeat(2, minmax(0, 1fr));

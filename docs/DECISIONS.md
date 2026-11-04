@@ -291,6 +291,30 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
 - The landing page's live example is fetched uncached: it is labelled "live", so it must be.
 - Presentation only: no research figure, model, feature, metric or API contract changes (D-011, D-032).
 
+## D-035 Player profiles — Decided (2026-11-05)
+- `/players` (board) and `/players/[id]` (profile) are a fifth room. Profiles use the served API
+  (`/predict`, `/explain`) with each player's own model inputs: there is no second prediction system.
+- **Data sources.** Committed: the eight players the explainability report already publishes
+  (`reports/explainability/shap_local_representative_players.csv`), exported to
+  `web/src/data/players.json` by `src.product.export`. Full population: `python -m src.product.players`,
+  run where the dataset and the cross-validation predictions exist. It is written to a git-ignored
+  path because it is per-player dataset content. Nothing is retrained.
+- **Held-out vs served.** The served models were refitted on every player, so their estimate for a
+  named player is in-sample. Profiles label it as such and show the out-of-fold (held-out) estimate,
+  when exported, as the comparison with the observed market value.
+- **Traits** are existing model features (goals and assists per 90, minutes over two years, start share,
+  minutes in the last 365 days, European club minute share), ranked by mid-rank percentile within the
+  player's position across the modelling population. Goalkeepers have no scoring axes. Passing,
+  progression and defensive actions are not in the dataset and are not claimed.
+- **No ranking by model error.** The board sorts by observed value, name or age, never by residual:
+  a gap between market and model is not a verdict on a player (model card: not for scouting).
+- **Audit group** appears only in the profile's audit-context panel, with the group-level result and
+  the caveat that one player's residual is not evidence of anything.
+- **Portraits** only from `web/src/data/portraits.json` with an allow-listed licence and attribution
+  (docs/PLAYER_ASSETS.md); Transfermarkt's `image_url` is never read. None ship yet; a labelled
+  silhouette holds the slot. Shirt numbers are not in the acquired tables (game_lineups is not
+  downloaded), so the oversized glyph is the player's role code.
+
 ---
 
 # Issues found in the locked technical spec

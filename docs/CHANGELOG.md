@@ -1,5 +1,11 @@
 # Development changelog
 
+## 2026-11-05: Dossier, stage 3: in context (branch `feat/multipage-experience`)
+- **In context (D-048):** league and position standings in plain words with value silhouettes;
+  "Near this valuation" (same league, then same position); "Where this player appears" (stories,
+  Explorer and League Landscape links, this browser's comparison tray and watchlists).
+- **Tests:** web 150 (+7: standings wording and ties, neighbours, histogram, appearances). Build passes.
+
 ## 2026-11-05: Dossier, stage 2: Valuation Journey as centrepiece (branch `feat/multipage-experience`)
 - **Journey (D-047):** first section after the opening, full width and first in reading order. The
   heading names the explained estimate and its source, and explains why it differs from the held-out

@@ -427,6 +427,31 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   deleted, so CSS requests failed. It was a QA-harness fault, not an app defect. Servers are now
   stopped by port, and PRODUCT.md warns about building or deleting `.next` under a live server.
 
+
+## D-040 Full-population integration on real data — Decided (2026-11-05)
+- **Context:** the multi-page product had only been run on the eight-player showcase. The local
+  machine has the dataset, both `oof_*_hgb_tuned.parquet` files and the four model binaries.
+- **Done without retraining or rebuilding data:** `python -m src.product.players` wrote 5,820
+  profiles; `verify_players` passed 24/24, and 27/27 with the API running.
+- **Fixes found by running the full export:**
+  - The Market Landscape scatters drew 5,820 SVG circles with tooltips each, so the page was
+    5.3 MB. Above 200 points the scatter now draws one path of round dots with rounded
+    coordinates (400 KB in development, 97 KB gzipped in production). The eight-player showcase
+    still gets labelled circles.
+  - The Comparison Studio's explanation panel worked only for showcase players, which have
+    published SHAP values. When fewer than two compared players have one, it now asks the live
+    API for Model A explanations of all of them. One basis is used for every column, never a mix.
+    Explanations that fail the additivity check are dropped, and the panel says so when the API is
+    offline.
+  - The dossier's "Live" line named only the Model A version. It now names every served model it
+    shows.
+  - On narrow screens the Terminal rail stretched to fill the empty height when results were short.
+    The grid rows are now `auto 1fr`.
+- **Not changed:** models, cross-validation, research outputs, metrics, residual definitions.
+- **Known limit:** `/api/players` (the search, watchlist and compare index) is 1.8 MB of JSON.
+  Next.js does not compress route-handler responses and strips a manual `Content-Encoding`. Gzip
+  belongs to the reverse proxy or CDN in deployment.
+
 ---
 
 # Issues found in the locked technical spec

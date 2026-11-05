@@ -1,5 +1,21 @@
 # Development changelog
 
+## 2026-11-05: Full-population integration (branch `feat/multipage-experience`, not pushed)
+- **Data:** the full export was generated locally from the existing dataset and held-out
+  predictions: 5,820 players. `verify_players` passed 24/24, and 27/27 against the live API. No
+  acquisition, rebuild, retraining or cross-validation was run.
+- **API:** the local binaries are served with dataset `91174c392a8be652`. Predict and explain work
+  for Models A and B through the web proxy. A nationality field gets 422, GET /predict gets 405, an
+  unknown player gets 404, and the stopped service gets 503 with "Model offline".
+- **Fixes (D-040):**
+  - Dense scatters for the full population (Market Landscape 5.3 MB to 400 KB).
+  - Live SHAP in the Comparison Studio for players without published explanations.
+  - The dossier's live line names both served models.
+  - The narrow-screen rail no longer stretches.
+- **Tests:** web 104 (+6), Python 136 passed with data present; typecheck and production build pass.
+- **Performance (production server, full export):** pages answer in 35 to 85 ms, gzipped at 10 to
+  97 KB. The server uses about 185 MB of memory. `/api/players` is 1.8 MB uncompressed (D-040).
+
 ## 2026-11-05: Brand identity (branch `feat/multipage-experience`, not pushed)
 - **Identity (D-039):**
   - Big Shoulders and Archivo (expanded labels) replace Barlow; Source Serif is kept for reading.

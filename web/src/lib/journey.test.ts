@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import showcase from "@/data/players.json";
-import { buildJourney, euroTicks, factor, journeyDomain, toEur, type Explanation } from "./journey";
+import { buildJourney, euroTicks, factor, journeyDomain, movers, toEur, type Explanation } from "./journey";
 
 const players = (showcase as unknown as { players: { name: string; estimates: { served: { A: number } }; explanation: Explanation }[] }).players;
 
@@ -43,5 +43,32 @@ describe("valuation journey", () => {
     expect(ticks.at(-1)).toBe(50_000_000);
     const d = journeyDomain(buildJourney(players[0]!.explanation), 600_000);
     expect(d[0]).toBeLessThan(Math.log(600_000));
+  });
+});
+
+describe("biggest movers", () => {
+  it("returns the largest raises and lowers by effect, from the full explanation", () => {
+    const e = players[0]!.explanation;
+    const { raises, lowers } = movers(e, 3);
+    expect(raises.length).toBeLessThanOrEqual(3);
+    expect(raises.every((m) => m.contribution > 0)).toBe(true);
+    expect(lowers.every((m) => m.contribution < 0)).toBe(true);
+    expect(raises.map((m) => m.contribution)).toEqual([...raises.map((m) => m.contribution)].sort((a, b) => b - a));
+    const maxUp = Math.max(...e.contributions.map((c) => c.contribution));
+    if (maxUp > 0) expect(raises[0]!.contribution).toBe(maxUp);
+    const maxDown = Math.min(...e.contributions.map((c) => c.contribution));
+    if (maxDown < 0) expect(lowers[0]!.contribution).toBe(maxDown);
+  });
+});
+
+describe("movers ignore negligible effects", () => {
+  it("never lists an input whose effect rounds to x1.00", () => {
+    const e = { model: "A" as const, base_log_value: 15, predicted_log_value: 15.5, contributions: [
+      { feature: "age", value: 25, contribution: 0.5 },
+      { feature: "foot", value: "left", contribution: -0.002 },
+    ] };
+    const { raises, lowers } = movers(e);
+    expect(raises.map((m) => m.key)).toEqual(["age"]);
+    expect(lowers).toEqual([]);
   });
 });

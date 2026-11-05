@@ -66,3 +66,28 @@ describe("Valuation lab", () => {
     expect(screen.queryByText("Served · live")).not.toBeInTheDocument();
   });
 });
+
+describe("Valuation Journey as the dossier's centrepiece", () => {
+  it("says which estimate it explains, lists the biggest movers and comes first in reading order", async () => {
+    vi.stubGlobal("fetch", vi.fn(async () => json({ detail: "down" }, 503)));
+    const { container } = render(<ValuationLab {...props} />);
+    expect(await screen.findByRole("heading", { name: /Why Model A says €16.5M/ })).toBeInTheDocument();
+    expect(screen.getByText(/This explains the served Model A estimate, €16.5M \(cached research result\)/)).toBeInTheDocument();
+    expect(screen.getByText(/Explanations exist only for the served model/)).toBeInTheDocument();
+    const moversBox = screen.getByLabelText("Inputs that moved this estimate most");
+    expect(within(moversBox).getByText("Raised it most")).toBeInTheDocument();
+    expect(within(moversBox).getAllByRole("listitem").length).toBeGreaterThan(0);
+    expect(within(moversBox).queryByText("×1.00")).not.toBeInTheDocument();
+    // The journey section precedes Model A vs B in the DOM, not only visually.
+    const ids = [...container.querySelectorAll("section[id]")].map((s) => s.id);
+    expect(ids.indexOf("explain")).toBeLessThan(ids.indexOf("estimates"));
+  });
+
+  it("shows a loading skeleton, not a number, while the live explanation is on its way", async () => {
+    vi.stubGlobal("fetch", vi.fn(() => new Promise<Response>(() => {})));
+    const noExplanation = { ...player, explanation: null };
+    render(<ValuationLab {...props} player={noExplanation} />);
+    expect(screen.getByRole("status", { name: "Loading the explanation" })).toBeInTheDocument();
+    expect(screen.getByText(/Asking the prediction API to explain Model A/)).toBeInTheDocument();
+  });
+});

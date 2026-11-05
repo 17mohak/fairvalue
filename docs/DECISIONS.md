@@ -504,6 +504,34 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   for scale. That needs the owner's decision, including the personality-rights stance before any
   public deployment.
 
+## D-045 Valuation Theatre Overview, global player search, canonical dossier — Decided (2026-11-05)
+- **Scope:** a frontend sprint only. No model, feature, dataset, metric or residual definition changed;
+  every figure comes from `research.json` or the player export, as before.
+- **Overview = five chapters** (Theatre, Market, Discrepancy, Players, Research). The hero is an original
+  SVG pitch in perspective: its length is a log value scale fitted to the plotted values (this also fixes
+  ROADMAP S2-02's clamped axis), and each lane is one real player with ● observed and ◇ Model A.
+  - **Selection rules are stated on the page:** the seven most valuable players (ties at the cut taken in
+    surname order, and the page says so); per position; per league. No player is picked by hand, and none
+    is picked for the size of their residual.
+  - Estimates are held-out (out-of-fold) in the full export and labelled "served, in-sample" in the
+    showcase build. The raw gap (+0.097) and the league-stratified headline (+0.093) are shown and named
+    separately. The MAE gap is shown with its CI, which crosses zero.
+  - The hero does not depend on portraits; the monogram fallback is used everywhere.
+- **No fourth environment.** Search stays global (header control, ⌘/Ctrl K, `/`), over the existing
+  `/api/players` index; no new backend. It now ranks results (whole-word name > word start > substring >
+  club/league/nationality, then observed value), has loading, empty and error/retry states, recent
+  searches in `localStorage`, and passes `?from=` so the dossier's breadcrumb returns to the origin.
+- **Amends D-042 for search only:** search rows show the recorded nationality, as the owner asked. Search
+  rows show no residual. Everywhere a residual is shown (Overview hero, spotlights, league leaders,
+  Explorer, Discrepancies), nationality stays off, as D-042 requires.
+- **Dossier:** `/players/[id]` was already canonical and linked everywhere. It now declares
+  `rel=canonical` (`/players/{id-slug}`) and has breadcrumbs (origin from `?from=`; "Overview" for a
+  shared link), a Back button only after in-app navigation, and a sticky section index. The H2H story
+  headers now link to it.
+- **Motion:** CSS keyframes for the hero (plays before hydration, no layout shift); `motion` (already a
+  dependency) for counters; IntersectionObserver reveals that hide nothing in server HTML. No GSAP or
+  Lenis. Reduced motion now also zeroes animation and transition delays globally.
+
 ---
 
 # Issues found in the locked technical spec

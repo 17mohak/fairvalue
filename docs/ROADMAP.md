@@ -88,12 +88,12 @@ Already complete: 2.2, the Terminal on the full population (D-040), and the flag
 | ID | Task | Pri | Size | Depends | Status |
 |---|---|---|---|---|---|
 | S2-01 | Carry the published research results for the showcase into the full export | P0 | S | – | Open |
-| S2-02 | Overview market-and-model spectrum: data-driven axis | P0 | S | – | Open |
+| S2-02 | Overview market-and-model spectrum: data-driven axis | P0 | S | – | **Done** (D-045: the theatre fits its scale to the plotted values; unit-tested) |
 | S2-03 | Portraits at scale: rendering decision and batch preparation | P0 | L | 1.4, owner decision | Open |
 | S2-04 | Live compact journey in the Explorer inspector | P1 | M | API | Open |
 | S2-05 | Drill-through between aggregates and players | P1 | M | – | Open |
 | S2-06 | Explorer table fits desktop widths | P1 | S | – | Open |
-| S2-07 | Overview cover: always a valuation, never a placeholder number | P1 | S | S2-01 (S2-03 for the image) | Open |
+| S2-07 | Overview cover: always a valuation, never a placeholder number | P1 | S | S2-01 (S2-03 for the image) | **Partial** (D-045: the hero always shows real held-out valuations; the live-check placeholder is unchanged) |
 | S2-08 | Dossier as the hub: where this player appears | P2 | M | S2-05 | Open |
 | S2-09 | Value rulers cover the full value range | P2 | S | – | Open |
 | S2-10 | More valuation stories and Player Spotlight | P2 | L | S2-03, owner decision | Open |

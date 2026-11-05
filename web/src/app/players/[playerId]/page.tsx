@@ -32,7 +32,14 @@ function load(param: string): PlayerProfile {
 export async function generateMetadata({ params }: Pick<Params, "params">): Promise<Metadata> {
   const id = idFromParam((await params).playerId);
   const p = id === null ? undefined : playerById(id);
-  return p ? { title: p.name, description: `${p.name}: observed market value, model estimates, explanation and positional traits.` } : { title: "Player not found" };
+  // One canonical address per player, whichever form (id or id-slug, any ?from=) was opened.
+  return p
+    ? {
+        title: p.name,
+        description: `${p.name}: observed market value, model estimates, explanation and positional traits.`,
+        alternates: { canonical: `/players/${p.slug}` },
+      }
+    : { title: "Player not found" };
 }
 
 /** "(2025-06-12, 2026-06-12]" -> "between 12 Jun 2025 and 12 Jun 2026" */
@@ -74,6 +81,24 @@ export default async function PlayerPage({ params, searchParams }: Params) {
         <DossierBar from={from} player={{ id: p.id, slug: p.slug, name: p.name, role_code: p.role_code }} story={story} />
         <PlayerHero player={p} portrait={portrait} valuedLabel={valued} estimates={heroEstimates} />
 
+        <nav className={styles.sections} aria-label="Sections of this dossier">
+          <ol>
+            {[
+              { id: "estimates", label: "Model A vs B" },
+              { id: "explain", label: "Valuation Journey" },
+              { id: "traits", label: "Traits" },
+              ...(hasHistory ? [{ id: "history", label: "History" }] : []),
+              { id: "audit", label: "Audit context" },
+            ].map((s, i) => (
+              <li key={s.id}>
+                <a href={`#${s.id}`}>
+                  <span className="num">{String(i + 1).padStart(2, "0")}</span> {s.label}
+                </a>
+              </li>
+            ))}
+          </ol>
+        </nav>
+
         <div className={styles.grid} data-history={hasHistory || undefined}>
           <ValuationLab
             areas={{ compare: styles.compare, explain: styles.explain }}
@@ -82,7 +107,7 @@ export default async function PlayerPage({ params, searchParams }: Params) {
             regressorVersion={{ A: research.models.registry.regressor_A.version, B: research.models.registry.regressor_B.version }}
           />
 
-          <section className={`fv-panel ${styles.traits}`} aria-labelledby="traits-title">
+          <section id="traits" className={`fv-panel ${styles.traits}`} aria-labelledby="traits-title">
             <header className="fv-panel-head">
               <h2 id="traits-title" className="fv-panel-title">
                 Player traits
@@ -97,7 +122,7 @@ export default async function PlayerPage({ params, searchParams }: Params) {
           </section>
 
           {hasHistory && (
-            <section className={`fv-panel ${styles.history}`} aria-labelledby="history-title">
+            <section id="history" className={`fv-panel ${styles.history}`} aria-labelledby="history-title">
               <header className="fv-panel-head">
                 <h2 id="history-title" className="fv-panel-title">
                   Valuation history <small>every Transfermarkt valuation on record</small>
@@ -109,7 +134,7 @@ export default async function PlayerPage({ params, searchParams }: Params) {
             </section>
           )}
 
-          <section className={`fv-panel ${styles.audit}`} aria-labelledby="audit-title">
+          <section id="audit" className={`fv-panel ${styles.audit}`} aria-labelledby="audit-title">
             <header className="fv-panel-head">
               <h2 id="audit-title" className="fv-panel-title">
                 Audit context <small>group-level, not about this player</small>

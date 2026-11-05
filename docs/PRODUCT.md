@@ -8,7 +8,7 @@ Three environments behind a persistent switcher (D-038), plus a shared player do
 
 | Route | Environment | Composition | Data source |
 |---|---|---|---|
-| `/` | **Overview** | Front door: headline, featured valuation (journey ribbon), market snapshot, doors into Stories and the Terminal; market-vs-model spectrum; the audit finding; directory; live model check | `research.json`, player export, `POST /predict` (live check) |
+| `/` | **Overview** | Five chapters (D-045): 01 the Valuation Theatre (perspective pitch, log value scale, one lane per player, ● observed vs ◇ Model A); 02 the Market (funnel, tiers, 14 leagues); 03 the Discrepancy (group residuals, raw vs league-stratified gap, caveats); 04 the Players (per-position and per-league leaders); 05 the Research (models, explainability, journey, fairness, methods, live check) | `research.json`, player export, `POST /predict` (live check) |
 | `/terminal` | **Terminal** · Player Explorer | Search, position/league/tier and numeric filters (age, minutes, value), sortable table or cards, comparison tray, watch, inspector with a compact journey. All state in the URL | player export, `/api/players/[id]` |
 | `/terminal/compare?ids=` | Terminal · Comparison Studio | 2–4 players: value ladder, side-by-side explanation matrix, performance lanes (goalkeepers off goals/assists axes), record, history | player export |
 | `/terminal/watchlists` | Terminal · Watchlists | Named lists in `localStorage` (not synced), sort, filter, compare, JSON export | `/api/players` |
@@ -17,7 +17,7 @@ Three environments behind a persistent switcher (D-038), plus a shared player do
 | `/terminal/valuation`, `/terminal/audit` | Terminal · Valuation Studio, Fairness Audit | The former studio and observatory, unchanged inside | `POST /predict`, `POST /explain`, `research.json` |
 | `/stories` and `/stories/*` | **Stories** | Cover; research and market stories; a valuation story per showcase player; head-to-heads; Spotlight shown as not published | `research.json`, `players.json` (showcase) |
 | `/methods` | Stories · Methods | Paper on light stock | `research.json` |
-| `/players/[id]?from=` | Shared dossier | Same record from every environment: header, A vs B, Valuation Journey, traits, history, audit context | player export, `POST /predict`, `POST /explain` |
+| `/players/[id]?from=` | Canonical dossier | Same record from every environment (`/players/418560` and `/players/418560-erling-haaland` both resolve; `rel=canonical` is the slug form). Breadcrumbs from `?from=`, Back after in-app navigation, sticky section index: A vs B, Valuation Journey, traits, history, audit context | player export, `POST /predict`, `POST /explain` |
 | `/api/predict`, `/api/explain`, `/api/health`, `/api/players` | Server-side | Proxy to FastAPI (the backend URL never reaches the browser); compact player index | `FAIRVALUE_API_URL`, player export |
 
 `/players`, `/studio` and `/fairness` redirect to their Terminal workspaces.
@@ -109,7 +109,9 @@ restarting.
 - **Colour:** gold marks the selection. Raises are gold (`--raise`), lowers a restrained red
   (`--lower`). Comparison players use three dataviz-validated slots plus a fourth, always with
   shapes and one row each.
-- **Shortcuts:** ⌘K or `/` opens search (players, workspaces, stories). In the Terminal, `g` then a
+- **Shortcuts:** ⌘K / Ctrl K or `/` opens global player search from every environment. Results are
+  ranked by name, then club, league or nationality; recent searches are kept in this browser. It reads
+  the existing `/api/players` index once per page load. Workspaces and stories are still listed. In the Terminal, `g` then a
   letter jumps between workspaces. Escape closes the palette or the inspector.
 
 ## Not done

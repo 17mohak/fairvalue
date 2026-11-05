@@ -1,5 +1,21 @@
 # Development changelog
 
+## 2026-11-05: Valuation Theatre, global search, canonical dossier (branch `feat/multipage-experience`, not committed)
+- **Overview (D-045):** rebuilt as five chapters. The hero is the Valuation Theatre, an SVG pitch whose
+  length is a log value scale fitted to the plotted values. Its lanes are the seven most valuable players
+  (held-out Model A), each linked to its dossier. Then Market (funnel, tiers, 14-league ladder),
+  Discrepancy (group mean residuals, raw vs league-stratified gap, definitions, caveats), Players
+  (per-position spotlights, per-league leaders) and Research (Model A/B, explainability, journey,
+  fairness, methods, live check).
+- **Search:** ranked results ("saka" now finds Bukayo Saka first), nationality and value per row,
+  loading, empty and error-with-retry states, recent searches, prefetch on hover, a platform-aware
+  shortcut label and `?from=` to the dossier. A resting pointer no longer changes the highlighted row.
+- **Dossier:** `rel=canonical`, breadcrumbs and Back, sticky section index, floodlight atmosphere.
+- **Fixes:** ROADMAP S2-02 (data-driven axis); reduced motion zeroes delays; no horizontal overflow at
+  390, 820, 1440 or 1920 px.
+- **Tests:** web 130 (+22: theatre geometry and selection rules, ranked search, recent searches,
+  palette keyboard, error and pointer flows). Typecheck and production build pass.
+
 ## 2026-11-05: Portrait sourcing and Sprint 2 audit (branch `feat/multipage-experience`)
 - **Portraits (D-043):** the finder works with the owner's contact and was run on all 5,820 players.
   3,674 have an allowed licence, 2,765 at ≥ 800 px and 1,755 at ≥ 1,400 px. The finder was fixed

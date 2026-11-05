@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { cleanName, MAX_LISTS, toggleCompare, withList, withPlayer, withRecent } from "./localStore";
+import { cleanName, MAX_LISTS, toggleCompare, withList, withPlayer, withRecent, withSearch } from "./localStore";
 
 describe("watchlist updates", () => {
   it("creates named lists, trimming and capping the name", () => {
@@ -43,5 +43,16 @@ describe("recently viewed", () => {
     list = withRecent(list, { id: 5, slug: "5", name: "P5", role_code: "CB" }, "tz");
     expect(list[0]!.id).toBe(5);
     expect(list.filter((r) => r.id === 5)).toHaveLength(1);
+  });
+});
+
+describe("recent searches", () => {
+  it("keeps five distinct queries, newest first, ignoring case and blank input", () => {
+    let list: string[] = [];
+    for (const q of ["a", "b", "c", "d", "e", "f"]) list = withSearch(list, q);
+    expect(list).toEqual(["f", "e", "d", "c", "b"]);
+    list = withSearch(list, "  C ");
+    expect(list).toEqual(["C", "f", "e", "d", "b"]);
+    expect(withSearch(list, "   ")).toBe(list);
   });
 });

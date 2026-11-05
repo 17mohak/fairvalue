@@ -73,3 +73,67 @@
 .btn [data-box] {
   display: none;
 }
+
+.where {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.9rem;
+  min-width: 0;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2rem;
+  padding: 0 0.75rem 0 0.6rem;
+  border: 1px solid rgb(233 185 73 / 0.5);
+  border-radius: 4px;
+  background: none;
+  color: #e9b949;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.backBtn:hover {
+  background: rgb(233 185 73 / 0.1);
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #8f9b93;
+}
+
+.crumbs li + li::before {
+  content: "/";
+  margin: 0 0.45rem 0 0.25rem;
+  color: #4d5852;
+}
+
+.crumbs a {
+  color: #c3cbc3;
+  text-decoration: none;
+}
+
+.crumbs a:hover {
+  color: #e9b949;
+}
+
+.crumbs [aria-current] {
+  color: #edefe6;
+}

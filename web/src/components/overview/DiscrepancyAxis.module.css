@@ -1,0 +1,208 @@
+.fig {
+  display: grid;
+  gap: 0.9rem;
+  margin: 0;
+}
+
+.cap {
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--chalk-2);
+}
+.cap small {
+  margin-left: 0.5rem;
+  font-size: 0.66rem;
+  color: var(--fog);
+}
+
+.plot {
+  --label-w: 8.5rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
+.sides,
+.ticks {
+  position: relative;
+  margin-left: var(--label-w);
+}
+.sides {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: var(--fog);
+}
+
+.field {
+  position: relative;
+  display: grid;
+  gap: 1.6rem;
+  padding: 1.6rem 0 2.4rem;
+}
+
+/* Positions in the overlay are percentages of the track area, beside the label column. */
+.overlay {
+  position: absolute;
+  inset: 0 0 0 var(--label-w);
+  pointer-events: none;
+}
+.zero {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed rgb(237 239 230 / 0.35);
+}
+.zero small {
+  position: absolute;
+  top: -0.2rem;
+  left: 0.4rem;
+  white-space: nowrap;
+  font-size: 0.66rem;
+  color: var(--fog);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: var(--label-w) 1fr;
+  align-items: center;
+}
+.label {
+  display: grid;
+  line-height: 1.15;
+}
+.label b {
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+.label small {
+  font-size: 0.7rem;
+  color: var(--fog);
+}
+.row[data-g="uefa"] .label b {
+  color: var(--uefa);
+}
+.row[data-g="non"] .label b {
+  color: var(--non-uefa);
+}
+
+.track {
+  position: relative;
+  height: 2.2rem;
+  border-top: 1px solid rgb(237 239 230 / 0.08);
+  border-bottom: 1px solid rgb(237 239 230 / 0.08);
+  background: rgb(237 239 230 / 0.015);
+}
+.ci {
+  position: absolute;
+  top: 50%;
+  height: 6px;
+  translate: 0 -50%;
+  border-radius: 3px;
+  opacity: 0;
+  transition: opacity 600ms var(--ease-out) 900ms;
+}
+.row[data-g="uefa"] .ci {
+  background: rgb(68 149 220 / 0.45);
+}
+.row[data-g="non"] .ci {
+  background: rgb(212 96 154 / 0.45);
+}
+.fig[data-out] .ci {
+  opacity: 1;
+}
+
+.dot {
+  position: absolute;
+  top: 50%;
+  width: 18px;
+  height: 18px;
+  translate: -50% -50%;
+  border: 2px solid #0b100d;
+  border-radius: 50%;
+  transition: left 1200ms var(--ease-out) 250ms;
+}
+.row[data-g="uefa"] .dot {
+  background: var(--uefa);
+}
+.row[data-g="non"] .dot {
+  background: var(--non-uefa);
+}
+.dot b {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  translate: -50% 0;
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  white-space: nowrap;
+  color: var(--chalk);
+}
+
+.bracket {
+  position: absolute;
+  bottom: 0.4rem;
+  height: 0.7rem;
+  border: 1px solid var(--flood);
+  border-top: 0;
+  opacity: 0;
+  transition: opacity 500ms var(--ease-out) 1400ms;
+}
+.fig[data-out] .bracket {
+  opacity: 1;
+}
+.bracket span {
+  position: absolute;
+  top: calc(100% + 0.2rem);
+  left: 50%;
+  translate: -50% 0;
+  white-space: nowrap;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--flood);
+}
+
+.ticks {
+  height: 1rem;
+  border-top: 1px solid rgb(237 239 230 / 0.15);
+}
+.ticks i {
+  position: absolute;
+  top: 0.25rem;
+  translate: -50% 0;
+  font-style: normal;
+  font-size: 0.68rem;
+  color: var(--fog);
+}
+
+.note {
+  max-width: 60ch;
+  font-size: 0.86rem;
+  color: var(--chalk-2);
+}
+.note b {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  color: var(--flood);
+}
+
+@media (max-width: 640px) {
+  .plot {
+    --label-w: 5.5rem;
+  }
+  .label small,
+  .sides {
+    display: none;
+  }
+}

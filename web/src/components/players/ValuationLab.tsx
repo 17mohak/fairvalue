@@ -76,7 +76,7 @@ export function ValuationLab({ player: p, mae, regressorVersion, areas = {} }: P
 
   return (
     <>
-      <section className={`fv-panel ${areas.compare ?? ""}`} aria-labelledby="mm-title">
+      <section id="estimates" className={`fv-panel ${areas.compare ?? ""}`} aria-labelledby="mm-title">
         <header className="fv-panel-head">
           <h2 id="mm-title" className="fv-panel-title">
             Model A vs Model B <small>against the observed {formatEur(p.market_value_eur)}</small>
@@ -163,7 +163,7 @@ export function ValuationLab({ player: p, mae, regressorVersion, areas = {} }: P
         </div>
       </section>
 
-      <section className={`fv-panel ${areas.explain ?? ""}`} aria-labelledby="why-title">
+      <section id="explain" className={`fv-panel ${areas.explain ?? ""}`} aria-labelledby="why-title">
         <header className="fv-panel-head">
           <h2 id="why-title" className="fv-panel-title">
             {served(model) ? `Why ${MODEL_LABELS[model].name} says ${formatEur(served(model)!)}` : `What moves ${MODEL_LABELS[model].name}`}

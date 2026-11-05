@@ -179,6 +179,8 @@ export interface IndexRow {
   sub_position: string;
   league_id: string;
   club: string | null;
+  /** Display only (D-037): shown in search results, never a model input. */
+  nationality: string | null;
   age: number;
   market_value_eur: number;
   market_tier: TierName | null;
@@ -190,7 +192,7 @@ export function indexRow(p: PlayerProfile): IndexRow {
   const s = summary(p);
   return {
     id: p.id, slug: p.slug, name: p.name, role_code: p.role_code, position: p.position, sub_position: p.sub_position,
-    league_id: p.league_id, club: p.club, age: p.age, market_value_eur: p.market_value_eur, market_tier: p.market_tier,
+    league_id: p.league_id, club: p.club, nationality: p.nationality ?? null, age: p.age, market_value_eur: p.market_value_eur, market_tier: p.market_tier,
     minutes: p.window.minutes, estimate: s.estimate,
   };
 }
@@ -205,4 +207,51 @@ export interface PlayerIndex {
 export function matchesQuery(p: Pick<IndexRow, "name" | "club" | "sub_position">, query: string): boolean {
   const needle = fold(query.trim());
   return !needle || fold(`${p.name} ${p.club ?? ""} ${p.sub_position}`).includes(needle);
+}
+
+// ---- Ranked player search (global search, comparison picker) ----
+export interface SearchHit<T> {
+  row: T;
+  score: number;
+}
+
+/**
+ * Ranks players for a typed query. Every word of the query must match the player's name, club,
+ * league or nationality; name matches rank first (exact, then surname or word start, then
+ * anywhere), and ties go to the higher observed value, so "saka" finds Bukayo Saka before
+ * Melih Kabasakal. Accent-insensitive. Pure and synchronous: 5,820 rows take well under a frame.
+ */
+export function searchPlayers<T extends Pick<IndexRow, "name" | "club" | "market_value_eur"> & { nationality?: string | null; league?: string }>(
+  rows: T[],
+  query: string,
+  limit = 8,
+): SearchHit<T>[] {
+  const words = fold(query).split(/\s+/).filter(Boolean);
+  if (!words.length) return [];
+  const full = words.join(" ");
+  const hits: SearchHit<T>[] = [];
+  for (const row of rows) {
+    const name = fold(row.name);
+    const nameWords = name.split(/[\s-]+/);
+    const other = fold(`${row.club ?? ""} ${row.league ?? ""} ${row.nationality ?? ""}`);
+    let score = 0;
+    let ok = true;
+    for (const w of words) {
+      if (nameWords.some((n) => n === w)) score += 60;
+      else if (nameWords.some((n) => n.startsWith(w))) score += 40;
+      else if (name.includes(w)) score += 15;
+      else if (other.includes(w)) score += 6;
+      else {
+        ok = false;
+        break;
+      }
+    }
+    if (!ok) continue;
+    if (name === full) score += 100;
+    else if (name.startsWith(full)) score += 30;
+    if (nameWords.at(-1) === words.at(-1)) score += 10; // surname
+    hits.push({ row, score });
+  }
+  hits.sort((a, b) => b.score - a.score || b.row.market_value_eur - a.row.market_value_eur);
+  return hits.slice(0, limit);
 }

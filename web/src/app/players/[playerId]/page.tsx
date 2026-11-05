@@ -19,6 +19,8 @@ import { playerById, playerSet } from "@/lib/players.server";
 import { portraitFor } from "@/lib/portraits";
 import { nearestByValue, standingText, valueStanding } from "@/lib/peers";
 import { valuationReading } from "@/lib/reading";
+import { encodeSequence, parseSequence, stepFor, type Sequence } from "@/lib/sequence";
+import { DossierStepper } from "@/components/players/DossierStepper";
 import { PlayerAppearances, type AppearanceLink } from "@/components/players/PlayerAppearances";
 import { ValueSilhouette } from "@/components/players/ValueSilhouette";
 import { STORIES } from "@/lib/stories";
@@ -59,7 +61,8 @@ function windowLabel(): string {
 
 export default async function PlayerPage({ params, searchParams }: Params) {
   const p = load((await params).playerId);
-  const from = parseFrom((await searchParams).from);
+  const sp = await searchParams;
+  const from = parseFrom(sp.from);
   const story = storyBySlug(`valuation-${p.slug}`)?.href ?? null;
   const set = playerSet();
   const peers = set.peers?.[p.position] ?? null;
@@ -98,7 +101,20 @@ export default async function PlayerPage({ params, searchParams }: Params) {
   ].map((g) => ({ ...g, standing: valueStanding(g.values, p.market_value_eur) }));
   const nearLeague = nearestByValue(leaguePool, p, 4);
   const nearPosition = nearestByValue(positionPool.filter((q) => !nearLeague.some((n) => n.id === q.id)), p, 4);
-  const near = [...nearLeague.map((q) => ({ q, why: leagueShort })), ...nearPosition.map((q) => ({ q, why: POSITION_PLURAL[p.position] }))];
+  const near = [
+    ...nearLeague.map((q) => ({ q, why: leagueShort, seq: { kind: "league", league: p.league_id } as Sequence })),
+    ...nearPosition.map((q) => ({ q, why: POSITION_PLURAL[p.position], seq: { kind: "position", position: p.position } as Sequence })),
+  ];
+  // Previous / next within the list this dossier was opened from (league by value if none).
+  const step = stepFor(p, set.players, parseSequence(sp.seq));
+  const hrefIn = (slug: string, seq: Sequence | null) => {
+    const q = new URLSearchParams();
+    if (from) q.set("from", from);
+    if (seq) q.set("seq", encodeSequence(seq));
+    const s = q.toString();
+    return `/players/${slug}${s ? `?${s}` : ""}`;
+  };
+  const stepLink = (q: typeof step.prev) => (q ? { href: hrefIn(q.slug, step.sequence), name: shortName(q), role: q.role_code } : null);
   const appearances: AppearanceLink[] = [
     ...STORIES.filter((s) => s.players.includes(p.id)).map((s) => ({ href: s.href, label: s.title, kind: `Story · ${s.formatLabel}` })),
     { href: `/terminal?league=${p.league_id}&focus=${p.id}`, label: `${leagueShort} in the Player Explorer`, kind: "Terminal" },
@@ -113,6 +129,7 @@ export default async function PlayerPage({ params, searchParams }: Params) {
     <PageTransition>
       <article className={styles.profile} data-from={from ?? undefined}>
         <DossierBar from={from} player={{ id: p.id, slug: p.slug, name: p.name, role_code: p.role_code }} story={story} />
+        <DossierStepper label={step.label} index={step.index} total={step.total} prev={stepLink(step.prev)} next={stepLink(step.next)} />
         <PlayerHero
           player={p}
           portrait={portrait}
@@ -261,9 +278,9 @@ export default async function PlayerPage({ params, searchParams }: Params) {
                 Near this valuation <small>closest observed values: same league, then same position</small>
               </h3>
               <ul className={styles.moreList}>
-                {near.map(({ q, why }) => (
+                {near.map(({ q, why, seq }) => (
                   <li key={q.id}>
-                    <ExpLink href={from ? `/players/${q.slug}?from=${from}` : `/players/${q.slug}`} className={styles.moreCard}>
+                    <ExpLink href={hrefIn(q.slug, seq)} className={styles.moreCard}>
                       <span className={styles.moreThumb}>
                         <PortraitSlot portrait={portraitFor(q.id)} name={q.name} roleCode={q.role_code} size="thumb" />
                       </span>

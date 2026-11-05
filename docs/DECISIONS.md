@@ -576,6 +576,20 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   comparison tray and watchlists (rendered after hydration, so the server never claims anything about a
   viewer's lists). This is ROADMAP S2-08 for the dossier.
 
+## D-049 Previous / next player in the dossier — Decided (2026-11-05)
+- **The list travels in the URL:** `seq=league:GB1`, `position:Attack`, `search:<query>` or
+  `explorer:<filters and sort>`. The dossier server rebuilds the list with the same rules that produced
+  it (`filterSort` for the Explorer, `searchPlayers` for search), so stepping matches what the user saw,
+  and dossier links stay shareable. No client-side list storage.
+- **Defaults and fallbacks:** without `seq`, or when the list no longer contains the player, the dossier
+  steps through the player's league by observed value.
+- **Sources:** Explorer table and cards pass their current view; search results pass the typed query;
+  "Near this valuation" cards pass league or position. `?from=` is kept, so the breadcrumb is unchanged.
+- **Stepper:** "2 of 555 · Your Player Explorer view" with previous and next names; J or ] next, K or [
+  previous (ignored while typing or with search open). Compare and Watch stay one click in the dossier
+  bar.
+- **Lane fix:** a tier label that would overprint the observed-value label is skipped (the tier line stays).
+
 ---
 
 # Issues found in the locked technical spec

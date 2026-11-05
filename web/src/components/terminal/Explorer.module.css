@@ -62,10 +62,12 @@
 .range legend {
   float: left;
   margin-right: 0.35rem;
-  font-size: 0.66rem;
-  letter-spacing: 0.08em;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #6c786f;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .range input {
@@ -117,12 +119,13 @@
 }
 
 .trayLabel {
-  font-family: var(--font-display);
-  font-size: 0.72rem;
+  font-family: var(--font-label);
+  font-size: 0.62rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #8f9b93;
+  font-variation-settings: var(--label-wdth);
 }
 
 .trayHint {
@@ -226,13 +229,14 @@
 }
 
 .who b {
+  font-size: 0.9rem;
   font-weight: 600;
   color: #edefe6;
 }
 
 .who small {
-  font-size: 0.72rem;
-  color: #8f9b93;
+  font-size: 0.75rem;
+  color: #9aa59c;
 }
 
 .who :global(.fv-role) {
@@ -244,6 +248,12 @@
 .value {
   font-weight: 600;
   color: #edefe6 !important;
+}
+
+.withMark {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
 }
 
 .tier {
@@ -260,13 +270,17 @@
   display: inline-grid;
   justify-items: end;
   line-height: 1.15;
+  font-weight: 600;
+  color: #e9b949;
 }
 
 .model small {
-  font-size: 0.6rem;
-  letter-spacing: 0.08em;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #9fb7d9;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .model small[data-source="heldout"] {
@@ -430,10 +444,12 @@
 
 .cardVals dt,
 .cardStats dt {
-  font-size: 0.6rem;
-  letter-spacing: 0.1em;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #6c786f;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .cardVals dd {
@@ -498,6 +514,38 @@
 }
 
 @media (max-width: 700px) {
+  /* Phones: the table keeps who, observed value, Model A and the residual; the rest is in the
+     inspector and the dossier, one tap away. */
+  .tableWrap th:nth-child(1),
+  .tableWrap td:nth-child(1),
+  .tableWrap th:nth-child(n + 3):nth-child(-n + 8),
+  .tableWrap td:nth-child(n + 3):nth-child(-n + 8),
+  .tableWrap th:nth-child(10),
+  .tableWrap td:nth-child(10),
+  .tableWrap th:nth-child(n + 12),
+  .tableWrap td:nth-child(n + 12) {
+    display: none;
+  }
+  .tableWrap :global(.tm-table) td,
+  .tableWrap :global(.tm-table) th {
+    padding-inline: 0.4rem;
+  }
+  .model small {
+    display: none;
+  }
+  .tableWrap td:nth-child(2) {
+    white-space: normal;
+  }
+  .who {
+    gap: 0.45rem;
+  }
+  .who :global(.fv-role) {
+    min-width: 1.75rem;
+    font-size: 0.74rem;
+  }
+  .range input {
+    width: 3.6rem;
+  }
   .search {
     width: 100%;
   }

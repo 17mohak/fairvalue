@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useTransition } from "react";
+import { ModelMark, ObsMark, Residual, TierMark } from "@/components/brand/Marks";
 import { MiniRuler } from "@/components/players/MiniRuler";
 import { compareTray } from "@/lib/localStore";
 import { DEFAULT_DIR, explorerParams, type ExplorerQuery, type ExplorerRow, type ExplorerSort } from "@/lib/explorer";
@@ -33,7 +34,7 @@ interface Props {
 
 const COLUMNS: { key: ExplorerSort | null; label: string; num?: boolean; title?: string; col?: string }[] = [
   { key: "name", label: "Player" },
-  { key: null, label: "League" },
+  { key: null, label: "League", col: "league" },
   { key: "age", label: "Age", num: true },
   { key: "minutes", label: "Min", num: true, title: "Club minutes, two years to the valuation date" },
   { key: null, label: "Apps", num: true, col: "apps" },
@@ -225,8 +226,8 @@ export function Explorer({ query, rows, count, total, page, pages, leagues }: Pr
                         )}
                       </th>
                     ))}
-                    <th scope="col" data-num data-col="ratio" title="Model A estimate divided by the observed value">
-                      ×
+                    <th scope="col" data-num data-col="ratio" title="Residual: log(observed) − log(Model A). ▲ observed above the estimate, ▼ below it">
+                      Obs vs A
                     </th>
                     <th scope="col">
                       <span className="visually-hidden">Actions</span>
@@ -255,24 +256,28 @@ export function Explorer({ query, rows, count, total, page, pages, leagues }: Pr
                           </span>
                         </span>
                       </td>
-                      <td>{leagueName(r.league_id).split(",")[0]}</td>
+                      <td data-col="league">{leagueName(r.league_id).split(",")[0]}</td>
                       <td data-num>{Math.floor(r.age)}</td>
                       <td data-num>{integer(r.window.minutes)}</td>
                       <td data-num data-col="apps">{r.window.appearances}</td>
                       <td data-num>{r.position === "Goalkeeper" ? "–" : r.goals_p90.toFixed(2)}</td>
                       <td data-num>{r.position === "Goalkeeper" ? "–" : r.assists_p90.toFixed(2)}</td>
                       <td data-num className={styles.value}>
-                        {formatEur(r.market_value_eur)}
+                        <span className={styles.withMark}>
+                          <ObsMark />
+                          {formatEur(r.market_value_eur)}
+                        </span>
                       </td>
                       <td>
-                        <span className={styles.tier} data-tier={r.market_tier ?? undefined}>
-                          {r.market_tier ?? "–"}
-                        </span>
+                        <TierMark tier={r.market_tier} showName={focus === null} />
                       </td>
                       <td data-num>
                         {r.estimate ? (
                           <span className={styles.model}>
-                            {formatEur(r.estimate.value)}
+                            <span className={styles.withMark}>
+                              <ModelMark />
+                              {formatEur(r.estimate.value)}
+                            </span>
                             <small data-source={r.estimate.source}>{r.estimate.source === "heldout" ? "held-out" : "served"}</small>
                           </span>
                         ) : (
@@ -280,7 +285,7 @@ export function Explorer({ query, rows, count, total, page, pages, leagues }: Pr
                         )}
                       </td>
                       <td data-num data-col="ratio" className={styles.ratio}>
-                        {r.estimate ? `×${(r.estimate.value / r.market_value_eur).toFixed(2)}` : ""}
+                        {r.estimate ? <Residual value={Math.log(r.market_value_eur) - Math.log(r.estimate.value)} compact basis={r.estimate.source === "heldout" ? "held-out" : "in-sample"} /> : ""}
                       </td>
                       <td>
                         <span className={styles.rowActions}>

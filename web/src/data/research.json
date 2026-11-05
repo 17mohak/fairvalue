@@ -3760,5 +3760,394 @@
       "started": "2026-11-05 00:10:44",
       "finished": "2026-11-05 01:33:58"
     }
+  },
+  "market": {
+    "residual": "log(observed) - log(held-out prediction); positive = the model under-predicts",
+    "positions": [
+      {
+        "key": "Attack",
+        "n": 1583,
+        "A": {
+          "mean_residual": 0.004,
+          "mae": 0.413,
+          "rmse": 0.5354
+        },
+        "B": {
+          "mean_residual": -0.0188,
+          "mae": 0.7275,
+          "rmse": 0.9117
+        }
+      },
+      {
+        "key": "Defender",
+        "n": 2065,
+        "A": {
+          "mean_residual": -0.0034,
+          "mae": 0.3976,
+          "rmse": 0.5149
+        },
+        "B": {
+          "mean_residual": 0.0068,
+          "mae": 0.7258,
+          "rmse": 0.9229
+        }
+      },
+      {
+        "key": "Goalkeeper",
+        "n": 485,
+        "A": {
+          "mean_residual": -0.0157,
+          "mae": 0.4587,
+          "rmse": 0.5925
+        },
+        "B": {
+          "mean_residual": -0.0089,
+          "mae": 0.741,
+          "rmse": 0.9292
+        }
+      },
+      {
+        "key": "Midfield",
+        "n": 1687,
+        "A": {
+          "mean_residual": 0.0258,
+          "mae": 0.3941,
+          "rmse": 0.5082
+        },
+        "B": {
+          "mean_residual": 0.0156,
+          "mae": 0.7182,
+          "rmse": 0.911
+        }
+      }
+    ],
+    "tiers": [
+      {
+        "key": "Elite",
+        "n": 843,
+        "A": {
+          "mean_residual": 0.2324,
+          "mae": 0.4084,
+          "rmse": 0.5236
+        },
+        "B": {
+          "mean_residual": 0.7102,
+          "mae": 0.8552,
+          "rmse": 1.0915
+        }
+      },
+      {
+        "key": "Emerging",
+        "n": 2776,
+        "A": {
+          "mean_residual": -0.155,
+          "mae": 0.4159,
+          "rmse": 0.5401
+        },
+        "B": {
+          "mean_residual": -0.4965,
+          "mae": 0.7289,
+          "rmse": 0.9092
+        }
+      },
+      {
+        "key": "Established",
+        "n": 1856,
+        "A": {
+          "mean_residual": 0.1028,
+          "mae": 0.4054,
+          "rmse": 0.5216
+        },
+        "B": {
+          "mean_residual": 0.3004,
+          "mae": 0.6611,
+          "rmse": 0.8348
+        }
+      },
+      {
+        "key": "World Class",
+        "n": 345,
+        "A": {
+          "mean_residual": 0.2288,
+          "mae": 0.3216,
+          "rmse": 0.422
+        },
+        "B": {
+          "mean_residual": 0.6622,
+          "mae": 0.725,
+          "rmse": 0.9346
+        }
+      }
+    ],
+    "minutes_bands": [
+      {
+        "key": "450-899",
+        "n": 692,
+        "A": {
+          "mean_residual": -0.0129,
+          "mae": 0.5212,
+          "rmse": 0.6656
+        },
+        "B": {
+          "mean_residual": -0.0225,
+          "mae": 0.8538,
+          "rmse": 1.0692
+        }
+      },
+      {
+        "key": "900-1799",
+        "n": 1223,
+        "A": {
+          "mean_residual": 0.0167,
+          "mae": 0.4296,
+          "rmse": 0.5576
+        },
+        "B": {
+          "mean_residual": 0.0016,
+          "mae": 0.76,
+          "rmse": 0.9549
+        }
+      },
+      {
+        "key": "1800+",
+        "n": 3905,
+        "A": {
+          "mean_residual": 0.0061,
+          "mae": 0.378,
+          "rmse": 0.4855
+        },
+        "B": {
+          "mean_residual": 0.0051,
+          "mae": 0.6917,
+          "rmse": 0.8746
+        }
+      }
+    ],
+    "leagues": [
+      {
+        "key": "BE1",
+        "n": 350,
+        "A": {
+          "mean_residual": -0.0083,
+          "mae": 0.3723,
+          "rmse": 0.4734
+        },
+        "B": {
+          "mean_residual": -0.2844,
+          "mae": 0.5367,
+          "rmse": 0.6771
+        },
+        "total": 350,
+        "median_value_eur": 1800000.0
+      },
+      {
+        "key": "DK1",
+        "n": 256,
+        "A": {
+          "mean_residual": -0.0413,
+          "mae": 0.4413,
+          "rmse": 0.5764
+        },
+        "B": {
+          "mean_residual": -0.3609,
+          "mae": 0.6045,
+          "rmse": 0.7747
+        },
+        "total": 256,
+        "median_value_eur": 800000.0
+      },
+      {
+        "key": "ES1",
+        "n": 509,
+        "A": {
+          "mean_residual": 0.0385,
+          "mae": 0.4182,
+          "rmse": 0.5338
+        },
+        "B": {
+          "mean_residual": 0.2832,
+          "mae": 0.5943,
+          "rmse": 0.7454
+        },
+        "total": 509,
+        "median_value_eur": 4000000.0
+      },
+      {
+        "key": "FR1",
+        "n": 423,
+        "A": {
+          "mean_residual": 0.0635,
+          "mae": 0.3982,
+          "rmse": 0.5038
+        },
+        "B": {
+          "mean_residual": 0.5237,
+          "mae": 0.6788,
+          "rmse": 0.8542
+        },
+        "total": 423,
+        "median_value_eur": 5000000.0
+      },
+      {
+        "key": "GB1",
+        "n": 555,
+        "A": {
+          "mean_residual": 0.0563,
+          "mae": 0.3851,
+          "rmse": 0.5421
+        },
+        "B": {
+          "mean_residual": 0.9179,
+          "mae": 1.0309,
+          "rmse": 1.2865
+        },
+        "total": 555,
+        "median_value_eur": 18000000.0
+      },
+      {
+        "key": "GR1",
+        "n": 356,
+        "A": {
+          "mean_residual": -0.0297,
+          "mae": 0.3886,
+          "rmse": 0.5073
+        },
+        "B": {
+          "mean_residual": -0.2261,
+          "mae": 0.5495,
+          "rmse": 0.6761
+        },
+        "total": 356,
+        "median_value_eur": 600000.0
+      },
+      {
+        "key": "IT1",
+        "n": 507,
+        "A": {
+          "mean_residual": 0.0579,
+          "mae": 0.3928,
+          "rmse": 0.4985
+        },
+        "B": {
+          "mean_residual": 0.5191,
+          "mae": 0.6941,
+          "rmse": 0.879
+        },
+        "total": 507,
+        "median_value_eur": 5500000.0
+      },
+      {
+        "key": "L1",
+        "n": 451,
+        "A": {
+          "mean_residual": 0.0542,
+          "mae": 0.3635,
+          "rmse": 0.4571
+        },
+        "B": {
+          "mean_residual": 0.6302,
+          "mae": 0.7463,
+          "rmse": 0.9157
+        },
+        "total": 451,
+        "median_value_eur": 5000000.0
+      },
+      {
+        "key": "NL1",
+        "n": 425,
+        "A": {
+          "mean_residual": -0.0447,
+          "mae": 0.4035,
+          "rmse": 0.5053
+        },
+        "B": {
+          "mean_residual": -0.6232,
+          "mae": 0.7996,
+          "rmse": 0.9671
+        },
+        "total": 425,
+        "median_value_eur": 1000000.0
+      },
+      {
+        "key": "PO1",
+        "n": 423,
+        "A": {
+          "mean_residual": -0.0119,
+          "mae": 0.4197,
+          "rmse": 0.5249
+        },
+        "B": {
+          "mean_residual": -0.2134,
+          "mae": 0.5701,
+          "rmse": 0.6882
+        },
+        "total": 423,
+        "median_value_eur": 1000000.0
+      },
+      {
+        "key": "RU1",
+        "n": 412,
+        "A": {
+          "mean_residual": 0.0032,
+          "mae": 0.3962,
+          "rmse": 0.5184
+        },
+        "B": {
+          "mean_residual": -0.0168,
+          "mae": 0.5696,
+          "rmse": 0.7364
+        },
+        "total": 412,
+        "median_value_eur": 1000000.0
+      },
+      {
+        "key": "SC1",
+        "n": 311,
+        "A": {
+          "mean_residual": -0.076,
+          "mae": 0.5546,
+          "rmse": 0.6982
+        },
+        "B": {
+          "mean_residual": -0.8523,
+          "mae": 1.0501,
+          "rmse": 1.2424
+        },
+        "total": 311,
+        "median_value_eur": 400000.0
+      },
+      {
+        "key": "TR1",
+        "n": 428,
+        "A": {
+          "mean_residual": -0.02,
+          "mae": 0.4702,
+          "rmse": 0.5986
+        },
+        "B": {
+          "mean_residual": -0.274,
+          "mae": 0.6355,
+          "rmse": 0.8037
+        },
+        "total": 428,
+        "median_value_eur": 1200000.0
+      },
+      {
+        "key": "UKR1",
+        "n": 414,
+        "A": {
+          "mean_residual": -0.0416,
+          "mae": 0.3298,
+          "rmse": 0.4277
+        },
+        "B": {
+          "mean_residual": -0.9646,
+          "mae": 1.0111,
+          "rmse": 1.162
+        },
+        "total": 414,
+        "median_value_eur": 400000.0
+      }
+    ]
   }
 }

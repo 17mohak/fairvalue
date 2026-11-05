@@ -22,7 +22,7 @@ _Last updated: 2026-11-05_
 | CI | Private repo [17mohak/fairvalue](https://github.com/17mohak/fairvalue). First run (2026-11-04, about 6 min) **passed**: 79 unit tests (+10 data tests skipped as designed); data re-downloaded with an unchanged manifest; 9 data/leakage tests; quick-run gate with numbers identical to the local run (0.851 / 0.581 / 0.718); refit; Docker build, health and predict smoke test. No image pushed | `.github/workflows/ci.yml`, GitHub Actions |
 | Product (branch `feat/product-experience`) | Next.js app in `web/`: landing, valuation studio (live predict + per-prediction SHAP), fairness explorer, methods. `POST /explain`, `GET /metadata`. Compose stack built and smoke-tested locally. Not pushed or deployed | `docs/PRODUCT.md`, D-032, D-033 |
 | Responsible AI | Model card, data card, EU AI Act assessment | `docs/MODEL_CARD.md`, `docs/DATA_CARD.md`, `docs/EU_AI_ACT_ASSESSMENT.md` |
-| Tests | 89 passing (unit + real-data + API against the real models) | `pytest -q` |
+| Tests | Python 125 passing, 11 skipped without data (`pytest -q`); web 95 (`npm test`) | `pytest -q`, `web/` vitest |
 | Reviews | Three independent read-only reviews; all findings addressed | DECISIONS D-015, D-023, D-028 |
 
 ## Key results (held-out, within the selected population)
@@ -48,8 +48,9 @@ _Last updated: 2026-11-05_
   The full board, held-out estimates, traits radar and valuation history need
   `python -m src.product.players` to be run where the dataset and CV predictions exist; it was not
   run on real data in the session that built it (no dataset access). No licensed portraits yet.
-- **Multi-page branch:** `feat/multipage-experience` (based on `feat/product-experience`) restructures
-  the web app into four rooms (D-034). Local commits only; pushing and merging need owner approval.
+- **Multi-page branch:** `feat/multipage-experience` (based on `feat/product-experience`) now has three
+  environments, Overview, Terminal and Stories, with a shared dossier (D-038). It supersedes the rooms
+  of D-034. Local commits only; pushing and merging need owner approval.
   Its live API path was not exercised end to end in the session that built it (the cloud sandbox
   could not download the dataset to build model binaries); run the compose stack once before merging.
 - **Product branch:** `feat/product-experience` is local only. Pushing it (and running its CI) and any

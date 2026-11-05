@@ -344,6 +344,53 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
 - New research visual: the SHAP group gap (mean SHAP non-UEFA minus UEFA per input, served model),
   captioned as a description of predictions, not causes, and not of the error gap.
 
+## D-038 Three experiences: Overview, Terminal, Stories — Decided (2026-11-05)
+- **Architecture.** One product, three environments behind a persistent switcher in the global bar:
+  **Overview** (`/`, editorial and analytical in balance), **Terminal** (`/terminal/*`, the
+  analytical workstation) and **Stories** (`/stories/*`, the editorial side; `/methods` belongs to
+  it). The player dossier (`/players/[id]`) is shared: the same record everywhere, with a context
+  bar from `?from=` as the only difference. This supersedes D-034's five numbered rooms.
+- **Moves, with redirects:** `/players` → `/terminal` (Player Explorer), `/studio` →
+  `/terminal/valuation`, `/fairness` → `/terminal/audit`. Studio and Observatory are unchanged
+  inside; they now sit in the Terminal shell.
+- **Terminal workspaces:** Player Explorer, Comparison Studio (2–4 players), Watchlists, Market
+  Landscape, League Landscape, Discrepancy Explorer, Valuation Studio, Fairness Audit. Rail, status
+  strip, ⌘K command palette, `g`-then-letter shortcuts.
+- **Persistence:** watchlists, the comparison tray and recently viewed live in `localStorage`,
+  labelled "this browser only, not synced". Accounts or server storage would need authentication
+  and a database: backend work, out of scope.
+- **Discrepancy Explorer** ranks players by residual (log observed − log estimate). This narrows the
+  earlier rule that nothing sorts by residual (D-035): ranking happens only there, with the
+  terminology fixed (positive = observed above the estimate, the model under-predicts), one basis
+  per ranking (held-out with the full export; served and labelled in-sample with the showcase) and
+  no "under/over-priced" language. The Explorer still sorts only by value, age, minutes and model
+  estimate.
+- **Market data:** `src.product.export` adds `research.json → market`: held-out error by position,
+  observed tier, minutes band and league (`reports/models/errors_by_*`) and league size and median
+  value (`reports/coverage/league_by_group.csv`). Audit-group columns are left out on purpose.
+  Player-level charts (value vs age, estimate vs observed) use the current export and say when it
+  is the eight-player showcase.
+- **Valuation Journey:** an interactive SHAP waterfall on the model's log scale.
+  Running estimate = exp(base + contributions so far), the exact inverse of `y = log(value)`
+  (`src/models/train.py`, `src/api/app.py`). It is refused if base + Σ contributions misses the
+  prediction by more than 1e-4. Model B can be explained only by the live service, so its toggle is
+  disabled without one.
+- **Stories** are built from committed outputs only: one research story, one market story, a
+  valuation story per showcase player and two same-position head-to-heads. Standfirsts are
+  generated from the data. Player Spotlight is listed but not published until licensed photography
+  exists; covers are typographic and labelled "No licensed photograph".
+- **Identity per environment:** Overview uses serif headlines on turf. Terminal is black and
+  hairline-dense with tabular numbers. Stories is a black stage with broadcast-scale condensed type
+  and serif reading text. Gold marks the selection in all three.
+  Comparison colours: three validated slots plus a fourth, always with marker shapes and one row per
+  player. Negative contributions use a restrained red (`--lower`).
+- **Transitions:** React `<ViewTransition>` with a type per crossing:
+  - into the Terminal, a top-down wipe;
+  - into Stories, a cut up from black;
+  - into the Overview or the dossier, a short rise;
+  - between workspaces or chapters, a quick swap.
+  Back and forward simply swap; reduced motion disables all of them.
+
 ---
 
 # Issues found in the locked technical spec

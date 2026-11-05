@@ -1,5 +1,35 @@
 # Development changelog
 
+## 2026-11-05: Three experiences (branch `feat/multipage-experience`, not pushed)
+- **Architecture (D-038):**
+  - Overview, Terminal and Stories behind a persistent switcher, with a transition per crossing
+    (reduced motion respected).
+  - ⌘K command palette over players, workspaces and stories.
+  - The player dossier is shared, with a `?from=` context bar.
+  - `/players`, `/studio` and `/fairness` redirect into the Terminal.
+- **Terminal:**
+  - Shell with a workspace rail, status strip, coverage and build information, and `g` shortcuts.
+  - Player Explorer: URL-state filters including numeric ones, sortable table and cards,
+    comparison tray, watch, inspector.
+  - Comparison Studio: value ladder, explanation matrix, trait lanes, record, history.
+  - Watchlists, stored in this browser only, with JSON export.
+  - Market Landscape, League Landscape and Discrepancy Explorer.
+  - The studio and the observatory, moved in.
+- **Valuation Journey:** an interactive SHAP waterfall. Running € = exp(base + Σ contributions);
+  additivity is checked; Model B is offered only when it can be explained. It appears in the
+  dossier, inspector, stories and Overview.
+- **Stories:**
+  - A cover page.
+  - A scroll-driven research story and a scroll-driven valuation story for each showcase player.
+  - Two head-to-heads and a market story.
+  - Spotlight shown as not published, with the reason.
+- **Overview:** featured valuation (journey ribbon), market snapshot with a league board, doors
+  into Stories and the Terminal, the audit finding, directory and live model check.
+- **Export:** `research.json` gains `market` (held-out error by position, tier, minutes and league;
+  league sizes and medians; no group columns).
+- **Tests:** web 95 (+26: routing, stores, explorer query, journey arithmetic against all 8
+  published explanations, stories registry, goalkeeper rule, switcher); Python 125 (+1 market export).
+
 ## 2026-11-05: Product-design correction (branch `feat/multipage-experience`, not pushed)
 - **Direction (D-037):** a scouting-console language replaces the editorial hero-and-sections
   pattern in the analytical rooms. Compact title bars, panel grids and source badges; far smaller

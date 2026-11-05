@@ -59,6 +59,34 @@ docker run -p 8000:8000 fairvalue-api
   already does) or pull versioned models from a release artefact.
 
 ## Web app and full stack
-The Next.js front end has its own image (`web/Dockerfile`). `docker compose up --build` runs both
-services (API :8000, web :3000); the web app reaches the API at `FAIRVALUE_API_URL`. Details in
-`docs/PRODUCT.md`. Hosting and image publishing still need owner approval.
+The Next.js front end has its own image (`web/Dockerfile`). `docker compose up --build` runs three
+services:
+
+| Service | Host port | Role |
+|---|---|---|
+| `api` | 8000 | FastAPI prediction and explanation service (`models/*.joblib`) |
+| `web` | none (internal 3000) | Next.js standalone server; reaches the API at `FAIRVALUE_API_URL` |
+| `proxy` | 3000 | Caddy (`deploy/Caddyfile`): `encode zstd gzip` and reverse proxy to `web` |
+
+**Why the proxy:** Next.js compresses pages but not route-handler responses, and it strips a
+`Content-Encoding` header set by the handler. The `/api/players` index behind search, watchlists and
+compare is therefore 1.8 MB raw. Through the proxy it is 320 KB with gzip, measured 2026-11-05 on
+the full export (D-041). Any hosting platform must compress at its edge in the same way. Check the
+platform's compression or keep this proxy in front of `web`.
+
+**Configuration:**
+
+| Variable | Where | Default | Meaning |
+|---|---|---|---|
+| `FAIRVALUE_API_URL` | web (server only) | `http://127.0.0.1:8000` locally, `http://api:8000` in compose | where the proxy routes `/api/predict`, `/api/explain` and `/api/health` |
+| `PORT`, `HOSTNAME` | web image | `3000`, `0.0.0.0` | Next.js standalone server |
+
+Local development without Docker: copy `web/.env.example` to `web/.env.local`, run the API with
+`uvicorn`, then `npm run dev` in `web/`.
+
+**Data in images:** the web image copies `web/src/data/generated/players.json` (the full export)
+when it exists locally. This is dataset content, so an image built on a machine with the export
+must never be pushed to a public registry. CI builds without it and uses the eight-player
+showcase.
+
+Details are in `docs/PRODUCT.md`. Hosting and image publishing still need owner approval.

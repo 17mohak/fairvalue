@@ -37,3 +37,17 @@ def test_exported_contract_forbids_unknown_fields():
     assert player["additionalProperties"] is False
     assert not any(k in p for p in player["properties"] for k in ("national", "citizen", "confed"))
     assert {"/predict", "/explain", "/metadata", "/health"} <= set(spec["paths"])
+
+
+def test_market_aggregates_match_reports_and_carry_no_group_columns():
+    """The Terminal's market views (D-038): held-out error tables and league sizes, no audit groups."""
+    m = export.market()
+    assert len(m["leagues"]) == 14
+    assert sum(r["n"] for r in m["positions"]) == 5820
+    assert sum(r["n"] for r in m["tiers"]) == 5820
+    sizes = pd.read_csv(REPORTS_DIR / "coverage" / "league_by_group.csv").set_index("valuation_league_id")
+    for r in m["leagues"]:
+        assert r["total"] == int(sizes.loc[r["key"], "total"]) == r["n"]
+        assert r["B"]["mae"] > 0 and r["A"]["mae"] > 0
+    text = json.dumps(m).lower()
+    assert "uefa" not in text and "nationality" not in text and "citizenship" not in text

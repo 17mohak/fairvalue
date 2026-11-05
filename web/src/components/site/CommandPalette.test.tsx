@@ -69,7 +69,7 @@ describe("global player search", () => {
     expect(options[1]).toHaveAttribute("aria-selected", "true");
     fireEvent.keyDown(input, { key: "ArrowUp" });
     fireEvent.keyDown(input, { key: "Enter" });
-    expect(nav.push).toHaveBeenCalledWith("/players/433177-bukayo-saka?from=terminal", expect.anything());
+    expect(nav.push).toHaveBeenCalledWith("/players/433177-bukayo-saka?from=terminal&seq=search%3Asaka", expect.anything());
   });
 
   it("remembers the query that led to a player as a recent search", async () => {
@@ -98,6 +98,6 @@ describe("pointer and keyboard together", () => {
     fireEvent.mouseMove(options[2]!, { clientX: 300, clientY: 230 });
     expect(options[2]).toHaveAttribute("aria-selected", "true");
     fireEvent.keyDown(input, { key: "Enter" });
-    expect(nav.push).toHaveBeenCalledWith("/players/1-melih-kabasakal?from=terminal", expect.anything());
+    expect(nav.push).toHaveBeenCalledWith("/players/1-melih-kabasakal?from=terminal&seq=search%3Asaka", expect.anything());
   });
 });

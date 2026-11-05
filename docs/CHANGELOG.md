@@ -1,5 +1,12 @@
 # Development changelog
 
+## 2026-11-05: Dossier, stage 4: previous / next player (branch `feat/multipage-experience`)
+- **Stepping (D-049):** the dossier steps through the list it was opened from (Explorer view, search
+  results, league, position), rebuilt on the server from a `seq` URL parameter; league by value
+  otherwise. J/K or ]/[ on the keyboard. Checked with browser back and forward.
+- **Fix:** the lane's tier label no longer overprints the observed-value label at a tier boundary.
+- **Tests:** web 155 (+5: sequence parsing, rebuilding, stepping and fallback). Build passes.
+
 ## 2026-11-05: Dossier, stage 3: in context (branch `feat/multipage-experience`)
 - **In context (D-048):** league and position standings in plain words with value silhouettes;
   "Near this valuation" (same league, then same position); "Where this player appears" (stories,

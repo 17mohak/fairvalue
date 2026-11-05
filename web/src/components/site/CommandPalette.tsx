@@ -177,7 +177,10 @@ export function CommandPalette() {
       input.current?.focus();
       return;
     }
-    const href = item.kind === "player" ? `/players/${item.row.slug}${from}` : item.href;
+    // From a typed search, the dossier steps through the same ranked results.
+    const seq = item.kind === "player" && item.group === "Players" && query.trim() ? `seq=${encodeURIComponent(`search:${query.trim().slice(0, 60)}`)}` : "";
+    const qs = [from.replace(/^\?/, ""), seq].filter(Boolean).join("&");
+    const href = item.kind === "player" ? `/players/${item.row.slug}${qs ? `?${qs}` : ""}` : item.href;
     if (item.kind === "player" && query.trim()) recentSearches.set((l) => withSearch(l, query));
     setOpen(false);
     router.push(href, { transitionTypes: transitionTypes(path, href) });

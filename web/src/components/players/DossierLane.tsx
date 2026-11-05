@@ -97,9 +97,12 @@ export function DossierLane({ observed, estimates, name }: { observed: number; e
           return (
             <g key={b}>
               <path d={PITCH.line(u, 0, u, 1)} className={styles.tier} />
-              <text x={top.x + 4} y={top.y} className={styles.tierLabel}>
-                {tier} from {formatEur(b)} ›
-              </text>
+              {/* The observed label sits on the same far touchline: skip a tier label that would overprint it. */}
+              {Math.abs(u - uObs) > 0.16 && (
+                <text x={top.x + 4} y={top.y} className={styles.tierLabel}>
+                  {tier} from {formatEur(b)} ›
+                </text>
+              )}
             </g>
           );
         })}

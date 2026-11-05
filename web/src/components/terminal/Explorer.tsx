@@ -7,6 +7,7 @@ import { ModelMark, ObsMark, Residual, TierMark } from "@/components/brand/Marks
 import { MiniRuler } from "@/components/players/MiniRuler";
 import { compareTray } from "@/lib/localStore";
 import { DEFAULT_DIR, explorerParams, type ExplorerQuery, type ExplorerRow, type ExplorerSort } from "@/lib/explorer";
+import { encodeSequence, explorerSequence } from "@/lib/sequence";
 import { leagueName, TIER_NAMES } from "@/lib/football";
 import { formatEur, integer } from "@/lib/format";
 import { COMPARE_MIN } from "@/lib/terminal";
@@ -51,6 +52,8 @@ export function Explorer({ query, rows, count, total, page, pages, leagues }: Pr
   const router = useRouter();
   const path = usePathname() ?? "/terminal";
   const [pending, start] = useTransition();
+  // The dossier steps through this exact view (filters and sort) with previous / next.
+  const seqParam = encodeURIComponent(encodeSequence(explorerSequence(explorerParams(query))));
   const [text, setText] = useState(query.q);
   const [focus, setFocus] = useState<number | null>(query.focus);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
@@ -294,7 +297,7 @@ export function Explorer({ query, rows, count, total, page, pages, leagues }: Pr
                       <td>
                         <span className={styles.rowActions}>
                           <WatchButton id={r.id} name={r.name} className={styles.icon} />
-                          <Link href={`/players/${r.slug}?from=terminal`} className={styles.icon} aria-label={`Open ${r.name}'s dossier`} onClick={(e) => e.stopPropagation()} transitionTypes={["to-dossier"]}>
+                          <Link href={`/players/${r.slug}?from=terminal&seq=${seqParam}`} className={styles.icon} aria-label={`Open ${r.name}'s dossier`} onClick={(e) => e.stopPropagation()} transitionTypes={["to-dossier"]}>
                             →
                           </Link>
                         </span>
@@ -355,7 +358,7 @@ export function Explorer({ query, rows, count, total, page, pages, leagues }: Pr
                   <div className={styles.cardActions}>
                     <CompareToggle id={r.id} name={r.name} className={styles.check} withLabel />
                     <WatchButton id={r.id} name={r.name} className={styles.icon} />
-                    <Link href={`/players/${r.slug}?from=terminal`} className={styles.cardLink} transitionTypes={["to-dossier"]}>
+                    <Link href={`/players/${r.slug}?from=terminal&seq=${seqParam}`} className={styles.cardLink} transitionTypes={["to-dossier"]}>
                       Dossier →
                     </Link>
                   </div>

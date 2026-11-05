@@ -1,5 +1,15 @@
 # Development changelog
 
+## 2026-11-05: Portrait sourcing and Sprint 2 audit (branch `feat/multipage-experience`)
+- **Portraits (D-043):** the finder works with the owner's contact and was run on all 5,820 players.
+  3,674 have an allowed licence, 2,765 at ≥ 800 px and 1,755 at ≥ 1,400 px. The finder was fixed
+  (file-name decoding, batching, retries, UTF-8) and has a regression test.
+- **Sprint 2 audit:** the product was audited on the full export. `docs/ROADMAP.md` now holds the
+  backlog S2-01 to S2-10 with evidence, acceptance criteria and sizes. Two P0 regressions from the
+  full-population switch were found: no published explanations in the full export (the Overview
+  cover is gone), and a hard-coded spectrum axis that hides 8 of 10 markers. Not implemented yet;
+  this waits for approval.
+
 ## 2026-11-05: Release foundation and identity assets (branch `feat/multipage-experience`)
 - **Roadmap:** `docs/ROADMAP.md` is now the single plan: the research milestones plus product
   Sprints 0–6, each with status, priority, dependencies, acceptance criteria and blockers.

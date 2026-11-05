@@ -7,6 +7,7 @@ import { ModelMark, ObsMark, Residual, TierMark } from "@/components/brand/Marks
 import { MiniRuler } from "./MiniRuler";
 import { PortraitSlot } from "./PortraitSlot";
 import styles from "./PlayerHero.module.css";
+import { Flag, LeagueFlag } from "@/components/brand/Flag";
 
 export interface HeroEstimate {
   model: "A" | "B";
@@ -68,12 +69,18 @@ export function PlayerHero({ player: p, portrait, valuedLabel, estimates }: Prop
           </div>
           <div>
             <dt>League</dt>
-            <dd>{league}</dd>
+            <dd>
+              <LeagueFlag leagueId={p.league_id} />
+              {league}
+            </dd>
           </div>
           {p.nationality && (
             <div>
               <dt>Nationality</dt>
-              <dd>{p.nationality}</dd>
+              <dd>
+                <Flag country={p.nationality} />
+                {p.nationality}
+              </dd>
             </div>
           )}
           <div>

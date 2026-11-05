@@ -391,6 +391,42 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   - between workspaces or chapters, a quick swap.
   Back and forward simply swap; reduced motion disables all of them.
 
+## D-039 FairValue brand identity — Decided (2026-11-05)
+- **Direction:** an independent football-intelligence publication and instrument, drawn from the
+  Stories environment. One identity, three expressions:
+  - Overview, the cover;
+  - Terminal, the instrument;
+  - Stories, the broadcast.
+  The generic serif-headline, italic-gold and letter-spaced-eyebrow formula is retired.
+- **Type** (all OFL, self-hosted by next/font). Three directions were tested on real content:
+  Barlow Condensed/Barlow; Archivo across its width axis; Big Shoulders with IBM Plex.
+  - Chosen: **Big Shoulders** (a condensed signage face) for display and big figures.
+  - **Archivo** for the interface. Its expanded width (wdth 125) is the broadcast label style that
+    replaces letter-spaced eyebrows.
+  - **Source Serif 4** only for long-form reading in Stories and Methods.
+  - Barlow and Barlow Condensed are removed. Big Shoulders has no next/font fallback metrics, so it
+    names a narrow system fallback.
+- **Grammar** (`components/brand/Marks.tsx`):
+  - Observed value is a solid chalk disc; Model A a gold outline diamond; Model B a dashed diamond.
+  - The same duality runs through the type: solid for what the market says, outline for the model.
+    The Overview headline states it.
+  - Residual: ▲ gold when observed is above the estimate (the model under-predicts), ▼ slate when
+    below.
+  - Tier: a four-step gauge. Position code: a slanted gold ID plate (`.fv-role`).
+- **Gold** marks player IDs, model estimates, selection, key statistics, broadcast tags and
+  research highlights. Observed values are chalk.
+- **Stories pacing:**
+  - outline chapter numerals;
+  - a scroll-driven reading-progress rule;
+  - the research story split into two acts around a "same accuracy, different direction" stat duel;
+  - a verdict on the valuation stage.
+- **Not changed:** the Valuation Journey's calculation, the data, the models and the research
+  outputs.
+- **QA finding:** a capture that rendered with browser defaults came from an orphaned
+  `next-server` process. It survived when its parent was killed and served a `.next` that had been
+  deleted, so CSS requests failed. It was a QA-harness fault, not an app defect. Servers are now
+  stopped by port, and PRODUCT.md warns about building or deleting `.next` under a live server.
+
 ---
 
 # Issues found in the locked technical spec

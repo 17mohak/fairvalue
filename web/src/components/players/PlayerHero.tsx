@@ -3,6 +3,7 @@ import { leagueName } from "@/lib/football";
 import { formatEur, integer } from "@/lib/format";
 import type { PlayerProfile } from "@/lib/players";
 import type { Portrait } from "@/lib/portraits";
+import { ModelMark, ObsMark, Residual, TierMark } from "@/components/brand/Marks";
 import { MiniRuler } from "./MiniRuler";
 import { PortraitSlot } from "./PortraitSlot";
 import styles from "./PlayerHero.module.css";
@@ -97,10 +98,12 @@ export function PlayerHero({ player: p, portrait, valuedLabel, estimates }: Prop
       </div>
 
       <aside className={styles.value} aria-label="Valuation">
-        <p className="fv-label">Market value · observed</p>
+        <p className={`fv-label ${styles.valueLabel}`}>
+          <ObsMark /> Market value · observed
+        </p>
         <p className={`${styles.market} num`}>{formatEur(p.market_value_eur)}</p>
         <p className={styles.tierRow}>
-          {p.market_tier && <span className="fv-chip" data-tone="flood">{p.market_tier}</span>}
+          <TierMark tier={p.market_tier} />
           <span>Transfermarkt, the model&apos;s target</span>
         </p>
         <MiniRuler
@@ -113,10 +116,14 @@ export function PlayerHero({ player: p, portrait, valuedLabel, estimates }: Prop
         <ul className={styles.estimates}>
           {estimates.map((e) => (
             <li key={e.model} data-missing={e.value === null || undefined}>
-              <span className={styles.estModel}>Model {e.model}</span>
+              <span className={styles.estModel}>
+                <ModelMark model={e.model} /> Model {e.model}
+              </span>
               <span className={styles.estSource}>{SOURCE_LABEL[e.source]}</span>
               <span className={`${styles.estValue} num`}>{e.value !== null ? formatEur(e.value) : "–"}</span>
-              <span className={`${styles.estRatio} num`}>{e.value !== null ? `×${(e.value / p.market_value_eur).toFixed(2)}` : ""}</span>
+              <span className={`${styles.estRatio} num`}>
+                {e.value !== null ? <Residual value={Math.log(p.market_value_eur) - Math.log(e.value)} compact basis={e.source === "heldout" ? "held-out" : "in-sample"} /> : ""}
+              </span>
             </li>
           ))}
         </ul>

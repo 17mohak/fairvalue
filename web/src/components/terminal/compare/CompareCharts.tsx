@@ -3,6 +3,7 @@ import { leagueName, TIER_BOUNDARIES_EUR, TIER_NAMES } from "@/lib/football";
 import { formatEur, integer } from "@/lib/format";
 import { euroTicks, factor, toEur } from "@/lib/journey";
 import { TRAITS, type PeerStats, type PlayerProfile, type TraitKey } from "@/lib/players";
+import { MarkKey, ModelMark, ObsMark } from "@/components/brand/Marks";
 import { Marker } from "./Marker";
 import styles from "./Compare.module.css";
 
@@ -41,7 +42,7 @@ export function ValueLadder({ players }: { players: PlayerProfile[] }) {
           const b = bestB(p);
           const xs = [p.market_value_eur, a, b].filter((v): v is number => v !== null).map(x);
           return (
-            <li key={p.id} className={styles.ladderRow}>
+            <li key={p.id} className={styles.ladderRow} style={{ "--player": SLOTS[i]!.color } as React.CSSProperties}>
               <span className={styles.ladderWho}>
                 <Marker shape={SLOTS[i]!.shape} color={SLOTS[i]!.color} />
                 <b>{p.last_name}</b>
@@ -53,20 +54,16 @@ export function ValueLadder({ players }: { players: PlayerProfile[] }) {
                 <span className={styles.span} style={{ left: `${Math.min(...xs)}%`, width: `${Math.max(...xs) - Math.min(...xs)}%`, background: SLOTS[i]!.color }} />
                 {b !== null && (
                   <span className={styles.mark} style={{ left: `${x(b)}%` }} title={`Model B ${formatEur(b)}`}>
-                    <svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true">
-                      <rect x="1.5" y="1.5" width="9" height="9" fill="#0c110e" stroke="#c3cbc3" strokeWidth="1.5" strokeDasharray="2 1.5" />
-                    </svg>
+                    <ModelMark model="B" size={13} />
                   </span>
                 )}
                 {a !== null && (
                   <span className={styles.mark} style={{ left: `${x(a)}%` }} title={`Model A ${formatEur(a)}`}>
-                    <svg width="13" height="13" viewBox="0 0 12 12" aria-hidden="true">
-                      <path d="M6 1 11 6 6 11 1 6Z" fill="#0c110e" stroke="#e9b949" strokeWidth="1.8" />
-                    </svg>
+                    <ModelMark size={14} />
                   </span>
                 )}
                 <span className={styles.mark} style={{ left: `${x(p.market_value_eur)}%` }} title={`Observed ${formatEur(p.market_value_eur)}`}>
-                  <Marker shape={SLOTS[i]!.shape} color={SLOTS[i]!.color} size={13} />
+                  <ObsMark size={13} />
                 </span>
               </span>
               <span className={`${styles.ladderVals} num`}>
@@ -92,22 +89,8 @@ export function ValueLadder({ players }: { players: PlayerProfile[] }) {
         <span />
       </div>
       <figcaption className={styles.legend}>
-        <span>
-          <Marker shape="circle" color="#c3cbc3" size={10} /> observed value (player&apos;s marker)
-        </span>
-        <span>
-          <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true">
-            <path d="M6 1 11 6 6 11 1 6Z" fill="none" stroke="#e9b949" strokeWidth="1.8" />
-          </svg>{" "}
-          Model A
-        </span>
-        <span>
-          <svg width="11" height="11" viewBox="0 0 12 12" aria-hidden="true">
-            <rect x="1.5" y="1.5" width="9" height="9" fill="none" stroke="#c3cbc3" strokeWidth="1.5" strokeDasharray="2 1.5" />
-          </svg>{" "}
-          Model B
-        </span>
-        <span>Log scale, euros; dashed lines are the €2M / €10M / €30M tier boundaries.</span>
+        <MarkKey models={["A", "B"]} />
+        <span>Each row is one player (their marker and colour on the left). Log scale, euros; dashed lines: the €2M / €10M / €30M tier boundaries.</span>
       </figcaption>
     </figure>
   );

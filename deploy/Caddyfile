@@ -1,0 +1,8 @@
+# Edge proxy for the web app (docker-compose.yml, service "proxy").
+# Next.js compresses pages but not route-handler responses, so /api/players (the 1.8 MB player
+# index behind search, watchlists and compare) left the server uncompressed. Compression belongs
+# here, at the edge: responses Next already compressed pass through unchanged.
+:80 {
+	encode zstd gzip
+	reverse_proxy web:3000
+}

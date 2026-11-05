@@ -1,4 +1,4 @@
-# Local full stack: the prediction API and the web app.
+# Local full stack: the prediction API, the web app and an edge proxy that compresses responses.
 # Needs the trained models in models/ (python -m src.models.final). Nothing is published.
 #   docker compose up --build   then open http://localhost:3000
 services:
@@ -10,8 +10,18 @@ services:
     build: ./web
     environment:
       FAIRVALUE_API_URL: http://api:8000
-    ports:
-      - "3000:3000"
+    # Reached through the proxy only; not published on the host.
+    expose:
+      - "3000"
     depends_on:
       api:
+        condition: service_healthy
+  proxy:
+    image: caddy:2-alpine
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+    ports:
+      - "3000:80"
+    depends_on:
+      web:
         condition: service_healthy

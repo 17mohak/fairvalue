@@ -1,99 +1,564 @@
-/* Overview: the front door. A compact hero beside the live specimen, the market-vs-model
-   spectrum of real players, four rooms with real previews, then the finding. */
+/* Overview: editorial and analytical in balance. Serif headline and reading text on the turf
+   ground; the market snapshot is a slice of the Terminal; the story door is a slice of Stories. */
 
 .home {
   width: 100%;
   max-width: var(--page-wide);
   margin-inline: auto;
-  padding: 0 var(--gutter) clamp(3rem, 6vw, 4.5rem);
+  padding: 0 var(--gutter) 4rem;
   overflow-x: clip;
 }
 
-/* ---- Hero ---- */
-.hero {
+/* ---- First viewport ---- */
+.front {
   display: grid;
-  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
-  gap: clamp(2rem, 4vw, 3.5rem);
-  align-items: center;
-  padding-block: clamp(2rem, 4.5vw, 3.5rem) 2rem;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  grid-template-areas:
+    "lead snap"
+    "doors doors";
+  gap: 1.25rem clamp(1.5rem, 3vw, 3rem);
+  padding-top: clamp(1.5rem, 3vw, 2.25rem);
 }
 
-.heroText {
+.lead {
+  grid-area: lead;
   display: grid;
-  gap: 1.1rem;
+  gap: 1rem;
+  align-content: start;
+  min-width: 0;
+}
+
+.kicker {
+  font-family: var(--font-display);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--flood);
+}
+
+.kicker span {
+  margin-inline: 0.35rem;
+  color: var(--fog-2);
 }
 
 .title {
-  font-size: clamp(2.6rem, 4.6vw, 4.4rem);
-  font-weight: 700;
-  line-height: 0.95;
-  letter-spacing: -0.015em;
-  max-width: 19ch;
+  max-width: 17ch;
+  font-family: var(--font-serif);
+  font-size: clamp(2.4rem, 4.2vw, 3.9rem);
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
 }
 
-.title span {
+.title em {
+  display: block;
+  font-style: italic;
+  font-weight: 500;
   color: var(--flood);
 }
 
 .lede {
-  max-width: 54ch;
-  font-size: 1.05rem;
+  max-width: 56ch;
+  font-size: 1.02rem;
   line-height: 1.55;
   color: var(--chalk-2);
 }
 
-.actions {
+/* Featured valuation */
+.featured {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.6rem 1.5rem;
+  margin-top: 0.4rem;
+  padding: 1rem 1.15rem 1rem;
+  border: 1px solid rgb(237 239 230 / 0.09);
+  border-left: 3px solid var(--flood);
+  border-radius: 4px;
+  background: rgb(0 0 0 / 0.18);
+}
+
+.featuredHead {
+  display: grid;
+  gap: 0.2rem;
+}
+
+.featuredKicker {
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+
+.featuredName {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 0.6rem;
+  font-size: 1.9rem;
+  line-height: 1;
 }
 
-.kpis {
+.featuredMeta {
+  font-size: 0.8rem;
+  color: var(--fog);
+}
+
+.featuredVals {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0;
-  margin: 0.6rem 0 0;
-  border-top: 1px solid rgb(237 239 230 / 0.08);
+  gap: 1.5rem;
+  margin: 0;
+  text-align: right;
 }
 
-.kpis div {
-  padding: 0.8rem 1.5rem 0 0;
-  margin-right: 1.5rem;
-}
-
-.kpis div + div {
-  padding-left: 1.5rem;
-  border-left: 1px solid rgb(237 239 230 / 0.08);
-}
-
-.kpis dt {
+.featuredVals dt {
   font-size: 0.66rem;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--fog);
 }
 
-.kpis dd {
-  margin: 0.15rem 0 0;
+.featuredVals dd {
+  margin: 0;
   font-family: var(--font-display);
-  font-size: 1.75rem;
-  font-weight: 600;
+  font-size: 2rem;
+  font-weight: 700;
   line-height: 1;
 }
 
-.heroSpecimen {
+.featuredVals div + div dd {
+  color: var(--flood);
+}
+
+.featuredRead {
+  grid-column: 1 / -1;
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--chalk-2);
+}
+
+.featured figure {
+  grid-column: 1 / -1;
+}
+
+.featuredLinks {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 1.5rem;
+}
+
+.more {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--flood);
+  text-decoration: none;
+}
+
+.more:hover {
+  text-decoration: underline;
+}
+
+/* Market snapshot: a slice of the Terminal */
+.snapshot {
+  grid-area: snap;
+  display: grid;
+  gap: 0.9rem;
+  align-content: start;
   min-width: 0;
-  animation: rise 600ms var(--ease-out) 100ms both;
+  padding: 1rem 1.1rem 1.1rem;
+  border: 1px solid rgb(237 239 230 / 0.1);
+  border-radius: 4px;
+  background: #080b09;
+  font-size: 0.85rem;
 }
 
-@keyframes rise {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
+.snapHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  padding-bottom: 0.6rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.08);
 }
 
-/* ---- Spectrum ---- */
+.snapHead h2 {
+  font-size: 0.95rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.snapHead span {
+  font-size: 0.72rem;
+  color: var(--fog);
+}
+
+.snapKpis {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+}
+
+.snapKpis div + div {
+  padding-left: 0.8rem;
+  border-left: 1px solid rgb(237 239 230 / 0.08);
+}
+
+.snapKpis dt {
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+
+.snapKpis dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.55rem;
+  font-weight: 700;
+  line-height: 1.05;
+}
+
+.snapBlock {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.snapLabel {
+  font-size: 0.66rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+
+.tierBar {
+  display: flex;
+  gap: 2px;
+  height: 0.85rem;
+}
+
+.tierBar span {
+  border-radius: 2px;
+  background: var(--flood);
+}
+
+.tierKey {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 0.72rem;
+}
+
+.tierKey li {
+  display: grid;
+}
+
+.tierKey b {
+  font-weight: 500;
+  color: var(--chalk);
+}
+
+.tierKey span {
+  color: var(--fog);
+}
+
+.leagueBars {
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 3.4rem;
+}
+
+.leagueBars span {
+  flex: 1;
+  border-radius: 2px 2px 0 0;
+  background: rgb(237 239 230 / 0.42);
+}
+
+.leagueBars span:first-child {
+  background: var(--flood);
+}
+
+.leagueEnds {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  font-size: 0.72rem;
+  color: var(--fog);
+}
+
+.leagueEnds b {
+  color: var(--chalk);
+}
+
+.snapTable {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.76rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.snapTable th,
+.snapTable td {
+  padding: 0.28rem 0;
+  border-bottom: 1px solid rgb(237 239 230 / 0.06);
+  text-align: right;
+}
+
+.snapTable thead th {
+  font-size: 0.6rem;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+
+.snapTable th:first-child {
+  text-align: left;
+}
+
+.snapTable tbody th {
+  font-weight: 500;
+  color: var(--chalk);
+}
+
+.snapTable td {
+  color: var(--chalk-2);
+}
+
+.snapLink {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--flood);
+  text-decoration: none;
+}
+
+.snapLink:hover {
+  text-decoration: underline;
+}
+
+/* Doors */
+.doors {
+  grid-area: doors;
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+}
+
+.doorStory,
+.doorTerminal {
+  position: relative;
+  display: grid;
+  gap: 0.35rem;
+  align-content: start;
+  min-height: 9.5rem;
+  padding: 1rem 1.2rem;
+  border-radius: 4px;
+  color: inherit;
+  text-decoration: none;
+  transition: border-color 200ms var(--ease-out), transform 200ms var(--ease-out);
+}
+
+.doorStory {
+  grid-template-columns: minmax(0, 1fr) auto;
+  border: 1px solid rgb(242 241 234 / 0.12);
+  background: #050605;
+}
+
+.doorTerminal {
+  border: 1px solid rgb(237 239 230 / 0.1);
+  background: #080b09;
+}
+
+.doorStory:hover,
+.doorTerminal:hover {
+  border-color: var(--flood);
+}
+
+.doorTag {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--flood);
+}
+
+.doorTitle {
+  font-family: var(--font-display);
+  font-size: 1.85rem;
+  font-weight: 700;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.doorStory .doorTag,
+.doorStory .doorTitle,
+.doorStory .doorText,
+.doorStory .doorGo {
+  grid-column: 1;
+}
+
+.doorNum {
+  grid-column: 2;
+  grid-row: 1 / span 4;
+  align-self: center;
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 5vw, 4.5rem);
+  font-weight: 700;
+  line-height: 0.9;
+  color: var(--flood);
+}
+
+.doorText {
+  font-family: var(--font-serif);
+  font-size: 0.92rem;
+  font-style: italic;
+  color: #c9cbc2;
+}
+
+.doorGo {
+  margin-top: auto;
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--chalk);
+}
+
+.doorRows {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0.3rem 0;
+}
+
+.doorRow {
+  display: grid;
+  grid-template-columns: 4.5rem minmax(0, 1fr);
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+}
+
+.doorTrack {
+  position: relative;
+  height: 0.9rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.1);
+}
+
+.doorLink {
+  position: absolute;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: rgb(233 185 73 / 0.5);
+}
+
+.doorTrack i {
+  position: absolute;
+  top: 50%;
+  width: 0.6rem;
+  height: 0.6rem;
+  translate: -50% -50%;
+}
+
+.doorTrack i[data-k="obs"] {
+  border-radius: 50%;
+  background: var(--chalk);
+}
+
+.doorTrack i[data-k="model"] {
+  rotate: 45deg;
+  border: 2px solid var(--flood);
+}
+
+/* ---- Directory ---- */
+.directory {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+  gap: clamp(1.5rem, 3vw, 3rem);
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid rgb(237 239 230 / 0.08);
+}
+
+.dirCol ul {
+  display: grid;
+  margin: 0.75rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.dirHead {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-size: 1.6rem;
+}
+
+.dirHead a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.dirHead a:hover {
+  color: var(--flood);
+}
+
+.dirHead small {
+  font-family: var(--font-ui);
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: var(--fog);
+}
+
+.dirCol li a {
+  display: grid;
+  gap: 0.1rem;
+  padding: 0.55rem 0;
+  border-bottom: 1px solid rgb(237 239 230 / 0.06);
+  color: inherit;
+  text-decoration: none;
+}
+
+.dirCol li a:hover b {
+  color: var(--flood);
+}
+
+.dirCol li b {
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.dirCol li em {
+  margin-left: 0.4rem;
+  font-size: 0.72rem;
+  font-style: normal;
+  font-weight: 400;
+  color: var(--fog);
+}
+
+.dirCol li span {
+  font-size: 0.8rem;
+  color: var(--fog);
+}
+
+.dirCol[data-tone="stories"] li b {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.dirLive {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+}
 .spectrum {
   margin-top: 0.5rem;
 }
@@ -295,210 +760,13 @@
   color: var(--fog-2);
 }
 
-/* ---- Rooms ---- */
-.rooms {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.85rem;
-  margin-top: 1rem;
-}
 
-.tile {
-  display: grid;
-  grid-template-rows: auto auto 1fr auto;
-  gap: 0.6rem;
-  min-height: 15rem;
-  padding: 1rem 1.1rem 1.1rem;
-  border: 1px solid rgb(237 239 230 / 0.08);
-  border-radius: 10px;
-  background: linear-gradient(180deg, rgb(237 239 230 / 0.02), transparent 120px), #0e1612;
-  color: var(--chalk);
-  text-decoration: none;
-  transition: border-color 180ms var(--ease-out), transform 220ms var(--ease-out);
-}
-
-.tile:hover,
-.tile:focus-visible {
-  border-color: rgb(233 185 73 / 0.45);
-  transform: translateY(-2px);
-}
-
-.tileHead {
-  font-family: var(--font-display);
-  font-size: 0.8rem;
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--fog);
-}
-
-.tileHead :global(.num) {
-  margin-right: 0.3rem;
-  color: var(--flood);
-}
-
-.tileTitle {
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
-  line-height: 1.05;
-}
-
-.tileText {
-  font-size: 0.78rem;
-  line-height: 1.45;
-  color: var(--fog);
-}
-
-.tileList {
-  display: grid;
-  align-content: center;
-  gap: 0.35rem;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.tileList li {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 600;
-  text-transform: uppercase;
-}
-
-.tileList li :global(.fv-role) {
-  height: 1.15rem;
-  min-width: 1.7rem;
-  font-size: 0.72rem;
-}
-
-.tileList b {
-  margin-left: auto;
-  color: var(--flood);
-}
-
-.ladder {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  align-self: center;
-  gap: 2px;
-}
-
-.ladder span {
-  display: grid;
-  gap: 0.1rem;
-  padding: 0.5rem 0.4rem;
-  border-top: 3px solid rgb(237 239 230 / 0.2);
-  background: rgb(237 239 230 / 0.03);
-}
-
-.ladder span[data-i="1"] {
-  border-top-color: rgb(237 239 230 / 0.4);
-}
-
-.ladder span[data-i="2"] {
-  border-top-color: rgb(233 185 73 / 0.6);
-}
-
-.ladder span[data-i="3"] {
-  border-top-color: var(--flood);
-}
-
-.ladder b {
-  font-family: var(--font-display);
-  font-size: 0.78rem;
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.ladder small {
-  font-size: 0.64rem;
-  color: var(--fog);
-}
-
-.mini {
-  display: grid;
-  align-content: center;
-  gap: 0.6rem;
-}
-
-.miniRow {
-  display: grid;
-  grid-template-columns: 3.6rem minmax(0, 1fr) 3rem;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.8rem;
-}
-
-.miniRow b {
-  font-family: var(--font-display);
-  font-weight: 600;
-}
-
-.miniRow :global(.num) {
-  font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 600;
-  text-align: right;
-}
-
-.miniTrack {
-  position: relative;
-  height: 0.9rem;
-}
-
-.miniZero {
-  position: absolute;
-  top: -0.2rem;
-  bottom: -0.2rem;
-  border-left: 1px dashed rgb(237 239 230 / 0.3);
-}
-
-.miniCi {
-  position: absolute;
-  top: 50%;
-  height: 5px;
-  margin-top: -2.5px;
-  border-radius: 3px;
-  background: var(--chalk-2);
-}
-
-.miniCi[data-k="A"] {
-  background: var(--flood);
-}
-
-.funnel {
-  display: grid;
-  align-content: center;
-  gap: 4px;
-}
-
-.funnel span {
-  display: flex;
-  align-items: center;
-  height: 1.35rem;
-  padding: 0 0.5rem;
-  border-radius: 3px;
-  background: linear-gradient(90deg, rgb(68 149 220 / 0.55), rgb(212 96 154 / 0.55));
-}
-
-.funnel b {
-  font-family: var(--font-display);
-  font-size: 0.82rem;
-  font-weight: 600;
-}
-
-/* ---- Finding ---- */
+/* ---- The finding ---- */
 .finding {
   display: grid;
   grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
   gap: clamp(2rem, 5vw, 4rem);
-  margin-top: 2.5rem;
+  margin-top: 3rem;
   padding: 2rem 0 0;
   border-top: 1px solid rgb(237 239 230 / 0.08);
 }
@@ -533,8 +801,10 @@
 }
 
 .h2 {
+  font-family: var(--font-serif);
   font-size: clamp(1.6rem, 2.4vw, 2.2rem);
-  line-height: 1.05;
+  font-weight: 600;
+  line-height: 1.08;
 }
 
 .observational {
@@ -545,22 +815,47 @@
 }
 
 /* ---- Responsive ---- */
-@media (max-width: 1100px) {
-  .hero,
+@media (max-width: 1180px) {
+  .front {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "lead" "snap" "doors";
+  }
+  .doors {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .directory,
   .finding {
     grid-template-columns: minmax(0, 1fr);
   }
-  .heroSpecimen {
-    max-width: 36rem;
-  }
-  .rooms {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
 }
 
-@media (max-width: 640px) {
-  .rooms {
+@media (max-width: 700px) {
+  .spectrum :global(.fv-panel-title) {
+    display: grid;
+    gap: 0.2rem;
+  }
+  .doors {
     grid-template-columns: minmax(0, 1fr);
+  }
+  .featured {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .featuredVals {
+    text-align: left;
+  }
+  .featuredName {
+    font-size: 1.5rem;
+  }
+  .snapKpis {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    row-gap: 0.6rem;
+  }
+  .snapKpis div:nth-child(3) {
+    padding-left: 0;
+    border-left: 0;
+  }
+  .tierKey {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
   .scaleHead,
   .row,
@@ -576,20 +871,7 @@
   .who small {
     display: none;
   }
-  .who b {
-    font-size: 0.95rem;
-  }
-  .scaleHead {
-    display: none;
-  }
-  .kpis div {
-    padding-right: 0.9rem;
-    margin-right: 0.9rem;
-  }
-  .kpis div + div {
-    padding-left: 0.9rem;
-  }
-  .kpis dd {
-    font-size: 1.35rem;
+  .zones b:nth-child(even) {
+    opacity: 0;
   }
 }

@@ -1,13 +1,12 @@
 "use client";
 
 import { AnimatePresence, animate, motion, useReducedMotion } from "motion/react";
-import { room } from "@/lib/rooms";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { Dumbbell } from "@/components/charts/Dumbbell";
 import { IntervalPlot, type IntervalRow } from "@/components/charts/IntervalPlot";
-import { RoomLink } from "@/components/site/RoomLink";
+import { ExpLink } from "@/components/site/ExpLink";
 import { Segmented } from "@/components/ui/Segmented";
 import { featureLabel, leagueCountry, MODEL_LABELS, type ModelId } from "@/lib/football";
 import { decimal, formatEur, integer, logGapAsPercent, percent, percentagePoints, signed } from "@/lib/format";
@@ -112,9 +111,9 @@ export function Observatory({ data }: { data: FairnessData }) {
       <header className={`fv-pagehead ${styles.head}`}>
         <div>
           <p className="eyebrow">
-            <b className="num">{room("observatory").index}</b> Research instrument
+            Terminal <span aria-hidden="true">/</span> Models
           </p>
-          <h1>Fairness observatory</h1>
+          <h1>Fairness Audit</h1>
         </div>
         <div className={styles.controls}>
           <Segmented
@@ -231,9 +230,9 @@ export function Observatory({ data }: { data: FairnessData }) {
                     Next: {VIEWS[at + 1]!.label} →
                   </Link>
                 ) : (
-                  <RoomLink href="/methods" className={`${styles.step} ${styles.stepNext}`}>
+                  <ExpLink href="/methods" className={`${styles.step} ${styles.stepNext}`}>
                     How it was measured: Methods →
-                  </RoomLink>
+                  </ExpLink>
                 )}
               </footer>
             </motion.section>

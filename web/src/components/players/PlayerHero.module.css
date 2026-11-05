@@ -67,8 +67,11 @@
   text-decoration: underline;
 }
 
-.crumbs :global(.num) {
-  margin-right: 0.25rem;
+.crumbLabel {
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #e9b949;
 }
 
 .name {

@@ -2,142 +2,80 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState, ViewTransition } from "react";
+import { useEffect, ViewTransition } from "react";
 import { checkService, SERVICE_LABEL, useServiceStatus } from "@/lib/api/service";
-import { ROOMS, roomForPath, transitionTo } from "@/lib/rooms";
+import { contextForPath, EXPERIENCES, transitionTypes } from "@/lib/experiences";
+import { CommandPalette, openPalette } from "./CommandPalette";
 import { Mark } from "./Mark";
 import styles from "./SiteHeader.module.css";
 
-/** Masthead: brand, the four rooms, and the live state of the model service. */
+/**
+ * The global bar: brand, the experience switcher (Overview / Terminal / Stories), search and the
+ * verified state of the model service. It is the same bar everywhere; each environment restyles
+ * it through data-exp so the switch between them is felt, not just read.
+ */
 export function SiteHeader() {
   const path = usePathname() ?? "/";
-  const current = roomForPath(path);
-  const [open, setOpen] = useState(false);
+  const context = contextForPath(path);
   const { state: service, reason } = useServiceStatus();
-  const menuRef = useRef<HTMLDivElement>(null);
-  const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     void checkService();
   }, []);
 
-  // Close the mobile menu whenever the route changes.
-  const [shownPath, setShownPath] = useState(path);
-  if (shownPath !== path) {
-    setShownPath(path);
-    setOpen(false);
-  }
-
-  useEffect(() => {
-    if (!open) return;
-    document.body.style.overflow = "hidden";
-    // Everything behind the sheet is taken out of the tab order and the accessibility tree.
-    const behind = [document.getElementById("main"), document.querySelector("body > footer")].filter((el): el is HTMLElement => !!el);
-    behind.forEach((el) => (el.inert = true));
-    // Widening past the mobile breakpoint hides the toggle, so close the sheet too.
-    const wide = window.matchMedia("(min-width: 900px)");
-    const onWide = () => wide.matches && setOpen(false);
-    wide.addEventListener("change", onWide);
-    menuRef.current?.querySelector<HTMLElement>("a")?.focus();
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape") {
-        setOpen(false);
-        toggleRef.current?.focus();
-      }
-    };
-    window.addEventListener("keydown", onKey);
-    return () => {
-      document.body.style.overflow = "";
-      behind.forEach((el) => (el.inert = false));
-      wide.removeEventListener("change", onWide);
-      window.removeEventListener("keydown", onKey);
-    };
-  }, [open]);
-
-  const status = SERVICE_LABEL[service];
-
   return (
-    <header className={styles.header} style={{ viewTransitionName: "site-header" }} data-open={open || undefined}>
+    <header className={styles.bar} data-exp={context} style={{ viewTransitionName: "site-header" }}>
       <div className={styles.inner}>
-        <Link href="/" className={styles.brand} aria-label="FairValue, overview" transitionTypes={transitionTo(current, ROOMS[0]!)}>
+        <Link href="/" className={styles.brand} aria-label="FairValue, overview" transitionTypes={transitionTypes(path, "/")}>
           <Mark />
           <span className={styles.word}>FairValue</span>
         </Link>
 
-        <nav aria-label="Main" className={styles.desktopNav}>
-          <ul className={styles.nav}>
-            {ROOMS.map((room) => {
-              const active = room.id === current.id;
-              return (
-                <li key={room.id}>
-                  <Link
-                    href={room.href}
-                    className={styles.link}
-                    aria-current={active ? "page" : undefined}
-                    transitionTypes={transitionTo(current, room)}
-                  >
-                    <span className={`${styles.index} num`}>{room.index}</span>
-                    {room.short}
-                    {active && (
-                      <ViewTransition name="nav-indicator">
-                        <span className={styles.indicator} aria-hidden="true" />
-                      </ViewTransition>
-                    )}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+        <nav aria-label="Experiences" className={styles.switcher}>
+          {EXPERIENCES.map((e) => {
+            const active = e.id === context;
+            return (
+              <Link
+                key={e.id}
+                href={e.href}
+                className={styles.option}
+                aria-current={active ? "page" : undefined}
+                transitionTypes={transitionTypes(path, e.href)}
+                title={e.summary}
+              >
+                {active && (
+                  <ViewTransition name="exp-indicator">
+                    <span className={styles.indicator} aria-hidden="true" />
+                  </ViewTransition>
+                )}
+                <span className={styles.optionLabel}>{e.label}</span>
+              </Link>
+            );
+          })}
         </nav>
 
-        <p className={styles.status} data-state={service} title={reason}>
-          <span className={styles.dot} aria-hidden="true" />
-          <span className={styles.statusText}>{status}</span>
-        </p>
-
-        <button
-          ref={toggleRef}
-          type="button"
-          className={styles.toggle}
-          aria-expanded={open}
-          aria-controls="room-menu"
-          onClick={() => setOpen((o) => !o)}
-        >
-          <span className={styles.toggleRoom}>
-            <span className="num">{current.index}</span> {current.short}
-          </span>
-          <span className={styles.burger} aria-hidden="true">
-            <span />
-            <span />
-          </span>
-          <span className="visually-hidden">{open ? "Close menu" : "Open menu"}</span>
-        </button>
+        <div className={styles.tools}>
+          <button
+            type="button"
+            className={styles.search}
+            onClick={() => openPalette()}
+            aria-label="Search players and workspaces"
+            aria-keyshortcuts="Control+K Meta+K /"
+          >
+            <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
+              <circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
+              <path d="M11 11l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
+            </svg>
+            <span className={styles.searchText}>Search players, workspaces</span>
+            <kbd className={styles.kbd}>⌘K</kbd>
+          </button>
+          <p className={styles.status} data-state={service} title={reason}>
+            <span className={styles.dot} aria-hidden="true" />
+            <span className={styles.statusText}>{SERVICE_LABEL[service]}</span>
+          </p>
+        </div>
       </div>
-
-      <div id="room-menu" ref={menuRef} className={styles.sheet} hidden={!open}>
-        <nav aria-label="Main, mobile">
-          <ol className={styles.sheetList}>
-            {ROOMS.map((room, i) => (
-              <li key={room.id} style={{ "--i": i } as React.CSSProperties}>
-                <Link
-                  href={room.href}
-                  className={styles.sheetLink}
-                  aria-current={room.id === current.id ? "page" : undefined}
-                  transitionTypes={transitionTo(current, room)}
-                  onClick={() => setOpen(false)}
-                >
-                  <span className={`${styles.sheetIndex} num`}>{room.index}</span>
-                  <span className={styles.sheetName}>{room.label}</span>
-                  <span className={styles.sheetSummary}>{room.summary}</span>
-                </Link>
-              </li>
-            ))}
-          </ol>
-        </nav>
-        <p className={styles.sheetStatus} data-state={service}>
-          <span className={styles.dot} aria-hidden="true" /> {status}. {reason}
-        </p>
-      </div>
+      <CommandPalette />
     </header>
   );
 }

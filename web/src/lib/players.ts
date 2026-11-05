@@ -168,3 +168,41 @@ export function publishedExplanation(p: PlayerProfile, version: string): import(
     disclaimer: "",
   };
 }
+
+// ---- Compact index (command palette, watchlists, comparison picker) ----
+export interface IndexRow {
+  id: number;
+  slug: string;
+  name: string;
+  role_code: string;
+  position: Position;
+  sub_position: string;
+  league_id: string;
+  club: string | null;
+  age: number;
+  market_value_eur: number;
+  market_tier: TierName | null;
+  minutes: number;
+  estimate: PlayerSummary["estimate"];
+}
+
+export function indexRow(p: PlayerProfile): IndexRow {
+  const s = summary(p);
+  return {
+    id: p.id, slug: p.slug, name: p.name, role_code: p.role_code, position: p.position, sub_position: p.sub_position,
+    league_id: p.league_id, club: p.club, age: p.age, market_value_eur: p.market_value_eur, market_tier: p.market_tier,
+    minutes: p.window.minutes, estimate: s.estimate,
+  };
+}
+
+export interface PlayerIndex {
+  source: PlayerSet["source"];
+  total: number;
+  players: IndexRow[];
+}
+
+/** Accent-insensitive search over name, club and role. */
+export function matchesQuery(p: Pick<IndexRow, "name" | "club" | "sub_position">, query: string): boolean {
+  const needle = fold(query.trim());
+  return !needle || fold(`${p.name} ${p.club ?? ""} ${p.sub_position}`).includes(needle);
+}

@@ -1,0 +1,215 @@
+.wrap {
+  display: grid;
+  grid-template-columns: 17rem minmax(0, 1fr);
+  gap: 0.75rem;
+  align-items: start;
+  padding-top: 0.75rem;
+}
+
+.lists {
+  display: grid;
+  gap: 0.6rem;
+  padding-bottom: 0.85rem;
+}
+
+.lists ul {
+  margin: 0;
+  padding: 0 0.4rem;
+  list-style: none;
+}
+
+.lists > :global(.tm-btn) {
+  margin: 0 0.85rem;
+  justify-self: start;
+}
+
+.listBtn {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  padding: 0.45rem 0.5rem;
+  border: 0;
+  border-radius: 3px;
+  background: none;
+  color: #c3cbc3;
+  font: inherit;
+  font-size: 0.85rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.listBtn:hover {
+  background: rgb(237 239 230 / 0.04);
+}
+
+.listBtn[aria-current] {
+  background: rgb(233 185 73 / 0.1);
+  color: #edefe6;
+  box-shadow: inset 2px 0 0 #e9b949;
+}
+
+.listBtn b {
+  color: #8f9b93;
+}
+
+.newList {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0 0.85rem;
+}
+
+.newList input {
+  flex: 1;
+}
+
+.storage {
+  padding: 0 0.85rem;
+  font-size: 0.7rem;
+  line-height: 1.45;
+  color: #6c786f;
+}
+
+.detail {
+  min-height: 20rem;
+}
+
+.detailHead {
+  align-items: center;
+}
+
+.listName {
+  display: grid;
+  font-size: 1.3rem;
+}
+
+.listName small {
+  font-family: var(--font-ui);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: #8f9b93;
+}
+
+.headActions,
+.rename {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.headActions :global(.tm-btn)[data-tone="danger"] {
+  border-color: #cf634c;
+  color: #f0907f;
+}
+
+.tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.06);
+}
+
+.addBox {
+  position: relative;
+}
+
+.addList {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  z-index: 20;
+  width: 18rem;
+  margin: 0;
+  padding: 0.3rem;
+  border: 1px solid rgb(237 239 230 / 0.16);
+  border-radius: 4px;
+  background: #0c110e;
+  list-style: none;
+}
+
+.addList button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  width: 100%;
+  padding: 0.4rem;
+  border: 0;
+  background: none;
+  color: #edefe6;
+  font: inherit;
+  font-size: 0.82rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.addList button:hover {
+  background: rgb(233 185 73 / 0.1);
+}
+
+.addList small {
+  margin-left: auto;
+  color: #8f9b93;
+}
+
+.picked {
+  font-size: 0.78rem;
+  color: #e9b949;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.who {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.who :global(.fv-role),
+.addList :global(.fv-role) {
+  min-width: 1.8rem;
+  height: 1.3rem;
+  font-size: 0.78rem;
+}
+
+.box {
+  accent-color: #e9b949;
+}
+
+.src {
+  font-size: 0.62rem;
+  text-transform: uppercase;
+  color: #8f9b93;
+}
+
+.rowActions {
+  display: inline-flex;
+  gap: 0.75rem;
+}
+
+.link {
+  font-size: 0.78rem;
+  color: #e9b949;
+}
+
+.remove {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #8f9b93;
+  font: inherit;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.remove:hover {
+  color: #f0907f;
+}
+
+@media (max-width: 900px) {
+  .wrap {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

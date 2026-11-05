@@ -1,0 +1,40 @@
+.line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem 0.5rem;
+  padding: 0.55rem 0.7rem;
+  border: 1px solid rgb(237 239 230 / 0.08);
+  border-radius: 4px;
+  font-size: 0.75rem;
+  color: #8f9b93;
+}
+
+.line i {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6c786f;
+  transform: translateY(-1px);
+}
+
+.line b {
+  font-weight: 600;
+  color: #edefe6;
+}
+
+.line[data-state="online"] i {
+  background: #3fb68b;
+}
+
+.line[data-state="offline"] i {
+  background: #f0907f;
+}
+
+.line[data-state="unverified"] i {
+  background: #e9b949;
+}
+
+.line[data-state="unverified"] b {
+  color: #e9b949;
+}

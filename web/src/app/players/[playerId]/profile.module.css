@@ -12,7 +12,8 @@
   grid-template-columns: repeat(12, minmax(0, 1fr));
   grid-template-areas:
     "compare compare compare compare compare compare compare traits traits traits traits traits"
-    "explain explain explain explain explain explain explain audit audit audit audit audit";
+    "explain explain explain explain explain explain explain explain explain explain explain explain"
+    "audit audit audit audit audit audit audit audit audit audit audit audit";
   gap: 1rem;
   margin-top: 1rem;
   align-items: start;
@@ -21,8 +22,9 @@
 .grid[data-history] {
   grid-template-areas:
     "compare compare compare compare compare compare compare traits traits traits traits traits"
+    "explain explain explain explain explain explain explain explain explain explain explain explain"
     "history history history history history history history history history history history history"
-    "explain explain explain explain explain explain explain audit audit audit audit audit";
+    "audit audit audit audit audit audit audit audit audit audit audit audit";
 }
 
 .compare {
@@ -201,10 +203,10 @@
   .grid,
   .grid[data-history] {
     grid-template-columns: minmax(0, 1fr);
-    grid-template-areas: "compare" "traits" "history" "explain" "audit";
+    grid-template-areas: "compare" "explain" "traits" "history" "audit";
   }
   .grid:not([data-history]) {
-    grid-template-areas: "compare" "traits" "explain" "audit";
+    grid-template-areas: "compare" "explain" "traits" "audit";
   }
   .moreList {
     grid-template-columns: repeat(2, minmax(0, 1fr));

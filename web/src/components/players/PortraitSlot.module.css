@@ -57,14 +57,25 @@
   overflow: hidden;
 }
 
+/* An empty slot, drawn as one: a dashed inner frame with crop marks, so it can never pass for a
+   finished portrait treatment. */
+.frame[data-kind="none"][data-size="hero"]::after {
+  content: "";
+  position: absolute;
+  inset: 0.9rem 0.9rem 2.2rem;
+  border: 1px dashed rgb(237 239 230 / 0.16);
+  border-radius: 3px;
+  pointer-events: none;
+}
+
 .monogram {
   font-family: var(--font-display);
-  font-size: clamp(4rem, 9vw, 7.5rem);
+  font-size: clamp(3rem, 6vw, 5rem);
   font-weight: 700;
   line-height: 1;
   letter-spacing: -0.02em;
   color: transparent;
-  -webkit-text-stroke: 1.5px rgb(237 239 230 / 0.28);
+  -webkit-text-stroke: 1.5px rgb(237 239 230 / 0.2);
 }
 
 .role {

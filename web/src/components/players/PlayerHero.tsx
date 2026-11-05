@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { ViewTransition } from "react";
 import { leagueName } from "@/lib/football";
 import { formatEur, integer } from "@/lib/format";
@@ -18,7 +17,6 @@ export interface HeroEstimate {
 interface Props {
   player: PlayerProfile;
   portrait: Portrait | null;
-  roomIndex: string;
   valuedLabel: string;
   estimates: HeroEstimate[];
 }
@@ -26,7 +24,7 @@ interface Props {
 const SOURCE_LABEL = { heldout: "Held-out", cached: "Served · cached research result", "live-only": "Live service only" } as const;
 
 /** The dossier header: the player's frame, identity, valuation and two-year record in one card. */
-export function PlayerHero({ player: p, portrait, roomIndex, valuedLabel, estimates }: Props) {
+export function PlayerHero({ player: p, portrait, valuedLabel, estimates }: Props) {
   const league = leagueName(p.league_id).split(",")[0]!;
   const w = p.window;
   const shown = estimates.filter((e) => e.value !== null);
@@ -43,13 +41,11 @@ export function PlayerHero({ player: p, portrait, roomIndex, valuedLabel, estima
       </div>
 
       <div className={styles.identity}>
-        <nav className={styles.crumbs} aria-label="Breadcrumb">
-          <Link href="/players">
-            <span className="num">{roomIndex}</span> Players
-          </Link>
+        <p className={styles.crumbs}>
+          <span className={styles.crumbLabel}>Player dossier</span>
           <span aria-hidden="true">/</span>
           <span>{league}</span>
-        </nav>
+        </p>
         <h1 id="player-name" className={styles.name}>
           {p.first_name && <span className={styles.first}>{p.first_name}</span>}
           <ViewTransition name={`name-${p.id}`} share="morph" default="none">

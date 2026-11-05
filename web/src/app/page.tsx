@@ -1,71 +1,122 @@
+import Link from "next/link";
 import { Suspense } from "react";
 import { GapGlyph } from "@/components/charts/GapGlyph";
-import { RoomLink } from "@/components/site/RoomLink";
-import { RoomTransition } from "@/components/site/RoomTransition";
-import { ButtonLink } from "@/components/ui/Button";
-import { leagueName, TIER_BOUNDARIES_EUR, TIER_NAMES } from "@/lib/football";
-import { decimal, formatEur, integer, logGapAsPercent, signed } from "@/lib/format";
+import { JourneyRibbon } from "@/components/overview/JourneyRibbon";
+import { ServiceLine } from "@/components/overview/ServiceLine";
+import { ExpLink } from "@/components/site/ExpLink";
+import { PageTransition } from "@/components/site/PageTransition";
+import { leagueCountry, leagueName, TIER_BOUNDARIES_EUR, TIER_NAMES } from "@/lib/football";
+import { decimal, formatEur, integer, signed } from "@/lib/format";
+import { buildJourney, extremes, factor, toEur } from "@/lib/journey";
 import { summary } from "@/lib/players";
 import { playerSet } from "@/lib/players.server";
-import { heldOutLogR2, research } from "@/lib/research";
-import { room } from "@/lib/rooms";
+import { heldOutLogMae, heldOutLogR2, research } from "@/lib/research";
+import { LEAD_STORY, STORY_FORMATS, STORIES, storyBySlug } from "@/lib/stories";
+import { WORKSPACES } from "@/lib/terminal";
 import { LiveSpecimen, SpecimenSkeleton } from "./home/LiveSpecimen";
 import styles from "./page.module.css";
 
-// Rendered per request so the live example reflects the API as it is now; the shell streams
-// immediately and the specimen fills in when the model answers (or reports that it can't).
+// Rendered per request so the live example reflects the API as it is now.
 export const dynamic = "force-dynamic";
 
 const h = research.headline;
-const funnel = research.population.funnel;
-const population = funnel[funnel.length - 1]!;
+const population = research.population.funnel.at(-1)!;
 const gapA = h.A.signed_gap_league_stratified;
 const gapB = h.B.signed_gap_league_stratified;
+const short = (id: string) => leagueName(id).split(",")[0]!;
 
 // Spectrum axis: log scale, €200k to €80M, wide enough for every showcase player.
 const LO = Math.log(200_000);
 const HI = Math.log(80_000_000);
-const x = (eur: number) => Math.min(100, Math.max(0, ((Math.log(eur) - LO) / (HI - LO)) * 100));
+const sx = (eur: number) => Math.min(100, Math.max(0, ((Math.log(eur) - LO) / (HI - LO)) * 100));
 
-export default function Home() {
+export default function Overview() {
   const set = playerSet();
   const showcase = set.source === "showcase";
+  // Featured valuation: the most valuable player the build can explain. A rule, not a pick.
+  const featured = [...set.players].filter((p) => p.explanation).sort((a, b) => b.market_value_eur - a.market_value_eur)[0] ?? null;
+  const fj = featured?.explanation ? buildJourney(featured.explanation, 7) : null;
+  const fx = fj ? extremes(fj) : null;
+  const featuredStory = featured ? storyBySlug(`valuation-${featured.slug}`) : undefined;
+  const tiers = TIER_NAMES.map((t) => research.market.tiers.find((r) => r.key === t)!);
+  const medians = [...research.market.leagues].sort((a, b) => b.median_value_eur! - a.median_value_eur!);
   const rows = set.players
     .map(summary)
     .filter((p) => p.estimate)
     .sort((a, b) => b.market_value_eur - a.market_value_eur)
     .slice(0, 10);
-  const bounds = TIER_BOUNDARIES_EUR.map(x);
-  const steps = funnel.slice(0, 4);
+  const bounds = TIER_BOUNDARIES_EUR.map(sx);
+  const pair = storyBySlug("h2h-849520-405398");
+  const pairPlayers = pair ? pair.players.map((id) => set.players.find((p) => p.id === id)).filter((p) => !!p) : [];
 
   return (
-    <RoomTransition>
+    <PageTransition>
       <div className={styles.home}>
-        {/* ---- Front door ---- */}
-        <section className={styles.hero} aria-labelledby="hero-title">
-          <div className={styles.heroText}>
-            <p className="eyebrow">
-              <b className="num">{room("overview").index}</b> Football valuation intelligence
+        {/* ================= First viewport ================= */}
+        <section className={styles.front} aria-labelledby="front-title">
+          <div className={styles.lead}>
+            <p className={styles.kicker}>
+              Football market intelligence <span aria-hidden="true">·</span> 14 European leagues <span aria-hidden="true">·</span> 2025–26
             </p>
-            <h1 id="hero-title" className={styles.title}>
-              Price the player. <span>Then audit the price.</span>
+            <h1 id="front-title" className={styles.title}>
+              Price the player. <em>Then audit the price.</em>
             </h1>
             <p className={styles.lede}>
-              FairValue estimates footballers&apos; market values from two years of club data, explains every estimate, and audits whom its
-              errors fall on: players from inside and outside UEFA, across 14 European leagues.
+              FairValue estimates a footballer&apos;s Transfermarkt market value from two years of club data, shows every input that moved the
+              estimate, and audits whom its errors fall on.
             </p>
-            <div className={styles.actions}>
-              <ButtonLink href="/players">Explore players</ButtonLink>
-              <ButtonLink href="/studio" variant="quiet">
-                Value a player
-              </ButtonLink>
-              <ButtonLink href="/fairness" variant="quiet">
-                See the audit
-              </ButtonLink>
-            </div>
-            <dl className={styles.kpis}>
+
+            {featured && fj && (
+              <article className={styles.featured} aria-labelledby="featured-title">
+                <header className={styles.featuredHead}>
+                  <p className={styles.featuredKicker}>Featured valuation</p>
+                  <h2 id="featured-title" className={styles.featuredName}>
+                    <span className="fv-role">{featured.role_code}</span>
+                    {featured.name}
+                  </h2>
+                  <p className={styles.featuredMeta}>
+                    {featured.sub_position} · {featured.club ?? short(featured.league_id)} · {Math.floor(featured.age)}
+                  </p>
+                </header>
+                <dl className={styles.featuredVals}>
+                  <div>
+                    <dt>Observed</dt>
+                    <dd className="num">{formatEur(featured.market_value_eur)}</dd>
+                  </div>
+                  <div>
+                    <dt>Model A</dt>
+                    <dd className="num">{formatEur(toEur(fj.final))}</dd>
+                  </div>
+                </dl>
+                <p className={styles.featuredRead}>
+                  From a {formatEur(toEur(fj.base))} starting point,
+                  {fx?.up ? ` ${fx.up.label.toLowerCase()} raises the estimate most (${factor(fx.up.contribution)})` : ""}
+                  {fx?.down ? `; ${fx.down.label.toLowerCase()} lowers it most (${factor(fx.down.contribution)})` : ""}. Served model, published SHAP
+                  values, in-sample.
+                </p>
+                <JourneyRibbon explanation={featured.explanation!} observed={featured.market_value_eur} />
+                <p className={styles.featuredLinks}>
+                  {featuredStory && (
+                    <ExpLink href={featuredStory.href} className={styles.more}>
+                      Follow the journey in Stories →
+                    </ExpLink>
+                  )}
+                  <ExpLink href={`/players/${featured.slug}?from=overview`} className={styles.more}>
+                    Open the dossier →
+                  </ExpLink>
+                </p>
+              </article>
+            )}
+          </div>
+
+          <aside className={styles.snapshot} aria-labelledby="snap-title">
+            <header className={styles.snapHead}>
+              <h2 id="snap-title">Market snapshot</h2>
+              <span>modelling population · held-out results</span>
+            </header>
+            <dl className={styles.snapKpis}>
               <div>
-                <dt>Players modelled</dt>
+                <dt>Players</dt>
                 <dd className="num">{integer(population.total)}</dd>
               </div>
               <div>
@@ -77,31 +128,117 @@ export default function Home() {
                 <dd className="num">{decimal(heldOutLogR2("A"), 3)}</dd>
               </div>
               <div>
-                <dt>Audit gap, Model A</dt>
-                <dd className="num">{signed(gapA.estimate)}</dd>
+                <dt>Typical miss</dt>
+                <dd className="num">{factor(heldOutLogMae("A"))}</dd>
               </div>
             </dl>
-          </div>
-          <div className={styles.heroSpecimen}>
-            <Suspense fallback={<SpecimenSkeleton />}>
-              <LiveSpecimen />
-            </Suspense>
+            <div className={styles.snapBlock}>
+              <p className={styles.snapLabel}>Observed value by tier</p>
+              <div className={styles.tierBar} role="img" aria-label={tiers.map((t) => `${t.key} ${t.n}`).join(", ")}>
+                {tiers.map((t, i) => (
+                  <span key={t.key} style={{ flexGrow: t.n, opacity: 0.4 + i * 0.2 }} />
+                ))}
+              </div>
+              <ol className={styles.tierKey}>
+                {tiers.map((t) => (
+                  <li key={t.key}>
+                    <b>{t.key}</b>
+                    <span className="num">
+                      {integer(t.n)} · {((t.n / population.total) * 100).toFixed(0)}%
+                    </span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+            <div className={styles.snapBlock}>
+              <p className={styles.snapLabel}>Median observed value by league</p>
+              <div className={styles.leagueBars} aria-hidden="true">
+                {medians.map((l) => (
+                  <span key={l.key} style={{ height: `${((Math.log(l.median_value_eur!) - Math.log(200_000)) / (Math.log(20_000_000) - Math.log(200_000))) * 100}%` }} title={`${short(l.key)} ${formatEur(l.median_value_eur!)}`} />
+                ))}
+              </div>
+              <p className={styles.leagueEnds}>
+                <span>
+                  {short(medians[0]!.key)} <b className="num">{formatEur(medians[0]!.median_value_eur!)}</b>
+                </span>
+                <span>
+                  {short(medians.at(-1)!.key)}, {leagueCountry(medians.at(-1)!.key)} <b className="num">{formatEur(medians.at(-1)!.median_value_eur!)}</b>
+                </span>
+              </p>
+            </div>
+            <div className={styles.snapBlock}>
+              <p className={styles.snapLabel}>League board · top five by median value</p>
+              <table className={styles.snapTable}>
+                <thead>
+                  <tr>
+                    <th scope="col">League</th>
+                    <th scope="col">Players</th>
+                    <th scope="col">Median</th>
+                    <th scope="col" title="Held-out mean absolute error, log scale">Error A</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {medians.slice(0, 5).map((l) => (
+                    <tr key={l.key}>
+                      <th scope="row">{short(l.key)}</th>
+                      <td className="num">{integer(l.total)}</td>
+                      <td className="num">{formatEur(l.median_value_eur!)}</td>
+                      <td className="num">{decimal(l.A.mae!, 3)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+            <ServiceLine />
+            <ExpLink href="/terminal/market" className={styles.snapLink}>
+              Open the Market Landscape in the Terminal →
+            </ExpLink>
+          </aside>
+
+          <div className={styles.doors}>
+            <ExpLink href={LEAD_STORY.href} className={styles.doorStory}>
+              <span className={styles.doorTag}>Featured story · Research</span>
+              <span className={styles.doorTitle}>{LEAD_STORY.title}</span>
+              <span className={`${styles.doorNum} num`}>{signed(gapA.estimate)}</span>
+              <span className={styles.doorText}>The audit&apos;s headline, chapter by chapter, with what it does not mean.</span>
+              <span className={styles.doorGo}>Enter Stories →</span>
+            </ExpLink>
+            <ExpLink href={pairPlayers.length === 2 ? `/terminal/compare?ids=${pairPlayers.map((p) => p.id).join(",")}` : "/terminal"} className={styles.doorTerminal}>
+              <span className={styles.doorTag}>Terminal · Comparison Studio</span>
+              <span className={styles.doorTitle}>{pairPlayers.length === 2 ? `${pairPlayers.map((p) => p.last_name).join(" v ")}, on one scale` : "Explore the players"}</span>
+              <span className={styles.doorRows} aria-hidden="true">
+                {pairPlayers.map((p) => {
+                  const a = p.estimates.heldout.A ?? p.estimates.served.A!;
+                  return (
+                    <span key={p.id} className={styles.doorRow}>
+                      <b>{p.last_name}</b>
+                      <span className={styles.doorTrack}>
+                        <span className={styles.doorLink} style={{ left: `${Math.min(sx(p.market_value_eur), sx(a))}%`, width: `${Math.abs(sx(p.market_value_eur) - sx(a))}%` }} />
+                        <i data-k="obs" style={{ left: `${sx(p.market_value_eur)}%` }} />
+                        <i data-k="model" style={{ left: `${sx(a)}%` }} />
+                      </span>
+                    </span>
+                  );
+                })}
+              </span>
+              <span className={styles.doorGo}>Enter the Terminal →</span>
+            </ExpLink>
           </div>
         </section>
 
-        {/* ---- The market and the model, on one scale ---- */}
+        {/* ================= The market and the model ================= */}
         <section className={`fv-panel ${styles.spectrum}`} aria-labelledby="spectrum-title">
           <header className="fv-panel-head">
             <h2 id="spectrum-title" className="fv-panel-title">
               The market and the model
               <small>
                 {showcase
-                  ? "the eight research players: observed value against the served Model A (published results, cached)"
+                  ? "the eight research players: observed value against the served Model A (published results, in-sample)"
                   : "the ten most valuable players: observed value against the held-out Model A estimate"}
               </small>
             </h2>
             <span className={styles.legend} aria-hidden="true">
-              <i data-k="market" /> Market value <i data-k="model" /> Model A
+              <i data-k="market" /> Observed <i data-k="model" /> Model A
             </span>
           </header>
           <div className={styles.spectrumBody}>
@@ -118,15 +255,15 @@ export default function Home() {
             </div>
             <ol className={styles.rows}>
               {rows.map((p) => {
-                const m = x(p.market_value_eur);
-                const e = x(p.estimate!.value);
+                const m = sx(p.market_value_eur);
+                const e = sx(p.estimate!.value);
                 return (
                   <li key={p.id}>
-                    <RoomLink href={`/players/${p.slug}`} className={styles.row} aria-label={`${p.name}: market ${formatEur(p.market_value_eur)}, Model A ${formatEur(p.estimate!.value)}`}>
+                    <ExpLink href={`/players/${p.slug}?from=overview`} className={styles.row} aria-label={`${p.name}: observed ${formatEur(p.market_value_eur)}, Model A ${formatEur(p.estimate!.value)}`}>
                       <span className={styles.who}>
                         <span className="fv-role">{p.role_code}</span>
                         <b>{p.last_name}</b>
-                        <small>{p.club ?? leagueName(p.league_id).split(",")[0]}</small>
+                        <small>{p.club ?? short(p.league_id)}</small>
                       </span>
                       <span className={styles.track} aria-hidden="true">
                         {bounds.map((b) => (
@@ -140,7 +277,7 @@ export default function Home() {
                         <b>{formatEur(p.market_value_eur)}</b>
                         <small>×{(p.estimate!.value / p.market_value_eur).toFixed(2)}</small>
                       </span>
-                    </RoomLink>
+                    </ExpLink>
                   </li>
                 );
               })}
@@ -149,7 +286,7 @@ export default function Home() {
               <span />
               <span className={styles.ticks}>
                 {[500_000, 2_000_000, 10_000_000, 30_000_000].map((t) => (
-                  <i key={t} style={{ left: `${x(t)}%` }}>
+                  <i key={t} style={{ left: `${sx(t)}%` }}>
                     {formatEur(t, 0)}
                   </i>
                 ))}
@@ -159,80 +296,10 @@ export default function Home() {
           </div>
         </section>
 
-        {/* ---- Rooms ---- */}
-        <section className={styles.rooms} aria-label="Inside FairValue">
-          <RoomLink href="/players" className={styles.tile}>
-            <span className={styles.tileHead}>
-              <span className="num">{room("players").index}</span> Players
-            </span>
-            <span className={styles.tileTitle}>Scouting dossiers</span>
-            <ul className={styles.tileList} aria-hidden="true">
-              {rows.slice(0, 3).map((p) => (
-                <li key={p.id}>
-                  <span className="fv-role">{p.role_code}</span> {p.last_name}
-                  <b className="num">{formatEur(p.market_value_eur)}</b>
-                </li>
-              ))}
-            </ul>
-            <span className={styles.tileText}>Identity, record, market vs both models, traits and SHAP for each player.</span>
-          </RoomLink>
-          <RoomLink href="/studio" className={styles.tile}>
-            <span className={styles.tileHead}>
-              <span className="num">{room("studio").index}</span> Studio
-            </span>
-            <span className={styles.tileTitle}>Valuation workstation</span>
-            <span className={styles.ladder} aria-hidden="true">
-              {TIER_NAMES.map((t, i) => (
-                <span key={t} data-i={i}>
-                  <b>{t}</b>
-                  <small>{["< €2M", "€2–10M", "€10–30M", "≥ €30M"][i]}</small>
-                </span>
-              ))}
-            </span>
-            <span className={styles.tileText}>Build a profile, get a live estimate, its tier, Model A vs B and the inputs that moved it.</span>
-          </RoomLink>
-          <RoomLink href="/fairness" className={styles.tile}>
-            <span className={styles.tileHead}>
-              <span className="num">{room("observatory").index}</span> Observatory
-            </span>
-            <span className={styles.tileTitle}>The fairness audit</span>
-            <span className={styles.mini} aria-hidden="true">
-              {[
-                { k: "A", g: gapA },
-                { k: "B", g: gapB },
-              ].map((r) => (
-                <span key={r.k} className={styles.miniRow}>
-                  <b>Model {r.k}</b>
-                  <span className={styles.miniTrack}>
-                    <i className={styles.miniZero} style={{ left: `${((0 + 0.05) / 0.3) * 100}%` }} />
-                    <i className={styles.miniCi} data-k={r.k} style={{ left: `${((r.g.low + 0.05) / 0.3) * 100}%`, width: `${((r.g.high - r.g.low) / 0.3) * 100}%` }} />
-                  </span>
-                  <span className="num">{signed(r.g.estimate)}</span>
-                </span>
-              ))}
-            </span>
-            <span className={styles.tileText}>Gaps by league, value level, subgroup and tier, with every robustness check.</span>
-          </RoomLink>
-          <RoomLink href="/methods" className={styles.tile}>
-            <span className={styles.tileHead}>
-              <span className="num">{room("methods").index}</span> Methods
-            </span>
-            <span className={styles.tileTitle}>How it was built</span>
-            <span className={styles.funnel} aria-hidden="true">
-              {steps.map((s) => (
-                <span key={s.stage} style={{ width: `${Math.max(18, (Math.log(s.total) / Math.log(steps[0]!.total)) * 100)}%` }}>
-                  <b className="num">{integer(s.total)}</b>
-                </span>
-              ))}
-            </span>
-            <span className={styles.tileText}>From {integer(steps[0]!.total)} players to the modelling population; validation, explainability and limits.</span>
-          </RoomLink>
-        </section>
-
-        {/* ---- The finding ---- */}
+        {/* ================= The finding ================= */}
         <section className={styles.finding} aria-labelledby="finding-title">
           <div className={styles.findingFigure}>
-            <p className="fv-label">The headline finding</p>
+            <p className="fv-label">What sets FairValue apart: the audit</p>
             <p className={`${styles.bigNumber} num`}>{signed(gapA.estimate)}</p>
             <p className={styles.bigUnit}>
               signed residual gap, non-UEFA minus UEFA, log units, within leagues ·{" "}
@@ -247,8 +314,8 @@ export default function Home() {
             </h2>
             <p>
               The study expected the market to value non-UEFA players below comparable UEFA players. It found the reverse: their Transfermarkt values
-              sit about <strong>{logGapAsPercent(gapA.estimate)}</strong> above the model&apos;s estimates, relative to UEFA players in the same
-              leagues. Accuracy is similar for both groups; the direction differs. Without league and club the gap grows to {signed(gapB.estimate)}.
+              sit about <strong>{Math.round(Math.expm1(gapA.estimate) * 100)}%</strong> above the model&apos;s estimates, relative to UEFA players in the
+              same leagues. Accuracy is similar for both groups; the direction differs. Without league and club the gap grows to {signed(gapB.estimate)}.
             </p>
             <GapGlyph
               rows={[
@@ -263,7 +330,54 @@ export default function Home() {
             </p>
           </div>
         </section>
+
+        {/* ================= Directory + live check ================= */}
+        <section className={styles.directory} aria-label="Where to go next">
+          <div className={styles.dirCol}>
+            <h2 className={styles.dirHead}>
+              <ExpLink href="/terminal">Terminal</ExpLink>
+              <small>the analytical workstation</small>
+            </h2>
+            <ul>
+              {WORKSPACES.map((w) => (
+                <li key={w.id}>
+                  <ExpLink href={w.href}>
+                    <b>{w.label}</b>
+                    <span>{w.summary}</span>
+                  </ExpLink>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className={styles.dirCol} data-tone="stories">
+            <h2 className={styles.dirHead}>
+              <ExpLink href="/stories">Stories</ExpLink>
+              <small>the editorial side</small>
+            </h2>
+            <ul>
+              {STORY_FORMATS.map((f) => {
+                const n = STORIES.filter((s) => s.format === f.id).length;
+                return (
+                  <li key={f.id}>
+                    <ExpLink href={`/stories#${f.id}`}>
+                      <b>
+                        {f.label} <em className="num">{n ? n : "not published"}</em>
+                      </b>
+                      <span>{f.summary}</span>
+                    </ExpLink>
+                  </li>
+                );
+              })}
+            </ul>
+          </div>
+          <div className={styles.dirLive}>
+            <p className="fv-label">Live model check</p>
+            <Suspense fallback={<SpecimenSkeleton />}>
+              <LiveSpecimen />
+            </Suspense>
+          </div>
+        </section>
       </div>
-    </RoomTransition>
+    </PageTransition>
   );
 }

@@ -1,5 +1,5 @@
 import { ValueRuler } from "@/components/charts/ValueRuler";
-import { RoomLink } from "@/components/site/RoomLink";
+import { ExpLink } from "@/components/site/ExpLink";
 import type { PredictResponse } from "@/lib/api/types";
 import { EXPECTED_SERVICE } from "@/lib/api/expected";
 import { fetchUpstream, upstreamHealth } from "@/lib/api/upstream";
@@ -63,7 +63,7 @@ export async function LiveSpecimen() {
         <ValueRuler ariaLabel="Market value scale with tier boundaries at €2M, €10M and €30M" />
         <footer className={styles.foot}>
           <span>Illustrative profile, not a real player</span>
-          <RoomLink href="/studio">Open the studio →</RoomLink>
+          <ExpLink href="/terminal/valuation">Open the Valuation Studio →</ExpLink>
         </footer>
       </article>
     );
@@ -107,7 +107,7 @@ export async function LiveSpecimen() {
         <span className="num" title="Served regressor version">
           {res.model_version.regressor}
         </span>
-        <RoomLink href="/studio">Change the profile →</RoomLink>
+        <ExpLink href="/terminal/valuation">Change the profile →</ExpLink>
       </footer>
     </article>
   );

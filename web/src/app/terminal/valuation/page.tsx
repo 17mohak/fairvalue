@@ -1,32 +1,21 @@
 import type { Metadata } from "next";
-import { RoomTransition } from "@/components/site/RoomTransition";
 import { Studio } from "@/components/studio/Studio";
-import { room } from "@/lib/rooms";
+import { WorkspaceHead } from "@/components/terminal/WorkspaceHead";
 import styles from "./page.module.css";
 
 export const metadata: Metadata = {
-  title: "Valuation studio",
+  title: "Valuation Studio",
   description: "Describe a player's last two years of club football and get a market value estimate, its tier and the inputs that moved it.",
 };
 
-export default function StudioPage() {
+export default function ValuationPage() {
   return (
-    <RoomTransition>
-      <div className={styles.studio}>
-        <header className={`fv-pagehead ${styles.head}`}>
-          <div>
-            <p className="eyebrow">
-              <b className="num">{room("studio").index}</b> Valuation workstation
-            </p>
-            <h1>Valuation studio</h1>
-          </div>
-          <p>
-            Build a profile or load a research player. The served model returns a value, its tier, Model A against Model B, and the SHAP
-            breakdown. Every result says whether it is live, unverified or cached.
-          </p>
-        </header>
-        <Studio />
-      </div>
-    </RoomTransition>
+    <div className={styles.studio}>
+      <WorkspaceHead
+        id="valuation"
+        note="Build a profile or load a research player. The served model returns a value, its tier, Model A against Model B and the inputs that moved it. Every result says whether it is live, unverified or cached."
+      />
+      <Studio />
+    </div>
   );
 }

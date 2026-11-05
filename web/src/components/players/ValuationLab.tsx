@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { ContributionChart } from "@/components/charts/ContributionChart";
+import { ValuationJourney } from "@/components/journey/ValuationJourney";
 import { ValueRuler } from "@/components/charts/ValueRuler";
 import { explain, predict } from "@/lib/api/client";
 import { useServiceStatus } from "@/lib/api/service";
@@ -164,28 +164,51 @@ export function ValuationLab({ player: p, mae, regressorVersion, areas = {} }: P
         <header className="fv-panel-head">
           <h2 id="why-title" className="fv-panel-title">
             {served(model) ? `Why ${MODEL_LABELS[model].name} says ${formatEur(served(model)!)}` : `What moves ${MODEL_LABELS[model].name}`}
-            <small>SHAP, this player&apos;s own inputs</small>
+            <small>valuation journey · SHAP, this player&apos;s own inputs</small>
           </h2>
           <div className={styles.toggle} role="radiogroup" aria-label="Explain model">
-            {(["A", "B"] as const).map((m) => (
-              <button key={m} type="button" role="radio" aria-checked={model === m} onClick={() => setModel(m)}>
-                {MODEL_LABELS[m].name}
-              </button>
-            ))}
+            {(["A", "B"] as const).map((m) => {
+              // Model B has no published explanation; it can only be explained by the live service.
+              const possible = m === "A" ? true : !!live.explain.B || live.status === "online";
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  role="radio"
+                  aria-checked={model === m}
+                  aria-disabled={!possible || undefined}
+                  title={possible ? undefined : "Model B explanations come from the live service only, which is not available"}
+                  onClick={() => possible && setModel(m)}
+                >
+                  {MODEL_LABELS[m].name}
+                </button>
+              );
+            })}
           </div>
         </header>
         <div className="fv-panel-body">
-          <p className={styles.whyNote}>
-            From {live.explain[model] ? (verified ? "the live explanation endpoint" : "the live but unverified explanation endpoint") : explanation ? "the published research results (cached)" : "the live endpoint"}.
-            Effects multiply from the average training player; they describe the model&apos;s arithmetic, not what causes market value.
-          </p>
           {explanation ? (
-            <ContributionChart explanation={explanation} top={8} />
+            <ValuationJourney
+              explanation={explanation}
+              observed={p.market_value_eur}
+              subject={p.last_name}
+              provenance={
+                live.explain[model]
+                  ? `${verified ? "Live explanation endpoint" : "Live but unverified explanation endpoint"}, served Model ${model} ${
+                      verified ? `(${regressorVersion[model]})` : ""
+                    }; the served model was fitted on all players, including this one.`
+                  : `Published SHAP run for the served Model A (${regressorVersion.A}); this player was in its training data, so the estimate is in-sample.`
+              }
+            />
           ) : (
             <p className={styles.unavailable}>
               {live.status === "loading" ? "Loading the explanation…" : `No ${MODEL_LABELS[model].name} explanation is available while the prediction API is offline.`}
             </p>
           )}
+          <p className={styles.whyNote}>
+            SHAP describes the model&apos;s arithmetic for this player&apos;s inputs, not what causes market value. Model B can be explained only by the live
+            service; Model A also has a published explanation for the research players.
+          </p>
         </div>
       </section>
     </>

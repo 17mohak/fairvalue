@@ -28,8 +28,8 @@
   /* Data roles */
   --uefa: #4495dc;
   --non-uefa: #d4609a;
-  --raise: #bf8622;
-  --lower: #13a096;
+  --raise: #d4a03a;
+  --lower: #cf634c;
   --tier-line: rgb(237 239 230 / 0.28);
 
   /* Feedback (always paired with text, never colour alone) */
@@ -57,7 +57,7 @@
   --measure: 66ch;
   --page: 1240px;
   --page-wide: 1480px;
-  --header-h: 3.75rem;
+  --header-h: 3.5rem;
   --radius-s: 4px;
   --radius-m: 8px;
 
@@ -95,7 +95,7 @@
   --uefa: #2f6fb0;
   --non-uefa: #b23f7c;
   --raise: #93620c;
-  --lower: #0b7a72;
+  --lower: #a8432f;
   --tier-line: rgb(20 32 25 / 0.3);
   --surface: var(--turf-900);
   color-scheme: light;
@@ -253,30 +253,46 @@ table {
   top: 0.75rem;
 }
 
-/* ---- Route transitions (React ViewTransition, see components/site/RoomTransition.tsx) ----
-   Moving to a later room slides content in from the right, an earlier room from the left.
-   The masthead is anchored so the reader keeps one fixed reference point. */
-::view-transition-old(.nav-forward) {
-  --slide-offset: -48px;
-  animation: 140ms ease-in both vt-fade reverse, 360ms var(--ease-in-out) both vt-slide reverse;
+/* ---- Environment transitions (components/site/PageTransition.tsx, lib/experiences.ts) ----
+   Each environment has its own entrance, so crossing between them is felt:
+   Terminal boots in with a top-down wipe, Stories fades up out of black like a broadcast cut,
+   Overview and the dossier rise into place. Inside the Terminal, workspaces swap quickly.
+   The global bar is anchored throughout; the lit switcher segment glides. Reduced motion: none. */
+::view-transition-old(.to-terminal),
+::view-transition-old(.to-overview),
+::view-transition-old(.to-dossier) {
+  animation: 200ms ease-in both vt-out;
 }
-::view-transition-new(.nav-forward) {
-  --slide-offset: 48px;
-  animation: 220ms ease-out 120ms both vt-fade, 360ms var(--ease-in-out) both vt-slide;
+::view-transition-new(.to-terminal) {
+  animation: 460ms var(--ease-out) 60ms both vt-wipe;
 }
-::view-transition-old(.nav-back) {
-  --slide-offset: 48px;
-  animation: 140ms ease-in both vt-fade reverse, 360ms var(--ease-in-out) both vt-slide reverse;
+::view-transition-old(.to-stories) {
+  animation: 260ms ease-in both vt-to-black;
 }
-::view-transition-new(.nav-back) {
-  --slide-offset: -48px;
-  animation: 220ms ease-out 120ms both vt-fade, 360ms var(--ease-in-out) both vt-slide;
+::view-transition-new(.to-stories) {
+  animation: 640ms var(--ease-out) 180ms both vt-from-black;
+}
+::view-transition-new(.to-overview),
+::view-transition-new(.to-dossier) {
+  animation: 380ms var(--ease-out) 80ms both vt-rise;
+}
+::view-transition-old(.ws) {
+  animation: 120ms ease-in both vt-fade reverse;
+}
+::view-transition-new(.ws) {
+  animation: 220ms var(--ease-out) 60ms both vt-ws;
+}
+::view-transition-old(.chapter) {
+  animation: 220ms ease-in both vt-fade reverse;
+}
+::view-transition-new(.chapter) {
+  animation: 420ms var(--ease-out) 120ms both vt-fade;
 }
 ::view-transition-group(site-header) {
   animation: none;
   z-index: 50;
 }
-::view-transition-group(nav-indicator) {
+::view-transition-group(exp-indicator) {
   animation-duration: 420ms;
   animation-timing-function: var(--ease-out);
   z-index: 51;
@@ -290,9 +306,44 @@ table {
     opacity: 0;
   }
 }
-@keyframes vt-slide {
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    scale: 0.985;
+  }
+}
+@keyframes vt-wipe {
   from {
-    translate: var(--slide-offset);
+    clip-path: inset(0 0 100% 0);
+    opacity: 0.4;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes vt-to-black {
+  to {
+    opacity: 0;
+    filter: brightness(0.3);
+  }
+}
+@keyframes vt-from-black {
+  from {
+    opacity: 0;
+    scale: 1.03;
+    filter: brightness(0.4);
+  }
+}
+@keyframes vt-rise {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+}
+@keyframes vt-ws {
+  from {
+    opacity: 0;
+    translate: 0 6px;
   }
 }
 
@@ -500,4 +551,181 @@ table {
   .fv-skeleton {
     animation: none;
   }
+}
+
+/* ===================================================================== Terminal primitives
+   Flat, hairline, dense. Regions divided by rules rather than floating cards; numbers are
+   tabular; gold marks the selection and nothing else. */
+.tm-panel {
+  min-width: 0;
+  border: 1px solid rgb(237 239 230 / 0.08);
+  border-radius: 4px;
+  background: #0c110e;
+}
+
+.tm-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.tm-title {
+  font-family: var(--font-display);
+  font-size: 0.86rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #edefe6;
+}
+
+.tm-sub {
+  font-size: 0.74rem;
+  color: #8f9b93;
+}
+
+.tm-panel-body {
+  padding: 0.85rem;
+}
+
+.tm-note {
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: #8f9b93;
+}
+
+.tm-note b {
+  color: #c3cbc3;
+  font-weight: 500;
+}
+
+.tm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 2rem;
+  padding: 0 0.75rem;
+  border: 1px solid rgb(237 239 230 / 0.16);
+  border-radius: 4px;
+  background: #101712;
+  color: #edefe6;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 120ms var(--ease-out), background-color 120ms var(--ease-out);
+}
+
+.tm-btn:hover:not(:disabled) {
+  border-color: rgb(237 239 230 / 0.34);
+}
+
+.tm-btn[data-tone="gold"] {
+  border-color: #e9b949;
+  background: #e9b949;
+  color: #1b1505;
+}
+
+.tm-btn[data-tone="gold"]:hover:not(:disabled) {
+  background: #f1c765;
+}
+
+.tm-btn:disabled,
+.tm-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tm-btn:focus-visible,
+.tm-input:focus-visible,
+.tm-select:focus-visible {
+  outline: 2px solid #e9b949;
+  outline-offset: 1px;
+}
+
+.tm-input,
+.tm-select {
+  height: 2rem;
+  min-width: 0;
+  padding: 0 0.6rem;
+  border: 1px solid rgb(237 239 230 / 0.14);
+  border-radius: 4px;
+  background: #070a08;
+  color: #edefe6;
+  font: inherit;
+  font-size: 0.82rem;
+}
+
+.tm-select {
+  padding-right: 1.6rem;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #8f9b93 50%), linear-gradient(135deg, #8f9b93 50%, transparent 50%);
+  background-position: calc(100% - 0.85rem) 55%, calc(100% - 0.55rem) 55%;
+  background-size: 0.3rem 0.3rem;
+  background-repeat: no-repeat;
+}
+
+.tm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tm-table th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.14);
+  background: #0c110e;
+  font-size: 0.66rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #8f9b93;
+}
+
+.tm-table td {
+  padding: 0.45rem 0.6rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.055);
+  white-space: nowrap;
+  color: #c3cbc3;
+}
+
+.tm-table td[data-num],
+.tm-table th[data-num] {
+  text-align: right;
+}
+
+.tm-table tbody tr:hover td {
+  background: rgb(237 239 230 / 0.03);
+}
+
+.tm-table tbody tr[data-focus] td {
+  background: rgb(233 185 73 / 0.07);
+}
+
+.tm-empty {
+  display: grid;
+  gap: 0.4rem;
+  place-items: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #8f9b93;
+}
+
+.tm-empty b {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #edefe6;
 }

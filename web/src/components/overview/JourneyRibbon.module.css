@@ -98,15 +98,17 @@
   width: 0.75rem;
   height: 0.75rem;
   rotate: 45deg;
-  background: #e9b949;
+  border: 2px solid #e9b949;
+  background: #0a0f0c;
 }
 
 .obs {
+  z-index: 1;
   width: 0.7rem;
   height: 0.7rem;
-  border: 2px solid #edefe6;
   border-radius: 50%;
-  background: #0f1713;
+  background: #edefe6;
+  box-shadow: 0 0 0 2px #0a0f0c;
 }
 
 .cap {
@@ -146,10 +148,10 @@
 
 .cap i[data-k="final"] {
   rotate: 45deg;
-  background: #e9b949;
+  border: 2px solid #e9b949;
 }
 
 .cap i[data-k="obs"] {
-  border: 2px solid #edefe6;
   border-radius: 50%;
+  background: #edefe6;
 }

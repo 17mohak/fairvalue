@@ -1,16 +1,22 @@
 import type { Metadata, Viewport } from "next";
-import { Barlow, Barlow_Condensed, Source_Serif_4 } from "next/font/google";
+import { Archivo, Big_Shoulders, Source_Serif_4 } from "next/font/google";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
 import "./globals.css";
 
-const barlowCondensed = Barlow_Condensed({
+// Brand type (D-039): Big Shoulders, a condensed signage face, for display and big figures;
+// Archivo, whose width axis gives both the interface (100) and the expanded broadcast labels
+// (125); Source Serif 4 only for long-form reading in Stories and Methods. All OFL, self-hosted.
+// next/font has no metrics for Big Shoulders, so it names a narrow system fallback itself.
+const bigShoulders = Big_Shoulders({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-barlow-condensed",
+  axes: ["opsz"],
+  variable: "--font-big-shoulders",
   display: "swap",
+  adjustFontFallback: false,
+  fallback: ["Arial Narrow", "Roboto Condensed", "sans-serif"],
 });
-const barlow = Barlow({ subsets: ["latin"], weight: ["400", "500", "600"], variable: "--font-barlow", display: "swap" });
+const archivo = Archivo({ subsets: ["latin"], axes: ["wdth"], variable: "--font-archivo", display: "swap" });
 const sourceSerif = Source_Serif_4({
   subsets: ["latin"],
   style: ["normal", "italic"],
@@ -28,7 +34,7 @@ export const viewport: Viewport = { themeColor: "#0f1713", colorScheme: "dark" }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en-GB" data-scroll-behavior="smooth" className={`${barlowCondensed.variable} ${barlow.variable} ${sourceSerif.variable}`}>
+    <html lang="en-GB" data-scroll-behavior="smooth" className={`${bigShoulders.variable} ${archivo.variable} ${sourceSerif.variable}`}>
       <body>
         <a className="skip-link" href="#main">
           Skip to content

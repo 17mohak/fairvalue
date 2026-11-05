@@ -61,10 +61,12 @@
 }
 
 .colHint {
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #8f9b93;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .big {

@@ -44,9 +44,10 @@ export function ValuationJourney({ explanation, observed = null, provenance, sub
 
   const [lo, hi] = journeyDomain(j, observed);
   const x = (log: number) => ((log - lo) / (hi - lo)) * 100;
-  // Narrow variants keep fewer, rounder ticks so the axis labels never collide.
+  // Narrow variants keep at most two round ticks so the axis labels never collide.
   const allTicks = euroTicks([lo, hi]);
-  const ticks = variant === "compact" ? (allTicks.filter((t) => String(t)[0] === "1").length >= 2 ? allTicks.filter((t) => String(t)[0] === "1") : allTicks).slice(0, 4) : allTicks;
+  const ones = allTicks.filter((t) => String(t)[0] === "1");
+  const ticks = variant === "compact" ? (ones.length >= 2 ? [ones[0]!, ones.at(-1)!] : allTicks.length > 1 ? [allTicks[0]!, allTicks.at(-1)!] : allTicks) : allTicks;
   const obsLog = observed && observed > 0 ? Math.log(observed) : null;
   const { up, down } = extremes(j);
   const n = explanation.contributions.length;
@@ -205,10 +206,10 @@ export function ValuationJourney({ explanation, observed = null, provenance, sub
 
       <figcaption className={styles.caption}>
         <span className={styles.key}>
-          <i data-dir="up" /> raises the estimate <i data-dir="down" /> lowers it
+          <i data-dir="up" /> raises the estimate <i data-dir="down" /> lowers it <i data-k="est" /> Model {explanation.model} estimate
           {obsLog !== null && (
             <>
-              <i data-k="obs" /> observed value
+              <i data-k="obs" /> observed value (dashed line)
             </>
           )}
         </span>

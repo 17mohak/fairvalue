@@ -2,8 +2,8 @@
    bars chain into a path from the starting point to the estimate. */
 
 .journey {
-  --cols: minmax(8.5rem, 13rem) minmax(0, 1fr) 4.25rem 4.75rem;
-  --row: 2.6rem;
+  --cols: minmax(9rem, 14rem) minmax(0, 1fr) 4.5rem 5rem;
+  --row: 2.8rem;
   --bar: 0.7rem;
   --up: var(--raise);
   --down: var(--lower);
@@ -53,10 +53,12 @@
 .head {
   padding-bottom: 0.35rem;
   border-bottom: 1px solid var(--rule);
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--fog);
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .head > span:nth-child(3),
@@ -122,15 +124,15 @@
 
 .label b {
   overflow: hidden;
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-size: 0.9rem;
+  font-weight: 600;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .label small {
   overflow: hidden;
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   text-overflow: ellipsis;
   white-space: nowrap;
   color: var(--fog);
@@ -142,8 +144,8 @@
 
 .steps li[data-kind="final"] .label b {
   font-family: var(--font-display);
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.15rem;
+  font-weight: 800;
   letter-spacing: 0.02em;
   color: var(--flood);
 }
@@ -230,6 +232,7 @@
   background: rgb(233 185 73 / 0.55);
 }
 
+/* Marker grammar (D-039): the estimate is a gold outline diamond, the observed value a solid disc. */
 .estimate {
   position: absolute;
   top: 50%;
@@ -237,19 +240,20 @@
   height: 0.85rem;
   translate: -50% -50%;
   rotate: 45deg;
-  background: var(--flood);
-  box-shadow: 0 0 0 2px var(--surface, #0f1713);
+  border: 2px solid var(--flood);
+  background: var(--surface, #0f1713);
 }
 
 .observed {
   position: absolute;
   top: 50%;
-  width: 0.7rem;
-  height: 0.7rem;
+  z-index: 1;
+  width: 0.75rem;
+  height: 0.75rem;
   translate: -50% -50%;
-  border: 2px solid var(--chalk);
   border-radius: 50%;
-  background: var(--surface, #0f1713);
+  background: var(--chalk);
+  box-shadow: 0 0 0 2px var(--surface, #0f1713);
 }
 
 .observed span {
@@ -273,8 +277,8 @@
 }
 
 .effect {
-  font-size: 0.85rem;
-  font-weight: 600;
+  font-size: 0.95rem;
+  font-weight: 700;
 }
 
 .steps li[data-dir="up"] .effect {
@@ -293,13 +297,13 @@
 
 .running {
   padding-right: 0.5rem;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--chalk-2);
 }
 
 .steps li[data-kind="final"] .running {
   font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-size: 1.4rem;
   font-weight: 600;
   color: var(--flood);
 }
@@ -371,12 +375,21 @@
   background: var(--down);
 }
 
-.key i[data-k="obs"] {
-  width: 0;
-  height: 0.8rem;
+.key i[data-k="est"] {
+  width: 0.6rem;
+  height: 0.6rem;
   margin-left: 0.75rem;
-  border-left: 1px dashed var(--chalk-2);
+  rotate: 45deg;
+  border: 2px solid var(--flood);
   border-radius: 0;
+}
+
+.key i[data-k="obs"] {
+  width: 0.6rem;
+  height: 0.6rem;
+  margin-left: 0.75rem;
+  border-radius: 50%;
+  background: var(--chalk);
 }
 
 .refused {
@@ -389,8 +402,10 @@
 }
 
 @container (max-width: 520px) {
-  .journey {
-    --cols: minmax(6.5rem, 8.5rem) minmax(0, 1fr) 3.25rem;
+  /* A container cannot query itself, so the narrow column template is set on the rows. */
+  .head,
+  .row {
+    grid-template-columns: minmax(6rem, 8rem) minmax(0, 1fr) 3.4rem;
   }
   .head > span:nth-child(4),
   .running {
@@ -399,7 +414,11 @@
   .label small {
     display: none;
   }
-  .ticks i:nth-child(even) {
+  .ticks i {
     display: none;
+  }
+  .ticks i:first-child,
+  .ticks i:last-child {
+    display: block;
   }
 }

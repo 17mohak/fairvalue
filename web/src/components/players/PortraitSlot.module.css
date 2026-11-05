@@ -95,10 +95,12 @@
   right: 0;
   bottom: 0.7rem;
   text-align: center;
-  font-size: 0.68rem;
-  letter-spacing: 0.1em;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #6c786f;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .frame[data-size="card"] .monogram {

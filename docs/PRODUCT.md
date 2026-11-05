@@ -70,6 +70,11 @@ Full stack in containers (models must exist in `models/`):
 docker compose up --build             # web on :3000, API on :8000
 ```
 
+Stop the dev server before running `next build` or deleting `web/.next`. A server left running
+against a rebuilt or deleted `.next` keeps answering, but its CSS requests fail and pages render
+with browser defaults. On Windows, check that nothing still listens on port 3000 before
+restarting.
+
 ## Tests
 - `cd web && npm test`: formatting, contract sync (every API field has a form field), validation
   rules, API client error mapping, and the studio flow against fixtures captured from the real API
@@ -80,6 +85,14 @@ docker compose up --build             # web on :3000, API on :8000
 - CI runs all of these; the Docker job also smoke-tests `/explain` and the compose stack.
 
 ## Design notes
+- **Brand identity (D-039):**
+  - Type: Big Shoulders for display and figures; Archivo for the interface, with expanded-width
+    Archivo as the broadcast label; Source Serif 4 for long reading only.
+  - Marker grammar everywhere: ● observed (solid chalk), ◇ Model A (gold outline), dashed ◇
+    Model B, ▲/▼ residual direction, a four-step tier gauge, and the slanted gold ID plate for
+    position codes.
+  - The Overview headline sets "Price the player." solid and "Audit the price." in outline: the
+    same solid/outline duality.
 - **Switcher and motion:** the global bar carries the switcher. Its lit segment glides between
   environments (a shared view-transition name). Each crossing has its own entrance: the Terminal
   wipes in, Stories cuts up from black, the Overview and dossier rise. Workspaces and chapters

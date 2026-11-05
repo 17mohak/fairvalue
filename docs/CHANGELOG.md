@@ -1,5 +1,29 @@
 # Development changelog
 
+## 2026-11-05: Brand identity (branch `feat/multipage-experience`, not pushed)
+- **Identity (D-039):**
+  - Big Shoulders and Archivo (expanded labels) replace Barlow; Source Serif is kept for reading.
+  - A solid/outline grammar for observed vs model, residual ▲/▼, tier gauge and gold ID plates,
+    shared by every chart and table.
+- **Overview:**
+  - A cover with a broadcast score bug and the solid/outline headline with its key.
+  - A cover valuation (observed, Model A, residual, journey ribbon) and a market band.
+  - Doors, a numbered spectrum section, a Stories-style finding band, and the directory.
+- **Stories:** outline chapter numerals, reading progress, a two-act research story around a
+  stat-duel interstitial, a verdict on the valuation stage, and the grammar on sparklines.
+- **Terminal:**
+  - Explorer rows carry markers, the residual indicator and the tier gauge.
+  - A phone layout keeps who, observed and Model A.
+  - Comparison ladder in the grammar with player stripes; a readable matrix with a pinned input
+    column.
+  - Table row headers are no longer sticky.
+- **Dossier:** larger name and observed value in chalk, Model A estimates with markers and
+  residuals, tier gauge, more readable journey rows. Narrow journeys now keep a usable track (a
+  container-query fix).
+- **QA:** the unstyled capture traced to an orphaned server serving a deleted build; documented.
+  The head-to-head scale's 5px mobile overflow is fixed.
+- **Tests:** web 98 (+3 marks), Python 125; production build passes.
+
 ## 2026-11-05: Three experiences (branch `feat/multipage-experience`, not pushed)
 - **Architecture (D-038):**
   - Overview, Terminal and Stories behind a persistent switcher, with a transition per crossing

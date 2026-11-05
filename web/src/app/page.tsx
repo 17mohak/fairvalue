@@ -2,7 +2,9 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { GapGlyph } from "@/components/charts/GapGlyph";
 import { JourneyRibbon } from "@/components/overview/JourneyRibbon";
+import { MarkKey, ModelMark, ObsMark, Residual } from "@/components/brand/Marks";
 import { ServiceLine } from "@/components/overview/ServiceLine";
+import { Mark } from "@/components/site/Mark";
 import { ExpLink } from "@/components/site/ExpLink";
 import { PageTransition } from "@/components/site/PageTransition";
 import { leagueCountry, leagueName, TIER_BOUNDARIES_EUR, TIER_NAMES } from "@/lib/football";
@@ -52,53 +54,115 @@ export default function Overview() {
   return (
     <PageTransition>
       <div className={styles.home}>
-        {/* ================= First viewport ================= */}
-        <section className={styles.front} aria-labelledby="front-title">
-          <div className={styles.lead}>
-            <p className={styles.kicker}>
-              Football market intelligence <span aria-hidden="true">·</span> 14 European leagues <span aria-hidden="true">·</span> 2025–26
-            </p>
-            <h1 id="front-title" className={styles.title}>
-              Price the player. <em>Then audit the price.</em>
-            </h1>
-            <p className={styles.lede}>
-              FairValue estimates a footballer&apos;s Transfermarkt market value from two years of club data, shows every input that moved the
-              estimate, and audits whom its errors fall on.
-            </p>
+        {/* ================= The cover ================= */}
+        <section className={styles.cover} aria-labelledby="cover-title">
+          <dl className={styles.bug} aria-label="This edition">
+            <div className={styles.bugPlate}>
+              <dt className="visually-hidden">Publication</dt>
+              <dd>
+                <Mark size={18} /> FairValue
+              </dd>
+            </div>
+            <div>
+              <dt>Season</dt>
+              <dd className="num">2025–26</dd>
+            </div>
+            <div>
+              <dt>Leagues</dt>
+              <dd className="num">14</dd>
+            </div>
+            <div>
+              <dt>Players</dt>
+              <dd className="num">{integer(population.total)}</dd>
+            </div>
+            <div>
+              <dt>Held-out R²</dt>
+              <dd className="num">{decimal(heldOutLogR2("A"), 3)}</dd>
+            </div>
+            <div>
+              <dt>Typical miss</dt>
+              <dd className="num">{factor(heldOutLogMae("A"))}</dd>
+            </div>
+            <div className={styles.bugGap}>
+              <dt>Audit gap</dt>
+              <dd className="num">
+                <ExpLink href={LEAD_STORY.href}>{signed(gapA.estimate)} →</ExpLink>
+              </dd>
+            </div>
+          </dl>
+
+          <div className={styles.coverGrid}>
+            <div className={styles.headline}>
+              <h1 id="cover-title" className={styles.title}>
+                <span className={styles.solid}>Price the player.</span>
+                <span className={styles.outline}>Audit the price.</span>
+              </h1>
+              <p className={styles.duality}>
+                <span>
+                  <ObsMark size={12} /> <b>Solid</b> what the market says
+                </span>
+                <span>
+                  <ModelMark size={13} /> <b>Outline</b> what the model says
+                </span>
+              </p>
+              <p className={styles.lede}>
+                FairValue estimates a footballer&apos;s Transfermarkt market value from two years of club data, shows every input that moved the
+                estimate, and audits whom its errors fall on.
+              </p>
+              <p className={styles.ctas}>
+                <ExpLink href="/terminal" className={styles.ctaTerminal}>
+                  Open the Terminal <span aria-hidden="true">→</span>
+                </ExpLink>
+                <ExpLink href="/stories" className={styles.ctaStories}>
+                  Read the Stories <span aria-hidden="true">→</span>
+                </ExpLink>
+              </p>
+            </div>
 
             {featured && fj && (
-              <article className={styles.featured} aria-labelledby="featured-title">
-                <header className={styles.featuredHead}>
-                  <p className={styles.featuredKicker}>Featured valuation</p>
-                  <h2 id="featured-title" className={styles.featuredName}>
-                    <span className="fv-role">{featured.role_code}</span>
-                    {featured.name}
-                  </h2>
-                  <p className={styles.featuredMeta}>
+              <article className={styles.star} aria-labelledby="star-title">
+                <p className={styles.starTag}>Cover valuation</p>
+                <header className={styles.starHead}>
+                  <span className="fv-role">{featured.role_code}</span>
+                  <span className={styles.starMeta}>
                     {featured.sub_position} · {featured.club ?? short(featured.league_id)} · {Math.floor(featured.age)}
-                  </p>
+                  </span>
                 </header>
-                <dl className={styles.featuredVals}>
+                <h2 id="star-title" className={styles.starName}>
+                  <small>{featured.first_name}</small>
+                  {featured.last_name}
+                </h2>
+                <dl className={styles.starVals}>
                   <div>
-                    <dt>Observed</dt>
+                    <dt>
+                      <ObsMark /> Observed
+                    </dt>
                     <dd className="num">{formatEur(featured.market_value_eur)}</dd>
                   </div>
-                  <div>
-                    <dt>Model A</dt>
+                  <div data-k="model">
+                    <dt>
+                      <ModelMark /> Model A
+                    </dt>
                     <dd className="num">{formatEur(toEur(fj.final))}</dd>
                   </div>
+                  <div>
+                    <dt>Residual</dt>
+                    <dd>
+                      <Residual value={Math.log(featured.market_value_eur) - fj.final} basis="in-sample" />
+                    </dd>
+                  </div>
                 </dl>
-                <p className={styles.featuredRead}>
+                <JourneyRibbon explanation={featured.explanation!} observed={featured.market_value_eur} />
+                <p className={styles.starRead}>
                   From a {formatEur(toEur(fj.base))} starting point,
                   {fx?.up ? ` ${fx.up.label.toLowerCase()} raises the estimate most (${factor(fx.up.contribution)})` : ""}
-                  {fx?.down ? `; ${fx.down.label.toLowerCase()} lowers it most (${factor(fx.down.contribution)})` : ""}. Served model, published SHAP
-                  values, in-sample.
+                  {fx?.down ? `; ${fx.down.label.toLowerCase()} lowers it most (${factor(fx.down.contribution)})` : ""}. Served Model A, published
+                  SHAP values, in-sample.
                 </p>
-                <JourneyRibbon explanation={featured.explanation!} observed={featured.market_value_eur} />
-                <p className={styles.featuredLinks}>
+                <p className={styles.starLinks}>
                   {featuredStory && (
                     <ExpLink href={featuredStory.href} className={styles.more}>
-                      Follow the journey in Stories →
+                      Follow the journey →
                     </ExpLink>
                   )}
                   <ExpLink href={`/players/${featured.slug}?from=overview`} className={styles.more}>
@@ -109,31 +173,12 @@ export default function Overview() {
             )}
           </div>
 
-          <aside className={styles.snapshot} aria-labelledby="snap-title">
-            <header className={styles.snapHead}>
-              <h2 id="snap-title">Market snapshot</h2>
-              <span>modelling population · held-out results</span>
-            </header>
-            <dl className={styles.snapKpis}>
-              <div>
-                <dt>Players</dt>
-                <dd className="num">{integer(population.total)}</dd>
-              </div>
-              <div>
-                <dt>Leagues</dt>
-                <dd className="num">14</dd>
-              </div>
-              <div>
-                <dt>Held-out R²</dt>
-                <dd className="num">{decimal(heldOutLogR2("A"), 3)}</dd>
-              </div>
-              <div>
-                <dt>Typical miss</dt>
-                <dd className="num">{factor(heldOutLogMae("A"))}</dd>
-              </div>
-            </dl>
-            <div className={styles.snapBlock}>
-              <p className={styles.snapLabel}>Observed value by tier</p>
+          <aside className={styles.band} aria-labelledby="band-title">
+            <h2 id="band-title" className={styles.bandTitle}>
+              Market snapshot <small>modelling population · held-out results</small>
+            </h2>
+            <div className={styles.bandCell}>
+              <p className={styles.cellLabel}>Observed value by tier</p>
               <div className={styles.tierBar} role="img" aria-label={tiers.map((t) => `${t.key} ${t.n}`).join(", ")}>
                 {tiers.map((t, i) => (
                   <span key={t.key} style={{ flexGrow: t.n, opacity: 0.4 + i * 0.2 }} />
@@ -150,8 +195,8 @@ export default function Overview() {
                 ))}
               </ol>
             </div>
-            <div className={styles.snapBlock}>
-              <p className={styles.snapLabel}>Median observed value by league</p>
+            <div className={styles.bandCell}>
+              <p className={styles.cellLabel}>Median observed value by league</p>
               <div className={styles.leagueBars} aria-hidden="true">
                 {medians.map((l) => (
                   <span key={l.key} style={{ height: `${((Math.log(l.median_value_eur!) - Math.log(200_000)) / (Math.log(20_000_000) - Math.log(200_000))) * 100}%` }} title={`${short(l.key)} ${formatEur(l.median_value_eur!)}`} />
@@ -166,8 +211,8 @@ export default function Overview() {
                 </span>
               </p>
             </div>
-            <div className={styles.snapBlock}>
-              <p className={styles.snapLabel}>League board · top five by median value</p>
+            <div className={`${styles.bandCell} ${styles.bandWide}`}>
+              <p className={styles.cellLabel}>League board · top five by median value</p>
               <table className={styles.snapTable}>
                 <thead>
                   <tr>
@@ -189,47 +234,58 @@ export default function Overview() {
                 </tbody>
               </table>
             </div>
-            <ServiceLine />
-            <ExpLink href="/terminal/market" className={styles.snapLink}>
-              Open the Market Landscape in the Terminal →
-            </ExpLink>
+            <div className={styles.bandCell}>
+              <ServiceLine />
+              <ExpLink href="/terminal/market" className={styles.snapLink}>
+                Market Landscape →
+              </ExpLink>
+              <ExpLink href="/terminal/leagues" className={styles.snapLink}>
+                League Landscape →
+              </ExpLink>
+            </div>
           </aside>
+        </section>
 
-          <div className={styles.doors}>
-            <ExpLink href={LEAD_STORY.href} className={styles.doorStory}>
-              <span className={styles.doorTag}>Featured story · Research</span>
-              <span className={styles.doorTitle}>{LEAD_STORY.title}</span>
-              <span className={`${styles.doorNum} num`}>{signed(gapA.estimate)}</span>
-              <span className={styles.doorText}>The audit&apos;s headline, chapter by chapter, with what it does not mean.</span>
-              <span className={styles.doorGo}>Enter Stories →</span>
-            </ExpLink>
-            <ExpLink href={pairPlayers.length === 2 ? `/terminal/compare?ids=${pairPlayers.map((p) => p.id).join(",")}` : "/terminal"} className={styles.doorTerminal}>
-              <span className={styles.doorTag}>Terminal · Comparison Studio</span>
-              <span className={styles.doorTitle}>{pairPlayers.length === 2 ? `${pairPlayers.map((p) => p.last_name).join(" v ")}, on one scale` : "Explore the players"}</span>
-              <span className={styles.doorRows} aria-hidden="true">
-                {pairPlayers.map((p) => {
-                  const a = p.estimates.heldout.A ?? p.estimates.served.A!;
-                  return (
-                    <span key={p.id} className={styles.doorRow}>
-                      <b>{p.last_name}</b>
-                      <span className={styles.doorTrack}>
-                        <span className={styles.doorLink} style={{ left: `${Math.min(sx(p.market_value_eur), sx(a))}%`, width: `${Math.abs(sx(p.market_value_eur) - sx(a))}%` }} />
-                        <i data-k="obs" style={{ left: `${sx(p.market_value_eur)}%` }} />
-                        <i data-k="model" style={{ left: `${sx(a)}%` }} />
+        {/* ================= Doors ================= */}
+        <section className={styles.doors} aria-label="Go deeper">
+          <ExpLink href={LEAD_STORY.href} className={styles.doorStory}>
+            <span className={styles.doorTag}>Stories · Research</span>
+            <span className={styles.doorTitle}>{LEAD_STORY.title}</span>
+            <span className={`${styles.doorNum} num`}>{signed(gapA.estimate)}</span>
+            <span className={styles.doorText}>The audit&apos;s headline, chapter by chapter, with what it does not mean.</span>
+            <span className={styles.doorGo}>Read the story →</span>
+          </ExpLink>
+          <ExpLink href={pairPlayers.length === 2 ? `/terminal/compare?ids=${pairPlayers.map((p) => p.id).join(",")}` : "/terminal"} className={styles.doorTerminal}>
+            <span className={styles.doorTag}>Terminal · Comparison Studio</span>
+            <span className={styles.doorTitle}>{pairPlayers.length === 2 ? `${pairPlayers.map((p) => p.last_name).join(" v ")}, one scale` : "Explore the players"}</span>
+            <span className={styles.doorRows} aria-hidden="true">
+              {pairPlayers.map((p) => {
+                const a = p.estimates.heldout.A ?? p.estimates.served.A!;
+                return (
+                  <span key={p.id} className={styles.doorRow}>
+                    <b>{p.last_name}</b>
+                    <span className={styles.doorTrack}>
+                      <span className={styles.doorLink} style={{ left: `${Math.min(sx(p.market_value_eur), sx(a))}%`, width: `${Math.abs(sx(p.market_value_eur) - sx(a))}%` }} />
+                      <span className={styles.doorMk} style={{ left: `${sx(a)}%` }}>
+                        <ModelMark />
+                      </span>
+                      <span className={styles.doorMk} style={{ left: `${sx(p.market_value_eur)}%` }}>
+                        <ObsMark />
                       </span>
                     </span>
-                  );
-                })}
-              </span>
-              <span className={styles.doorGo}>Enter the Terminal →</span>
-            </ExpLink>
-          </div>
+                  </span>
+                );
+              })}
+            </span>
+            <span className={styles.doorGo}>Open in the Terminal →</span>
+          </ExpLink>
         </section>
 
         {/* ================= The market and the model ================= */}
-        <section className={`fv-panel ${styles.spectrum}`} aria-labelledby="spectrum-title">
-          <header className="fv-panel-head">
-            <h2 id="spectrum-title" className="fv-panel-title">
+        <section className={styles.spectrum} aria-labelledby="spectrum-title">
+          <header className={styles.sectionHead}>
+            <span className={styles.sectionNo} aria-hidden="true">01</span>
+            <h2 id="spectrum-title" className={styles.sectionTitle}>
               The market and the model
               <small>
                 {showcase
@@ -237,9 +293,7 @@ export default function Overview() {
                   : "the ten most valuable players: observed value against the held-out Model A estimate"}
               </small>
             </h2>
-            <span className={styles.legend} aria-hidden="true">
-              <i data-k="market" /> Observed <i data-k="model" /> Model A
-            </span>
+            <MarkKey />
           </header>
           <div className={styles.spectrumBody}>
             <div className={styles.scaleHead} aria-hidden="true">
@@ -299,7 +353,7 @@ export default function Overview() {
         {/* ================= The finding ================= */}
         <section className={styles.finding} aria-labelledby="finding-title">
           <div className={styles.findingFigure}>
-            <p className="fv-label">What sets FairValue apart: the audit</p>
+            <p className={styles.findingTag}>The audit</p>
             <p className={`${styles.bigNumber} num`}>{signed(gapA.estimate)}</p>
             <p className={styles.bigUnit}>
               signed residual gap, non-UEFA minus UEFA, log units, within leagues ·{" "}

@@ -10,7 +10,7 @@ from PIL import Image
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "scripts" / "portraits"))
 from add_portrait import image_problems  # noqa: E402
-from find_candidates import assess  # noqa: E402
+from find_candidates import assess, commons_file_name  # noqa: E402
 from licences import ALLOWED, normalise  # noqa: E402
 
 MANIFEST = json.loads((ROOT / "web" / "src" / "data" / "portraits.json").read_text(encoding="utf-8"))
@@ -65,3 +65,10 @@ def test_manifest_images_are_what_they_claim():
         with Image.open(path) as img:
             assert (img.width, img.height) == (p["width"], p["height"]), f"{p['src']} size differs from the manifest"
             assert image_problems(img, p["kind"]) == [], p["src"]
+
+
+def test_commons_file_names_are_fully_percent_decoded():
+    # Wikidata P18 URLs encode brackets and accents; only decoding %20 made these "not found".
+    base = "http://commons.wikimedia.org/wiki/Special:FilePath/"
+    assert commons_file_name(base + "Idrissa%20Gueye%20%28cropped%29.jpg") == "Idrissa Gueye (cropped).jpg"
+    assert commons_file_name(base + "K%C3%A9phren.jpg") == "Képhren.jpg"

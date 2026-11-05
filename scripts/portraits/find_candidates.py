@@ -23,7 +23,9 @@ import json
 import os
 import re
 import sys
+import time
 from pathlib import Path
+from urllib.parse import unquote
 
 ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(ROOT / "scripts" / "portraits"))
@@ -40,6 +42,24 @@ def user_agent() -> str:
     return "FairValue-portrait-finder/1.0 (academic research project)" + (f" {contact}" if contact else "")
 
 
+def commons_file_name(image_url: str) -> str:
+    """Wikidata gives P18 as a percent-encoded Special:FilePath URL; Commons titles are plain text."""
+    return unquote(image_url.rsplit("/", 1)[-1])
+
+
+def polite_get(client, url: str, **kw):
+    """GET with a few retries on rate limits and transient server errors (Wikimedia etiquette)."""
+    for attempt in range(5):
+        r = client.get(url, **kw)
+        if r.status_code not in (429, 500, 502, 503, 504):
+            break
+        wait = int(r.headers.get("Retry-After", "0") or 0) or 5 * 2**attempt
+        print(f"  {r.status_code} from {url.split('/')[2]}; retrying in {wait}s", flush=True)
+        time.sleep(wait)
+    r.raise_for_status()
+    return r
+
+
 def wikidata_images(client, tm_ids: list[str]) -> dict[str, dict]:
     values = " ".join(f'"{i}"' for i in tm_ids)
     query = f"""SELECT ?tm ?item ?itemLabel ?image WHERE {{
@@ -48,24 +68,39 @@ def wikidata_images(client, tm_ids: list[str]) -> dict[str, dict]:
       OPTIONAL {{ ?item wdt:P18 ?image . }}
       SERVICE wikibase:label {{ bd:serviceParam wikibase:language "en". }}
     }}"""
-    r = client.get(SPARQL, params={"query": query, "format": "json"})
-    r.raise_for_status()
+    r = polite_get(client, SPARQL, params={"query": query, "format": "json"})
     out = {}
     for b in r.json()["results"]["bindings"]:
         img = b.get("image", {}).get("value")
         out.setdefault(b["tm"]["value"], {
             "wikidata": b["item"]["value"], "label": b.get("itemLabel", {}).get("value", ""),
-            "file": img.rsplit("/", 1)[-1].replace("%20", " ") if img else None,
+            "file": commons_file_name(img) if img else None,
         })
     return out
 
 
 def commons_info(client, file_name: str) -> dict:
-    r = client.get(COMMONS, params={"action": "query", "titles": f"File:{file_name}", "prop": "imageinfo",
-                                     "iiprop": "url|size|extmetadata", "format": "json"})
-    r.raise_for_status()
-    page = next(iter(r.json()["query"]["pages"].values()))
-    return page.get("imageinfo", [{}])[0]
+    return commons_infos(client, [file_name]).get(file_name, {})
+
+
+def commons_infos(client, file_names: list[str]) -> dict[str, dict]:
+    """Image info for up to 50 files in one request (the API's limit), keyed by the name asked for."""
+    if not file_names:
+        return {}
+    titles = [f"File:{n}" for n in file_names]
+    r = polite_get(client, COMMONS, params={"action": "query", "titles": "|".join(titles), "prop": "imageinfo",
+                                            "iiprop": "url|size|extmetadata", "format": "json"})
+    q = r.json()["query"]
+    # Commons normalises titles (e.g. underscores, first letter); map answers back to what we asked.
+    asked = {t: t for t in titles}
+    for n in q.get("normalized", []):
+        asked[n["to"]] = n["from"]
+    out = {}
+    for page in q["pages"].values():
+        info = page.get("imageinfo", [{}])[0]
+        if info:
+            out[asked.get(page["title"], page["title"])[len("File:"):]] = info
+    return out
 
 
 def strip_html(s: str | None) -> str:
@@ -118,6 +153,10 @@ def showcase_players() -> list[tuple[str, str]]:
 def main() -> None:
     import httpx
 
+    # Player names are printed as progress; a Windows console (cp1252) cannot encode e.g. "ı".
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("--ids", nargs="*", help="Transfermarkt player ids")
     ap.add_argument("--from-export", action="store_true", help="read players from web/src/data/generated/players.json")
@@ -137,11 +176,14 @@ def main() -> None:
     rows = []
     with httpx.Client(headers={"User-Agent": user_agent()}, timeout=30, follow_redirects=True) as client:
         for k in range(0, len(players), 50):  # SPARQL VALUES in batches
+            if k:
+                time.sleep(1)  # one batch a second keeps well inside Wikimedia's limits
             batch = players[k: k + 50]
             wd = wikidata_images(client, [i for i, _ in batch])
+            infos = commons_infos(client, sorted({w["file"] for w in wd.values() if w.get("file")}))
             for pid, name in batch:
                 w = wd.get(pid)
-                info = commons_info(client, w["file"]) if w and w.get("file") else None
+                info = infos.get(w["file"]) if w and w.get("file") else None
                 row = assess(pid, name or (w or {}).get("label", ""), w, info)
                 rows.append(row)
                 if args.download and row["allowed"] and row["tall_enough"]:

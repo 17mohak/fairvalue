@@ -18,7 +18,7 @@ export function JourneySpark({ explanation, observed, width = 260, height = 70 }
     <svg width="100%" viewBox={`0 0 ${width} ${height}`} preserveAspectRatio="none" aria-hidden="true" style={{ display: "block", overflow: "visible" }}>
       <line x1={0} x2={width} y1={Y(obs)} y2={Y(obs)} stroke="rgb(242 241 234 / 0.45)" strokeDasharray="3 3" vectorEffect="non-scaling-stroke" />
       <path d={d} fill="none" stroke="#e9b949" strokeWidth="2" vectorEffect="non-scaling-stroke" />
-      <rect x={X(pts.length - 1) + 1} y={Y(j.final) - 4} width="8" height="8" transform={`rotate(45 ${X(pts.length - 1) + 5} ${Y(j.final)})`} fill="#e9b949" />
+      <rect x={X(pts.length - 1) + 1} y={Y(j.final) - 4} width="8" height="8" transform={`rotate(45 ${X(pts.length - 1) + 5} ${Y(j.final)})`} fill="#050605" stroke="#e9b949" strokeWidth="1.6" vectorEffect="non-scaling-stroke" />
     </svg>
   );
 }

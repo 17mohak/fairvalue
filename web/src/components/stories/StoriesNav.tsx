@@ -10,6 +10,7 @@ export function StoriesNav() {
   const path = usePathname() ?? "/stories";
   const onCover = path === "/stories";
   return (
+    <>
     <nav className={styles.nav} aria-label="Stories sections">
       <Link href="/stories" className={styles.navMast} aria-current={onCover ? "page" : undefined} transitionTypes={onCover ? [] : ["chapter"]}>
         FairValue <b>Stories</b>
@@ -29,5 +30,7 @@ export function StoriesNav() {
         </li>
       </ul>
     </nav>
+    {!onCover && <div className={styles.progress} aria-hidden="true" />}
+    </>
   );
 }

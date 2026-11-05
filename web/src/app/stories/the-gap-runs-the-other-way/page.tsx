@@ -121,7 +121,30 @@ export default function GapStory() {
         }
       />
       <div className={styles.wrap}>
-        <Scrolly steps={steps} graphic={{ kind: "gap", data: d }} />
+        {/* Act I: who is studied and how accurate the model is for each group. */}
+        <Scrolly steps={steps.slice(0, 3)} graphic={{ kind: "gap", data: d }} />
+        <aside className={styles.interstitial} aria-label="Same accuracy, different direction">
+          <div className={styles.duel}>
+            <p className={`${styles.duelValue} num`}>{signed(h.A.mae_gap_league_stratified.estimate)}</p>
+            <p className={styles.duelLabel}>
+              Accuracy gap · mean absolute error, within leagues · 95% CI {ci(h.A.mae_gap_league_stratified)}
+            </p>
+          </div>
+          <p className={styles.duelMid}>
+            Same accuracy.
+            <br />
+            Different direction.
+            <small>non-UEFA minus UEFA, Model A, log units</small>
+          </p>
+          <div className={styles.duel}>
+            <p className={`${styles.duelValue} num`}>{signed(h.A.signed_gap_league_stratified.estimate)}</p>
+            <p className={styles.duelLabel}>
+              Direction gap · signed residual, within leagues · 95% CI {ci(h.A.signed_gap_league_stratified)}
+            </p>
+          </div>
+        </aside>
+        {/* Act II: the direction, without league and club, by league, and what it does not mean. */}
+        <Scrolly steps={steps.slice(3)} graphic={{ kind: "gap", data: d }} offset={3} />
       </div>
       <StoryEnd current={LEAD_STORY.slug} />
     </article>

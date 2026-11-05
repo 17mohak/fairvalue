@@ -17,9 +17,10 @@ describe("value standing", () => {
   });
 
   it("says 'joint' when players share the value", () => {
-    const s = valueStanding([200e6, 200e6, 50e6], 200e6);
+    const group = [200e6, 200e6, ...Array.from({ length: 12 }, (_, i) => (i + 1) * 1e6)];
+    const s = valueStanding(group, 200e6);
     expect(s.tied).toBe(2);
-    expect(standingText(s, "LaLiga players")).toBe("The joint highest observed value among 3 LaLiga players.");
+    expect(standingText(s, "LaLiga players")).toBe("The joint highest observed value among 14 LaLiga players.");
   });
 });
 
@@ -43,5 +44,11 @@ describe("log histogram", () => {
     const h = logHistogram([2e5, 3e6, 4e7, 9e7, 5e8, 1e3], 1e5, 1e8, 3);
     expect(h.reduce((a, b) => a + b, 0)).toBe(6);
     expect(h).toEqual([2, 1, 3]); // 1e3 clamps into the first bin, 5e8 into the last
+  });
+});
+
+describe("small groups", () => {
+  it("does not rank a value among a handful of players", () => {
+    expect(standingText(valueStanding([22e6, 500e3], 22e6), "Premier League players")).toBe("Only 2 Premier League players in this build: too few to place this value.");
   });
 });

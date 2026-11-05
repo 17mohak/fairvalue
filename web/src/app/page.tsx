@@ -98,7 +98,7 @@ export default function Overview() {
               <ExpLink href="/terminal" className={styles.ctaPrimary}>
                 Open the Terminal <span aria-hidden="true">→</span>
               </ExpLink>
-              <SearchTrigger className={styles.ctaSearch} label="Search players">
+              <SearchTrigger className={styles.ctaSearch}>
                 <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true">
                   <circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1.6" />
                   <path d="M11 11l3.5 3.5" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
@@ -354,7 +354,7 @@ export default function Overview() {
               valuation history and the audit context. Below, the most valuable player in each position
               {showcase ? " among the eight research showcase players" : ""}.
             </p>
-            <SearchTrigger className={styles.searchWide} label="Search all players">
+            <SearchTrigger className={styles.searchWide}>
               <svg width="18" height="18" viewBox="0 0 16 16" aria-hidden="true">
                 <circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
                 <path d="M11 11l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />

@@ -602,6 +602,22 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   which the renderer cannot read. Using Big Shoulders and Archivo needs their OFL TTF files in the
   repository; that is the owner's call.
 
+## D-051 Dossier sprint closed: accessibility and edge-case pass — Decided (2026-11-05)
+- **Lighthouse (mobile, production build):** dossier and Overview 100 for accessibility, best practices
+  and SEO, 0 failed audits (the dossier started at 93).
+- **Fixes:** footer labels below 4.5:1 contrast; two definition lists with invalid children (the record
+  strip's note moved outside the list; history dates became a second `<dd>`); the missing favicon (a
+  404 on every page; `app/icon.svg` from the FairValue mark); the Overview search buttons now take their
+  accessible name from their visible text.
+- **Small groups:** a standing is stated, and its silhouette drawn, only for groups of 12 or more. In
+  the eight-player showcase "the highest among 2 Premier League players" was true but meaningless; it now
+  says the group is too small.
+- **Checked:** goalkeeper (no goals or assists in the record strip), the lowest-valued player (no
+  "next"), a player with one valuation (no History section), and the showcase build (served, in-sample
+  labels throughout; the full export was set aside and restored, checksum verified). Keyboard order runs
+  skip link, global nav, search, breadcrumb, actions, stepper, section index, journey; no positive tabindex.
+- **Still open:** Safari, Firefox and a screen-reader pass; brand fonts in share cards (D-050).
+
 ---
 
 # Issues found in the locked technical spec

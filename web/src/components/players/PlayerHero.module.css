@@ -319,13 +319,20 @@
   border-top: 1px solid rgb(237 239 230 / 0.07);
 }
 
-.strip > div {
+.stripList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin: 0;
+}
+
+.stripList > div {
   padding-right: 1.6rem;
   margin-right: 1.6rem;
   border-right: 1px solid rgb(237 239 230 / 0.07);
 }
 
-.strip > div:last-of-type {
+.stripList > div:last-of-type {
   border-right: 0;
 }
 
@@ -469,7 +476,7 @@
   .readLead {
     font-size: 1.04rem;
   }
-  .strip > div {
+  .stripList > div {
     padding-right: 1rem;
     margin-right: 1rem;
     margin-bottom: 0.6rem;

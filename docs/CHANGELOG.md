@@ -1,5 +1,13 @@
 # Development changelog
 
+## 2026-11-05: Dossier, stage 6: accessibility and edge cases (branch `feat/multipage-experience`)
+- **Accessibility (D-051):** Lighthouse mobile 100/100/100 for the dossier (was 93) and the Overview.
+  Fixed contrast in the footer, two invalid definition lists, the missing favicon and a label/name
+  mismatch on the Overview search buttons.
+- **Edge cases:** standings are not stated for groups under 12 players (showcase build); goalkeeper,
+  lowest-value, single-valuation and showcase dossiers checked.
+- **Tests:** web 158 (+1). Build passes.
+
 ## 2026-11-05: Dossier, stage 5: share cards (branch `feat/multipage-experience`)
 - **Share cards (D-050):** every dossier link has a generated 1200 × 630 preview card (observed value,
   labelled Model A estimate, residual in words, the player's lane) and a per-player description.

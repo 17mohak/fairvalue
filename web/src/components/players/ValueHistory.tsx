@@ -73,24 +73,24 @@ export function ValueHistory({ history, valuationDate, heldout }: Props) {
         <div>
           <dt>First valuation</dt>
           <dd className="num">{formatEur(v[0]!)}</dd>
-          <span>{fmtDate(history[0]!.date)}</span>
+          <dd className={styles.when}>{fmtDate(history[0]!.date)}</dd>
         </div>
         <div>
           <dt>Peak</dt>
           <dd className="num">{formatEur(peak)}</dd>
-          <span>{fmtDate(history[v.indexOf(peak)]!.date)}</span>
+          <dd className={styles.when}>{fmtDate(history[v.indexOf(peak)]!.date)}</dd>
         </div>
         <div>
           <dt>Model target</dt>
           <dd className="num">{formatEur(history[target]!.value_eur)}</dd>
-          <span>{fmtDate(history[target]!.date)}</span>
+          <dd className={styles.when}>{fmtDate(history[target]!.date)}</dd>
         </div>
         <div>
           <dt>Valuations</dt>
           <dd className="num">{history.length}</dd>
-          <span>
+          <dd className={styles.when}>
             {changes.length} club change{changes.length === 1 ? "" : "s"}
-          </span>
+          </dd>
         </div>
       </dl>
 

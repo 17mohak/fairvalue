@@ -82,7 +82,7 @@ export default function Overview() {
               <span className={styles.kickerPlate}>FairValue</span>
               <span>2025–26 snapshot</span>
               <span aria-hidden="true">·</span>
-              <span>14 leagues</span>
+              <span>{leagues.length} leagues</span>
               <span aria-hidden="true">·</span>
               <span>{integer(population.total)} players</span>
             </p>

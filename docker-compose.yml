@@ -7,9 +7,15 @@ services:
     ports:
       - "8000:8000"
   web:
-    build: ./web
+    build:
+      context: ./web
+      # Public site address (canonical and share-image URLs). Leave unset locally; set it in the
+      # shell or an .env file next to this compose file for any public deployment.
+      args:
+        FAIRVALUE_SITE_URL: ${FAIRVALUE_SITE_URL:-}
     environment:
       FAIRVALUE_API_URL: http://api:8000
+      FAIRVALUE_SITE_URL: ${FAIRVALUE_SITE_URL:-}
     # Reached through the proxy only; not published on the host.
     expose:
       - "3000"

@@ -484,6 +484,26 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
 - **Portraits:** the finder is blocked by Wikimedia's User-Agent policy (403). The owner supplies
   the contact. No personal details are sent on their behalf.
 
+
+## D-043 Portrait sourcing works at population scale — Decided (2026-11-05)
+- **Contact:** Wikimedia requires contact details in the User-Agent. At the owner's explicit
+  request, the owner's email is passed through `WIKIMEDIA_CONTACT` for each run. It is never written
+  to the repository.
+- **Finder fixes:**
+  - Full percent-decoding of Commons file names (bracketed names were missed).
+  - Batched Commons lookups (50 per request).
+  - Polite retries on 429 and 5xx.
+  - UTF-8 console output.
+  - The batched results are identical to the per-file lookup on the showcase.
+- **Result on 5,820 players:**
+  - 3,674 allowed licences: 2,765 at ≥ 800 px and 1,755 at ≥ 1,400 px.
+  - 87 of the top 100 by value have an allowed image of at least 800 px.
+  - Showcase: 4/8 meet the cutout standard.
+- **Consequence:** the hand-cutout standard (≥ 1,400 px, transparent) would cover at most 1,755
+  players and needs manual work for each one. Sprint 2 task S2-03 proposes a framed-crop rendering
+  for scale. That needs the owner's decision, including the personality-rights stance before any
+  public deployment.
+
 ---
 
 # Issues found in the locked technical spec

@@ -43,9 +43,9 @@ _Last updated: 2026-11-05_
   27/27 with the local API. The export is git-ignored and must be regenerated on each machine.
 - **Product plan:** `docs/ROADMAP.md` (Sprints 0–6) is authoritative. Sprint 0 is done apart from
   the merge into `main`; Sprint 1 has flags and the coverage report (D-041, D-042).
-- **Portraits (blocked):** Wikidata answers 403 without contact details in the User-Agent. The owner
-  sets `WIKIMEDIA_CONTACT`, runs `scripts/portraits/find_candidates.py`, reviews, then
-  `add_portrait.py` (docs/PLAYER_ASSETS.md).
+- **Portraits:** candidate search done for all 5,820 players (D-043). 2,765 have an allowed image
+  of at least 800 px. The rendering approach at scale (S2-03) needs the owner's decision.
+- **Sprint 2:** audited and planned (ROADMAP S2-01 to S2-10); implementation waits for approval.
 - **Compose stack:** `docker compose up --build` runs api, web and a Caddy proxy on :3000 that
   compresses responses (D-041). Verified on 2026-11-05.
 - **Player profiles (D-035):** the full board, held-out estimates, traits and valuation histories

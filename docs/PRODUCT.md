@@ -17,7 +17,7 @@ Three environments behind a persistent switcher (D-038), plus a shared player do
 | `/terminal/valuation`, `/terminal/audit` | Terminal · Valuation Studio, Fairness Audit | The former studio and observatory, unchanged inside | `POST /predict`, `POST /explain`, `research.json` |
 | `/stories` and `/stories/*` | **Stories** | Cover; research and market stories; a valuation story per showcase player; head-to-heads; Spotlight shown as not published | `research.json`, `players.json` (showcase) |
 | `/methods` | Stories · Methods | Paper on light stock | `research.json` |
-| `/players/[id]?from=` | Canonical dossier | Same record from every environment (`/players/418560` and `/players/418560-erling-haaland` both resolve; `rel=canonical` is the slug form). Breadcrumbs from `?from=`, Back after in-app navigation, sticky section index: A vs B, Valuation Journey, traits, history, audit context | player export, `POST /predict`, `POST /explain` |
+| `/players/[id]?from=` | Canonical dossier | Same record from every environment (`/players/418560` and `/players/418560-erling-haaland` both resolve; `rel=canonical` is the slug form). Opens on a valuation lane (one-player theatre) and a plain-language reading (D-046). Breadcrumbs from `?from=`, Back after in-app navigation, sticky section index: A vs B, Valuation Journey, traits, history, audit context | player export, `POST /predict`, `POST /explain` |
 | `/api/predict`, `/api/explain`, `/api/health`, `/api/players` | Server-side | Proxy to FastAPI (the backend URL never reaches the browser); compact player index | `FAIRVALUE_API_URL`, player export |
 
 `/players`, `/studio` and `/fairness` redirect to their Terminal workspaces.

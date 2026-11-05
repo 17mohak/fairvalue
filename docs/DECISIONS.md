@@ -532,6 +532,22 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   dependency) for counters; IntersectionObserver reveals that hide nothing in server HTML. No GSAP or
   Lenis. Reduced motion now also zeroes animation and transition delays globally.
 
+## D-046 Dossier opening: valuation lane and plain-language reading — Decided (2026-11-05)
+- **Why:** the owner's product journey is Overview (curiosity) → search (find) → dossier (stay). The
+  dossier opened on a large empty portrait frame and a small ruler.
+- **Lane:** the Overview's theatre narrowed to one player (`DossierLane`): a pitch strip whose length is
+  a log value scale fitted to this player's figures; a chalk line for the observed value; Model A and
+  Model B on their own lanes, each with its residual arc. Basis labels (held-out, in-sample, live service
+  only) are always shown, and a model with no stored estimate gets no marker. Pitch markings are now one
+  shared helper (`pitchDrawing`) for the Overview and the dossier.
+- **Reading (`lib/reading.ts`):** two or three sentences built only from stored figures: observed value,
+  Model A (held-out, or labelled in-sample), the gap in percent and as a factor, compared with the
+  registry's held-out typical miss, and Model B's context. It never calls a player under- or over-priced
+  (tested), and ends with the caveat that a gap describes the model, not the player's worth.
+- **Portrait:** without a licensed portrait, a small monogram badge sits by the name; the full frame
+  column returns automatically when a portrait exists (S2-03 unchanged).
+- **Names:** the reading uses the same short label as the Overview ("Vini Jr.").
+
 ---
 
 # Issues found in the locked technical spec

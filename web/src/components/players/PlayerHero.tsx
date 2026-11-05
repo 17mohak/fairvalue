@@ -4,7 +4,8 @@ import { formatEur, integer } from "@/lib/format";
 import type { PlayerProfile } from "@/lib/players";
 import type { Portrait } from "@/lib/portraits";
 import { ModelMark, ObsMark, Residual, TierMark } from "@/components/brand/Marks";
-import { MiniRuler } from "./MiniRuler";
+import type { Reading } from "@/lib/reading";
+import { DossierLane } from "./DossierLane";
 import { PortraitSlot } from "./PortraitSlot";
 import styles from "./PlayerHero.module.css";
 import { Flag, LeagueFlag } from "@/components/brand/Flag";
@@ -21,26 +22,33 @@ interface Props {
   portrait: Portrait | null;
   valuedLabel: string;
   estimates: HeroEstimate[];
+  /** Plain-language reading of the valuation (lib/reading.ts). */
+  reading: Reading;
 }
 
 const SOURCE_LABEL = { heldout: "Held-out", cached: "Served · cached research result", "live-only": "Live service only" } as const;
 
-/** The dossier header: the player's frame, identity, valuation and two-year record in one card. */
-export function PlayerHero({ player: p, portrait, valuedLabel, estimates }: Props) {
+/**
+ * The dossier's opening: identity and valuation, then the valuation lane (the Overview's theatre
+ * narrowed to this player) beside a plain-language reading, then the two-year record. A licensed
+ * portrait gets its own column; without one, a small monogram badge sits by the name instead of
+ * a large empty frame.
+ */
+export function PlayerHero({ player: p, portrait, valuedLabel, estimates, reading }: Props) {
   const league = leagueName(p.league_id).split(",")[0]!;
   const w = p.window;
-  const shown = estimates.filter((e) => e.value !== null);
-  const primary = shown[0];
 
   return (
-    <section className={styles.card} aria-labelledby="player-name">
+    <section className={styles.card} aria-labelledby="player-name" data-portrait={portrait ? "" : undefined}>
       <span className={styles.watermark} aria-hidden="true">
         {p.role_code}
       </span>
 
-      <div className={styles.frame}>
-        <PortraitSlot portrait={portrait} name={p.name} roleCode={p.role_code} />
-      </div>
+      {portrait && (
+        <div className={styles.frame}>
+          <PortraitSlot portrait={portrait} name={p.name} roleCode={p.role_code} />
+        </div>
+      )}
 
       <div className={styles.identity}>
         <p className={styles.crumbs}>
@@ -48,12 +56,19 @@ export function PlayerHero({ player: p, portrait, valuedLabel, estimates }: Prop
           <span aria-hidden="true">/</span>
           <span>{league}</span>
         </p>
-        <h1 id="player-name" className={styles.name}>
-          {p.first_name && <span className={styles.first}>{p.first_name}</span>}
-          <ViewTransition name={`name-${p.id}`} share="morph" default="none">
-            <span className={styles.last}>{p.last_name}</span>
-          </ViewTransition>
-        </h1>
+        <div className={styles.nameRow}>
+          {!portrait && (
+            <span className={styles.badge} title="No licensed portrait yet">
+              <PortraitSlot portrait={null} name={p.name} roleCode={p.role_code} size="card" />
+            </span>
+          )}
+          <h1 id="player-name" className={styles.name}>
+            {p.first_name && <span className={styles.first}>{p.first_name}</span>}
+            <ViewTransition name={`name-${p.id}`} share="morph" default="none">
+              <span className={styles.last}>{p.last_name}</span>
+            </ViewTransition>
+          </h1>
+        </div>
         <p className={styles.role}>
           <ViewTransition name={`glyph-${p.id}`} share="morph" default="none">
             <span className="fv-role">{p.role_code}</span>
@@ -113,13 +128,6 @@ export function PlayerHero({ player: p, portrait, valuedLabel, estimates }: Prop
           <TierMark tier={p.market_tier} />
           <span>Transfermarkt, the model&apos;s target</span>
         </p>
-        <MiniRuler
-          showScale
-          marks={[
-            { value: p.market_value_eur, kind: "market", label: "Market value" },
-            ...(primary ? [{ value: primary.value!, kind: "model" as const, label: `Model ${primary.model}` }] : []),
-          ]}
-        />
         <ul className={styles.estimates}>
           {estimates.map((e) => (
             <li key={e.model} data-missing={e.value === null || undefined}>
@@ -135,6 +143,23 @@ export function PlayerHero({ player: p, portrait, valuedLabel, estimates }: Prop
           ))}
         </ul>
       </aside>
+
+      <div className={styles.read}>
+        <div className={styles.reading}>
+          <p className={styles.readLabel}>Reading the valuation</p>
+          <p className={styles.readLead}>{reading.lead}</p>
+          {reading.gap && <p>{reading.gap}</p>}
+          {reading.context && <p>{reading.context}</p>}
+          <p className={styles.readCaveat}>{reading.caveat}</p>
+        </div>
+        <figure className={styles.laneFig}>
+          <DossierLane observed={p.market_value_eur} estimates={estimates} name={p.name} />
+          <figcaption className={styles.laneCap}>
+            Pitch length is a log value scale fitted to this player&apos;s figures. ● observed · ◇ Model A · dashed ◇ Model B · each arc is a
+            residual, log(observed) − log(estimate).
+          </figcaption>
+        </figure>
+      </div>
 
       <dl className={styles.strip} aria-label="Club football in the two years to the valuation date">
         <div>

@@ -22,7 +22,7 @@ _Last updated: 2026-11-05_
 | CI | Private repo [17mohak/fairvalue](https://github.com/17mohak/fairvalue). First run (2026-11-04, about 6 min) **passed**: 79 unit tests (+10 data tests skipped as designed); data re-downloaded with an unchanged manifest; 9 data/leakage tests; quick-run gate with numbers identical to the local run (0.851 / 0.581 / 0.718); refit; Docker build, health and predict smoke test. No image pushed | `.github/workflows/ci.yml`, GitHub Actions |
 | Product (branch `feat/product-experience`) | Next.js app in `web/`: landing, valuation studio (live predict + per-prediction SHAP), fairness explorer, methods. `POST /explain`, `GET /metadata`. Compose stack built and smoke-tested locally. Not pushed or deployed | `docs/PRODUCT.md`, D-032, D-033 |
 | Responsible AI | Model card, data card, EU AI Act assessment | `docs/MODEL_CARD.md`, `docs/DATA_CARD.md`, `docs/EU_AI_ACT_ASSESSMENT.md` |
-| Tests | Python 137 passing with data present; web 130 (`npm test`) | `pytest -q`, `web/` vitest |
+| Tests | Python 137 passing with data present; web 139 (`npm test`) | `pytest -q`, `web/` vitest |
 | Reviews | Three independent read-only reviews; all findings addressed | DECISIONS D-015, D-023, D-028 |
 
 ## Key results (held-out, within the selected population)
@@ -51,6 +51,9 @@ _Last updated: 2026-11-05_
   chapters, ranked global player search, canonical dossier with breadcrumbs and a section index. Web
   tests 130; the build passes. Checked in Chromium at 390, 820, 1440 and 1920 px and with reduced
   motion. Screenshots are in `screenshots/theatre-sprint/` (not for commit).
+- **Dossier sprint (owner's journey: Overview → search → dossier):** stage 1 done (D-046): valuation
+  lane and plain-language reading in the dossier opening. Next stages: Valuation Journey as centrepiece,
+  peer context, previous/next player, share images, mobile and accessibility polish.
 - **Compose stack:** `docker compose up --build` runs api, web and a Caddy proxy on :3000 that
   compresses responses (D-041). Verified on 2026-11-05.
 - **Player profiles (D-035):** the full board, held-out estimates, traits and valuation histories

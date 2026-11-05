@@ -51,6 +51,71 @@ export function pathOf(points: Pt[], close = false): string {
   return points.map((p, i) => `${i ? "L" : "M"}${p.x.toFixed(1)} ${p.y.toFixed(1)}`).join(" ") + (close ? " Z" : "");
 }
 
+// ---------------------------------------------------------------- pitch drawing
+
+/** Everything needed to draw a pitch in one perspective: markings, spots, goals, mown stripes. */
+export interface PitchDrawing {
+  outline: string;
+  markings: string[];
+  spots: Pt[];
+  goals: string[];
+  stripes: string[];
+  /** A straight line between two pitch points. */
+  line: (u0: number, v0: number, u1: number, v1: number) => string;
+}
+
+/**
+ * The pitch markings at real proportions (105 × 68 m) for a given projection. Shared by the
+ * Overview's theatre and the dossier's lane, so both draw the same pitch.
+ */
+export function pitchDrawing(P: (u: number, v: number) => Pt, { stripes = 12 } = {}): PitchDrawing {
+  const fu = (m: number) => m / 105;
+  const fv = (m: number) => m / 68;
+  const line = (u0: number, v0: number, u1: number, v1: number) => pathOf([P(u0, v0), P(u1, v1)]);
+  const rect = (u0: number, v0: number, u1: number, v1: number) => pathOf([P(u0, v0), P(u1, v0), P(u1, v1), P(u0, v1)], true);
+  const arc = (cu: number, cv: number, r: number, from = 0, to = Math.PI * 2, steps = 64) => {
+    const pts: Pt[] = [];
+    for (let i = 0; i <= steps; i++) {
+      const t = from + ((to - from) * i) / steps;
+      pts.push(P(cu + fu(r) * Math.cos(t), cv + fv(r) * Math.sin(t)));
+    }
+    return pathOf(pts);
+  };
+  const box = fv(40.32) / 2;
+  const six = fv(18.32) / 2;
+  const pen = fu(16.5);
+  const gArea = fu(5.5);
+  const spot = fu(11);
+  // Penalty arc: the part of the 9.15 m circle around the spot that lies outside the box.
+  const a = Math.acos((16.5 - 11) / 9.15);
+  const outline = rect(0, 0, 1, 1);
+  const goal = fv(7.32) / 2;
+  return {
+    outline,
+    markings: [
+      outline,
+      line(0.5, 0, 0.5, 1),
+      arc(0.5, 0.5, 9.15),
+      rect(0, 0.5 - box, pen, 0.5 + box),
+      rect(1 - pen, 0.5 - box, 1, 0.5 + box),
+      rect(0, 0.5 - six, gArea, 0.5 + six),
+      rect(1 - gArea, 0.5 - six, 1, 0.5 + six),
+      arc(spot, 0.5, 9.15, -a, a, 24),
+      arc(1 - spot, 0.5, 9.15, Math.PI - a, Math.PI + a, 24),
+      arc(0, 0, 1, 0, Math.PI / 2, 8),
+      arc(1, 0, 1, Math.PI / 2, Math.PI, 8),
+      arc(1, 1, 1, Math.PI, Math.PI * 1.5, 8),
+      arc(0, 1, 1, Math.PI * 1.5, Math.PI * 2, 8),
+    ],
+    spots: [P(0.5, 0.5), P(spot, 0.5), P(1 - spot, 0.5)],
+    goals: [rect(-0.018, 0.5 - goal, 0, 0.5 + goal), rect(1, 0.5 - goal, 1.018, 0.5 + goal)],
+    stripes: Array.from({ length: stripes }, (_, i) => i)
+      .filter((i) => i % 2 === 0)
+      .map((i) => rect(i / stripes, 0, (i + 1) / stripes, 1)),
+    line,
+  };
+}
+
 // ---------------------------------------------------------------- value scale
 
 export interface LogScale {

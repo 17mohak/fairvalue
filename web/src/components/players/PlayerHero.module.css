@@ -2,10 +2,11 @@
 .card {
   position: relative;
   display: grid;
-  grid-template-columns: 17.5rem minmax(0, 1fr) minmax(19rem, 23rem);
+  grid-template-columns: minmax(0, 1fr) minmax(19rem, 23rem);
   grid-template-areas:
-    "frame identity value"
-    "frame strip strip";
+    "identity value"
+    "read read"
+    "strip strip";
   gap: 0 2rem;
   padding: 1.5rem 1.5rem 0;
   overflow: hidden;
@@ -33,11 +34,88 @@
   user-select: none;
 }
 
+/* With a licensed portrait the frame gets its own column again. */
+.card[data-portrait] {
+  grid-template-columns: 17.5rem minmax(0, 1fr) minmax(19rem, 23rem);
+  grid-template-areas:
+    "frame identity value"
+    "frame read read"
+    "frame strip strip";
+}
+
 .frame {
   grid-area: frame;
   align-self: end;
   height: 21rem;
   margin-bottom: 1.5rem;
+}
+
+.nameRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.1rem;
+}
+
+/* Without a portrait: the monogram, small, as an identity mark rather than an empty frame. */
+.badge {
+  flex: none;
+  width: 5.25rem;
+  height: 5.25rem;
+  margin-bottom: 0.2rem;
+}
+
+/* ---- Reading + lane ---- */
+.read {
+  grid-area: read;
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.6fr);
+  gap: 1.25rem 2.5rem;
+  align-items: center;
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.reading {
+  display: grid;
+  gap: 0.55rem;
+  font-family: var(--font-serif);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: #c3cbc3;
+}
+
+.readLabel {
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e9b949;
+}
+
+.readLead {
+  font-size: 1.06rem;
+  line-height: 1.45;
+  color: #edefe6;
+}
+
+.readCaveat {
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  color: #8f9b93;
+}
+
+.laneFig {
+  margin: 0;
+  min-width: 0;
+}
+
+.laneCap {
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  color: #6c786f;
 }
 
 /* ---- Identity ---- */
@@ -283,10 +361,19 @@
 /* ---- Responsive ---- */
 @media (max-width: 1180px) {
   .card {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "identity"
+      "value"
+      "read"
+      "strip";
+  }
+  .card[data-portrait] {
     grid-template-columns: 14rem minmax(0, 1fr);
     grid-template-areas:
       "frame identity"
       "value value"
+      "read read"
       "strip strip";
   }
   .frame {
@@ -300,15 +387,17 @@
   .value > :nth-child(-n + 3) {
     grid-column: 1;
   }
-  .value > :nth-child(n + 4) {
-    grid-column: 2;
-  }
   .value > :nth-child(4) {
-    grid-row: 1 / span 2;
-    align-self: end;
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
   }
-  .value > :nth-child(5) {
-    grid-row: 3;
+  .read {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* Stacked: the picture first, then the words that explain it. */
+  .laneFig {
+    order: -1;
   }
   .watermark {
     right: 1rem;
@@ -316,31 +405,27 @@
 }
 
 @media (max-width: 700px) {
-  .card {
-    grid-template-columns: 7.5rem minmax(0, 1fr);
+  .card,
+  .card[data-portrait] {
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      "frame crumbs"
-      "frame name"
-      "frame role"
-      "facts facts"
-      "value value"
-      "strip strip";
-    gap: 0.4rem 1rem;
+      "frame"
+      "identity"
+      "value"
+      "read"
+      "strip";
     padding: 1rem 1rem 0;
   }
-  .identity {
-    display: contents;
+  .frame {
+    height: 13rem;
+    margin-bottom: 1rem;
   }
-  .crumbs {
-    grid-area: crumbs;
+  .badge {
+    width: 3.6rem;
+    height: 3.6rem;
   }
-  .name {
-    grid-area: name;
-    margin: 0;
-  }
-  .role {
-    grid-area: role;
-    font-size: 1rem;
+  .nameRow {
+    gap: 0.8rem;
   }
   /* The narrow column fits the role code and sub-position; the broad group is implied by it. */
   .role .sep,
@@ -369,16 +454,10 @@
     grid-area: ratio;
   }
   .facts {
-    grid-area: facts;
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
-  .frame {
-    align-self: start;
-    height: 9.5rem;
-    margin-bottom: 0;
-  }
   .last {
-    font-size: 2.3rem;
+    font-size: 2.6rem;
   }
   .value {
     grid-template-columns: 1fr;
@@ -386,6 +465,9 @@
   .value > * {
     grid-column: 1 !important;
     grid-row: auto !important;
+  }
+  .readLead {
+    font-size: 1.04rem;
   }
   .strip > div {
     padding-right: 1rem;

@@ -1,5 +1,11 @@
 # Development changelog
 
+## 2026-11-05: Deployment URL wired through the build (branch `feat/multipage-experience`)
+- `FAIRVALUE_SITE_URL` (the public address used for canonical links and share cards) is now passed
+  through the web Docker build and run stages and docker compose, and documented in DEPLOYMENT.md as
+  required for any public deployment. A blank value falls back to `http://localhost:3000`; a malformed
+  one fails the build (`web/src/lib/siteUrl.ts`, tested). Web tests 161.
+
 ## 2026-11-05: Dossier, stage 6: accessibility and edge cases (branch `feat/multipage-experience`)
 - **Accessibility (D-051):** Lighthouse mobile 100/100/100 for the dossier (was 93) and the Overview.
   Fixed contrast in the footer, two invalid definition lists, the missing favicon and a label/name

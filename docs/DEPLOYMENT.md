@@ -79,7 +79,21 @@ platform's compression or keep this proxy in front of `web`.
 | Variable | Where | Default | Meaning |
 |---|---|---|---|
 | `FAIRVALUE_API_URL` | web (server only) | `http://127.0.0.1:8000` locally, `http://api:8000` in compose | where the proxy routes `/api/predict`, `/api/explain` and `/api/health` |
+| `FAIRVALUE_SITE_URL` | web, **build and run time** | `http://localhost:3000` when unset | the public address of the site: the base for canonical links and per-player share images (`og:image`). **Required for any public deployment** |
 | `PORT`, `HOSTNAME` | web image | `3000`, `0.0.0.0` | Next.js standalone server |
+
+**Before any public deployment, set `FAIRVALUE_SITE_URL`** to the site's own address, for example
+`https://fairvalue.example`. Without it every canonical link and share card points at
+`http://localhost:3000`, so shared links break. Set it when the image is **built** as well as when it
+runs, because Stories and Methods are generated at build time:
+
+- compose: `FAIRVALUE_SITE_URL=https://fairvalue.example docker compose up --build` (or put it in an
+  `.env` file next to `docker-compose.yml`); compose passes it as a build argument and to the container;
+- plain Docker: `docker build --build-arg FAIRVALUE_SITE_URL=https://fairvalue.example web` and
+  `docker run -e FAIRVALUE_SITE_URL=https://fairvalue.example …`.
+
+A value that is set but is not an absolute `http(s)` URL fails the build on purpose
+(`web/src/lib/siteUrl.ts`), so a typo cannot ship links to the wrong place.
 
 Local development without Docker: copy `web/.env.example` to `web/.env.local`, run the API with
 `uvicorn`, then `npm run dev` in `web/`.

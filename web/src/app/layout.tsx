@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Archivo, Big_Shoulders, Source_Serif_4 } from "next/font/google";
 import { SiteFooter } from "@/components/site/SiteFooter";
 import { SiteHeader } from "@/components/site/SiteHeader";
+import { siteUrl } from "@/lib/siteUrl";
 import "./globals.css";
 
 // Brand type (D-039): Big Shoulders, a condensed signage face, for display and big figures;
@@ -25,8 +26,9 @@ const sourceSerif = Source_Serif_4({
 });
 
 export const metadata: Metadata = {
-  // Absolute base for canonical and share-image URLs. Set FAIRVALUE_SITE_URL when deployed.
-  metadataBase: new URL(process.env.FAIRVALUE_SITE_URL ?? "http://localhost:3000"),
+  // Absolute base for canonical and share-image URLs. FAIRVALUE_SITE_URL is required for any
+  // public deployment (see docs/DEPLOYMENT.md); unset, it is the local compose address.
+  metadataBase: siteUrl(process.env.FAIRVALUE_SITE_URL),
   title: { default: "FairValue: football market value, measured and audited", template: "%s · FairValue" },
   description:
     "Estimate a footballer's Transfermarkt market value from match data, see why the model said so, and explore an audit of whether its errors differ for players from inside and outside UEFA.",

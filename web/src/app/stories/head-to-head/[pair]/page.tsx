@@ -40,7 +40,8 @@ export default async function HeadToHead({ params }: Params) {
   const players = [a, b];
   const vals = players.flatMap((p) => [p.market_value_eur, est(p)]);
   const lo = Math.log(Math.min(...vals, TIER_BOUNDARIES_EUR[0])) - 0.5;
-  const hi = Math.log(Math.max(...vals, TIER_BOUNDARIES_EUR[2])) + 0.5;
+  // Extra room on the right so labels of the top values never run past the scale.
+  const hi = Math.log(Math.max(...vals, TIER_BOUNDARIES_EUR[2])) + 0.95;
   const x = (v: number) => ((Math.log(v) - lo) / (hi - lo)) * 100;
   const keeper = a.position === "Goalkeeper";
   const tape: { label: string; a: number; b: number; fmt: (v: number) => string }[] = [

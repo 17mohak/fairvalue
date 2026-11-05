@@ -18,7 +18,7 @@ export interface StoryStep {
  * each chapter crosses the middle of the screen. Every state is reachable by scrolling, by
  * keyboard (the steps are ordinary content) and with motion reduced (changes just cut).
  */
-export function Scrolly({ steps, graphic }: { steps: StoryStep[]; graphic: Graphic }) {
+export function Scrolly({ steps, graphic, offset = 0 }: { steps: StoryStep[]; graphic: Graphic; offset?: number }) {
   const [active, setActive] = useState(0);
   const root = useRef<HTMLDivElement>(null);
 
@@ -39,14 +39,19 @@ export function Scrolly({ steps, graphic }: { steps: StoryStep[]; graphic: Graph
       <div className={styles.steps}>
         {steps.map((s, i) => (
           <section key={s.no} data-step={i} data-active={i === active || undefined} className={styles.step} aria-label={s.title}>
-            <p className={styles.stepNo}>{s.no}</p>
-            <h2 className={styles.stepTitle}>{s.title}</h2>
+            <p className={styles.stepNo} aria-hidden="true">
+              {s.no}
+            </p>
+            <h2 className={styles.stepTitle}>
+              <span className="visually-hidden">Chapter {s.no}: </span>
+              {s.title}
+            </h2>
             <div className={styles.copy}>{s.body}</div>
           </section>
         ))}
       </div>
       <div className={styles.stage} aria-live="polite">
-        {graphic.kind === "gap" ? <GapGraphic data={graphic.data} step={active} /> : <JourneyGraphic data={graphic.data} step={active} />}
+        {graphic.kind === "gap" ? <GapGraphic data={graphic.data} step={active + offset} /> : <JourneyGraphic data={graphic.data} step={active + offset} />}
       </div>
     </div>
   );

@@ -16,12 +16,13 @@
 }
 
 .cap {
-  font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-family: var(--font-label);
+  font-size: 0.731rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #8d968f;
+  font-variation-settings: var(--label-wdth);
 }
 
 .legend {
@@ -171,10 +172,12 @@
 }
 
 .big small {
-  font-size: 0.8rem;
-  letter-spacing: 0.06em;
+  font-size: 0.688rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #8d968f;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 /* ---- Intervals ---- */
@@ -197,11 +200,13 @@
   position: absolute;
   top: 0;
   left: 0.4rem;
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   white-space: nowrap;
   color: #8d968f;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .ivRow {
@@ -330,12 +335,13 @@
 }
 
 .runLabel {
-  font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-family: var(--font-label);
+  font-size: 0.774rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #8d968f;
+  font-variation-settings: var(--label-wdth);
 }
 
 .runValue {
@@ -351,6 +357,24 @@
   color: #8d968f;
 }
 
+.verdict {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.75rem;
+  margin-top: 0.4rem;
+  padding: 0.45rem 0.7rem;
+  border-left: 3px solid #e9b949;
+  background: rgb(242 241 234 / 0.05);
+  font-size: 1.05rem;
+  animation: fig-in 480ms var(--ease-out);
+}
+
+.verdict > span:last-child {
+  font-size: 0.82rem;
+  color: #c9cbc2;
+}
+
 @media (max-width: 900px) {
   .fig {
     padding: 0.75rem;
@@ -363,6 +387,9 @@
   .ivTicks {
     margin-left: 7rem;
     margin-right: 4.25rem;
+  }
+  .ivTicks span:nth-child(even) {
+    display: none;
   }
   .axisWrap > .zero {
     left: calc(7rem + (100% - 7rem - 4.25rem) * var(--z, 0));

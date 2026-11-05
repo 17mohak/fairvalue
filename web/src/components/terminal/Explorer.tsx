@@ -13,6 +13,7 @@ import { COMPARE_MIN } from "@/lib/terminal";
 import { Inspector } from "./Inspector";
 import { CompareToggle, useCompareTray, WatchButton } from "./PlayerActions";
 import styles from "./Explorer.module.css";
+import { LeagueFlag } from "@/components/brand/Flag";
 
 const POSITIONS = [
   { value: "", label: "All" },
@@ -256,7 +257,10 @@ export function Explorer({ query, rows, count, total, page, pages, leagues }: Pr
                           </span>
                         </span>
                       </td>
-                      <td data-col="league">{leagueName(r.league_id).split(",")[0]}</td>
+                      <td data-col="league">
+                        <LeagueFlag leagueId={r.league_id} />
+                        {leagueName(r.league_id).split(",")[0]}
+                      </td>
                       <td data-num>{Math.floor(r.age)}</td>
                       <td data-num>{integer(r.window.minutes)}</td>
                       <td data-num data-col="apps">{r.window.appearances}</td>

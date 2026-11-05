@@ -6,6 +6,7 @@ import { playerSet } from "@/lib/players.server";
 import { research } from "@/lib/research";
 import styles from "../landscape.module.css";
 import board from "./leagues.module.css";
+import { LeagueFlag } from "@/components/brand/Flag";
 
 export const metadata = { title: "League Landscape" };
 
@@ -97,7 +98,10 @@ export default async function LeaguesPage({ searchParams }: { searchParams: Prom
               {rows.map((r) => (
                 <tr key={r.key}>
                   <th scope="row">
-                    <b>{leagueName(r.key).split(",")[0]}</b>
+                    <b>
+                      <LeagueFlag leagueId={r.key} />
+                      {leagueName(r.key).split(",")[0]}
+                    </b>
                     <small>{leagueCountry(r.key)}</small>
                   </th>
                   <td>

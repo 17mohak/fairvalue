@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { biggestSeparator, explanationMatrix, SLOTS, traitValue } from "@/lib/compare";
 import { leagueName, TIER_BOUNDARIES_EUR, TIER_NAMES } from "@/lib/football";
 import { formatEur, integer } from "@/lib/format";
@@ -6,6 +7,7 @@ import { TRAITS, type PeerStats, type PlayerProfile, type TraitKey } from "@/lib
 import { MarkKey, ModelMark, ObsMark } from "@/components/brand/Marks";
 import { Marker } from "./Marker";
 import styles from "./Compare.module.css";
+import { LeagueFlag } from "@/components/brand/Flag";
 
 const bestA = (p: PlayerProfile) => p.estimates.heldout.A ?? p.estimates.served.A;
 const bestB = (p: PlayerProfile) => p.estimates.heldout.B ?? p.estimates.served.B;
@@ -321,9 +323,14 @@ export function HistoryCompare({ players }: { players: PlayerProfile[] }) {
 // Facts: the record, aligned.
 // ---------------------------------------------------------------------------
 export function FactsTable({ players }: { players: PlayerProfile[] }) {
-  const rows: [string, (p: PlayerProfile) => string][] = [
+  const rows: [string, (p: PlayerProfile) => ReactNode][] = [
     ["Role", (p) => `${p.sub_position} (${p.position})`],
-    ["League", (p) => leagueName(p.league_id).split(",")[0]!],
+    ["League", (p) => (
+      <>
+        <LeagueFlag leagueId={p.league_id} />
+        {leagueName(p.league_id).split(",")[0]!}
+      </>
+    )],
     ["Club", (p) => p.club ?? "not in this build"],
     ["Age", (p) => `${Math.floor(p.age)}`],
     ["Height", (p) => (p.height_cm ? `${Math.round(p.height_cm)} cm` : "–")],

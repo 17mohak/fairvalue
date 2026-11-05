@@ -590,6 +590,18 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   bar.
 - **Lane fix:** a tier label that would overprint the observed-value label is skipped (the tier line stays).
 
+## D-050 Share cards for dossier links — Decided (2026-11-05)
+- **Card:** `players/[playerId]/opengraph-image` renders a 1200 × 630 PNG with `next/og`: name, role,
+  club and league, observed value, the Model A estimate with its basis (held-out or served, in-sample),
+  the residual in words, the standing caveat, and the player's valuation lane. Figures come from the
+  export only. Nationality is left out because a residual is shown (D-042).
+- **Text:** per-player `og:` and `twitter:` description (`lib/share.ts`, tested), `summary_large_image`.
+- **Base URL:** `metadataBase` comes from `FAIRVALUE_SITE_URL` (documented in `web/.env.example`),
+  defaulting to `http://localhost:3000`, the compose stack's address. Set it before any public deployment.
+- **Trade-off:** the card uses next/og's bundled Geist, because the brand faces are self-hosted as woff2,
+  which the renderer cannot read. Using Big Shoulders and Archivo needs their OFL TTF files in the
+  repository; that is the owner's call.
+
 ---
 
 # Issues found in the locked technical spec

@@ -1,5 +1,12 @@
 # Development changelog
 
+## 2026-11-05: Dossier, stage 5: share cards (branch `feat/multipage-experience`)
+- **Share cards (D-050):** every dossier link has a generated 1200 × 630 preview card (observed value,
+  labelled Model A estimate, residual in words, the player's lane) and a per-player description.
+  `FAIRVALUE_SITE_URL` sets the absolute base for share and canonical URLs.
+- **Tests:** web 157 (+2: share description, no nationality). Build passes; the card is served by the
+  production server.
+
 ## 2026-11-05: Dossier, stage 4: previous / next player (branch `feat/multipage-experience`)
 - **Stepping (D-049):** the dossier steps through the list it was opened from (Explorer view, search
   results, league, position), rebuilt on the server from a `seq` URL parameter; league by value

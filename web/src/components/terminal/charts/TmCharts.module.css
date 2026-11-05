@@ -215,6 +215,15 @@
   stroke-width: 1.5;
 }
 
+/* Full-population scatter: overlapping round dots, translucent so density shows. */
+.dense {
+  fill: none;
+  stroke: #e9b949;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-opacity: 0.45;
+}
+
 .pointLabel {
   font-size: 10px;
   fill: #c3cbc3;

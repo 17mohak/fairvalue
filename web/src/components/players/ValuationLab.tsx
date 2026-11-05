@@ -146,7 +146,10 @@ export function ValuationLab({ player: p, mae, regressorVersion, areas = {} }: P
               ? "Asking the prediction API…"
               : live.status === "online"
                 ? verified
-                  ? `Live: served estimates from the prediction API (${live.predict.A?.model_version.regressor ?? live.predict.B?.model_version.regressor}).`
+                  ? `Live: served estimates from the prediction API (${[live.predict.A, live.predict.B]
+                      .filter((r) => r)
+                      .map((r) => r!.model_version.regressor)
+                      .join(", ")}).`
                   : `Live, but unverified: ${service.reason} Treat these served figures with caution.`
                 : p.estimates.served.A !== null
                   ? "Prediction API offline. The served Model A figure and its explanation are the published research results (cached), not a live answer. Model B needs the live service."

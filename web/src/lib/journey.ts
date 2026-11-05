@@ -123,3 +123,25 @@ export function extremes(j: Journey) {
   const down = features.filter((s) => s.contribution < 0).sort((a, b) => a.contribution - b.contribution)[0] ?? null;
   return { up, down };
 }
+
+export interface Mover {
+  key: string;
+  label: string;
+  input: string;
+  contribution: number;
+}
+
+/**
+ * The inputs that raise the estimate most and those that lower it most, across every
+ * contribution (not only the steps drawn), largest effect first. Display only: SHAP values as given.
+ */
+export function movers(e: Explanation, n = 3, minAbs = 0.005): { raises: Mover[]; lowers: Mover[] } {
+  // Effects smaller than about 0.5% would show as x1.00: listing them as a "mover" says nothing.
+  const all = e.contributions
+    .filter((c) => Math.abs(c.contribution) >= minAbs)
+    .map((c) => ({ key: c.feature, label: featureLabel(c.feature), input: formatInput(c.feature, c.value), contribution: c.contribution }));
+  return {
+    raises: all.filter((m) => m.contribution > 0).sort((a, b) => b.contribution - a.contribution).slice(0, n),
+    lowers: all.filter((m) => m.contribution < 0).sort((a, b) => a.contribution - b.contribution).slice(0, n),
+  };
+}

@@ -99,8 +99,8 @@ export default async function PlayerPage({ params, searchParams }: Params) {
         <nav className={styles.sections} aria-label="Sections of this dossier">
           <ol>
             {[
-              { id: "estimates", label: "Model A vs B" },
               { id: "explain", label: "Valuation Journey" },
+              { id: "estimates", label: "Model A vs B" },
               { id: "traits", label: "Traits" },
               ...(hasHistory ? [{ id: "history", label: "History" }] : []),
               { id: "audit", label: "Audit context" },

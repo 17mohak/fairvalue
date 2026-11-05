@@ -548,6 +548,20 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   column returns automatically when a portrait exists (S2-03 unchanged).
 - **Names:** the reading uses the same short label as the Overview ("Vini Jr.").
 
+## D-047 Valuation Journey as the dossier's centrepiece — Decided (2026-11-05)
+- **Placement:** the journey is now the first section after the dossier's opening, at full width,
+  and first in the DOM as well (keyboard and screen-reader order match the visual order). Model A vs B,
+  traits, history and audit context follow.
+- **Provenance up front:** SHAP runs only on the served regressor. The heading says which estimate is
+  explained ("Why Model A says €197M"), whether it is live, live and unverified, or a cached research
+  result, and why it differs from the held-out estimate in the header (the served model was refitted
+  on every player, this one included).
+- **Biggest movers:** the three inputs that raised and lowered the estimate most, from the full
+  explanation (`movers()` in `lib/journey.ts`). Effects that would show as ×1.00 are left out. Display
+  only: SHAP values as returned, nothing recomputed.
+- **Loading:** a skeleton while the live explanation loads, never a number-shaped placeholder; the
+  offline message is unchanged.
+
 ---
 
 # Issues found in the locked technical spec

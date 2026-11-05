@@ -8,6 +8,8 @@ import { useServiceStatus } from "@/lib/api/service";
 import type { ExplainResponse, PredictResponse } from "@/lib/api/types";
 import { MODEL_LABELS, type ModelId } from "@/lib/football";
 import { formatEur } from "@/lib/format";
+import { factor, movers, toEur } from "@/lib/journey";
+import { shortName } from "@/lib/theatre";
 import { publishedExplanation, type PlayerProfile } from "@/lib/players";
 import styles from "./ValuationLab.module.css";
 
@@ -74,8 +76,112 @@ export function ValuationLab({ player: p, mae, regressorVersion, areas = {} }: P
     live.status === "loading" ? "checking" : live.status === "online" ? (verified ? "live" : "unverified") : p.estimates.served.A !== null ? "cached" : "offline";
   const SOURCE_TEXT = { checking: "Checking API", live: "Live API", unverified: "Unverified API", cached: "Cached research result", offline: "API offline" };
 
+  // The journey explains the served model only: SHAP runs on the regressor the API serves.
+  // Say so up front, and why it differs from the held-out estimate in the hero.
+  const who = shortName(p);
+  const explained = explanation ? toEur(explanation.predicted_log_value) : null;
+  const moved = explanation ? movers(explanation, 3) : null;
+  const moverMax = moved ? Math.max(1e-9, ...[...moved.raises, ...moved.lowers].map((m) => Math.abs(m.contribution))) : 1;
+  const heldoutSel = p.estimates.heldout[model];
+  const which =
+    explained === null
+      ? live.status === "loading"
+        ? `Asking the prediction API to explain ${MODEL_LABELS[model].name} for ${who}…`
+        : `Explanations come from the served model through the live service.`
+      : `This explains the served ${MODEL_LABELS[model].name} estimate, ${formatEur(explained)} (${live.explain[model] ? (verified ? "live" : "live, unverified") : "cached research result"}). ` +
+        `The served model was refitted on every player, ${who} included${
+          heldoutSel !== null ? `; the held-out ${formatEur(heldoutSel)} in the header comes from a model that never saw this player` : ""
+        }. Explanations exist only for the served model.`;
+
   return (
     <>
+      <section id="explain" className={`fv-panel ${styles.journeyPanel} ${areas.explain ?? ""}`} aria-labelledby="why-title">
+        <header className={styles.jHead}>
+          <div className={styles.jTitles}>
+            <p className={styles.jKicker}>The Valuation Journey</p>
+            <h2 id="why-title" className={styles.jTitle}>
+              {explained !== null ? `Why ${MODEL_LABELS[model].name} says ${formatEur(explained)}` : `What moves ${MODEL_LABELS[model].name}`}
+            </h2>
+            <p className={styles.jWhich}>{which}</p>
+          </div>
+          <div className={styles.toggle} role="radiogroup" aria-label="Explain model">
+            {(["A", "B"] as const).map((m) => {
+              // Model B has no published explanation; it can only be explained by the live service.
+              const possible = m === "A" ? true : !!live.explain.B || live.status === "online";
+              return (
+                <button
+                  key={m}
+                  type="button"
+                  role="radio"
+                  aria-checked={model === m}
+                  aria-disabled={!possible || undefined}
+                  title={possible ? undefined : "Model B explanations come from the live service only, which is not available"}
+                  onClick={() => possible && setModel(m)}
+                >
+                  {MODEL_LABELS[m].name}
+                </button>
+              );
+            })}
+          </div>
+        </header>
+        <div className={`fv-panel-body ${styles.jBody}`}>
+          {explanation && moved ? (
+            <>
+              <div className={styles.movers} aria-label="Inputs that moved this estimate most">
+                {(["raises", "lowers"] as const).map((dir) => (
+                  <div key={dir} className={styles.moverCol} data-dir={dir}>
+                    <p className={styles.moverHead}>{dir === "raises" ? "Raised it most" : "Lowered it most"}</p>
+                    {moved[dir].length ? (
+                      <ol>
+                        {moved[dir].map((m) => (
+                          <li key={m.key}>
+                            <span className={styles.moverLabel}>
+                              <b>{m.label}</b>
+                              <small>{m.input}</small>
+                            </span>
+                            <span className={styles.moverBar} aria-hidden="true">
+                              <i style={{ width: `${Math.min(100, (Math.abs(m.contribution) / moverMax) * 100)}%` }} />
+                            </span>
+                            <span className={`${styles.moverFactor} num`}>{factor(m.contribution)}</span>
+                          </li>
+                        ))}
+                      </ol>
+                    ) : (
+                      <p className={styles.moverNone}>No input {dir === "raises" ? "raised" : "lowered"} this estimate.</p>
+                    )}
+                  </div>
+                ))}
+              </div>
+              <ValuationJourney
+                explanation={explanation}
+                observed={p.market_value_eur}
+                subject={who}
+                provenance={
+                  live.explain[model]
+                    ? `${verified ? "Live explanation endpoint" : "Live but unverified explanation endpoint"}, served Model ${model} ${
+                        verified ? `(${regressorVersion[model]})` : ""
+                      }; the served model was fitted on all players, including this one.`
+                    : `Published SHAP run for the served Model A (${regressorVersion.A}); this player was in its training data, so the estimate is in-sample.`
+                }
+              />
+            </>
+          ) : live.status === "loading" ? (
+            <div className={styles.jSkeleton} role="status" aria-label="Loading the explanation">
+              <span />
+              <span />
+              <span />
+              <span />
+            </div>
+          ) : (
+            <p className={styles.unavailable}>No {MODEL_LABELS[model].name} explanation is available while the prediction API is offline.</p>
+          )}
+          <p className={styles.whyNote}>
+            SHAP describes the model&apos;s arithmetic for this player&apos;s inputs, not what causes market value. Model B can be explained only by the live
+            service; Model A also has a published explanation for the research players.
+          </p>
+        </div>
+      </section>
+
       <section id="estimates" className={`fv-panel ${areas.compare ?? ""}`} aria-labelledby="mm-title">
         <header className="fv-panel-head">
           <h2 id="mm-title" className="fv-panel-title">
@@ -159,58 +265,6 @@ export function ValuationLab({ player: p, mae, regressorVersion, areas = {} }: P
             <strong>Held-out</strong> estimates come from cross-validation, with this player outside the training data: the honest comparison.{" "}
             <strong>Served</strong> models were refitted on every player, this one included, so they sit closer to the market.
             Shaded band: {MODEL_LABELS[model].name}&apos;s typical miss (×{Math.exp(mae[model]).toFixed(2)} either way).
-          </p>
-        </div>
-      </section>
-
-      <section id="explain" className={`fv-panel ${areas.explain ?? ""}`} aria-labelledby="why-title">
-        <header className="fv-panel-head">
-          <h2 id="why-title" className="fv-panel-title">
-            {served(model) ? `Why ${MODEL_LABELS[model].name} says ${formatEur(served(model)!)}` : `What moves ${MODEL_LABELS[model].name}`}
-            <small>valuation journey · SHAP, this player&apos;s own inputs</small>
-          </h2>
-          <div className={styles.toggle} role="radiogroup" aria-label="Explain model">
-            {(["A", "B"] as const).map((m) => {
-              // Model B has no published explanation; it can only be explained by the live service.
-              const possible = m === "A" ? true : !!live.explain.B || live.status === "online";
-              return (
-                <button
-                  key={m}
-                  type="button"
-                  role="radio"
-                  aria-checked={model === m}
-                  aria-disabled={!possible || undefined}
-                  title={possible ? undefined : "Model B explanations come from the live service only, which is not available"}
-                  onClick={() => possible && setModel(m)}
-                >
-                  {MODEL_LABELS[m].name}
-                </button>
-              );
-            })}
-          </div>
-        </header>
-        <div className="fv-panel-body">
-          {explanation ? (
-            <ValuationJourney
-              explanation={explanation}
-              observed={p.market_value_eur}
-              subject={p.last_name}
-              provenance={
-                live.explain[model]
-                  ? `${verified ? "Live explanation endpoint" : "Live but unverified explanation endpoint"}, served Model ${model} ${
-                      verified ? `(${regressorVersion[model]})` : ""
-                    }; the served model was fitted on all players, including this one.`
-                  : `Published SHAP run for the served Model A (${regressorVersion.A}); this player was in its training data, so the estimate is in-sample.`
-              }
-            />
-          ) : (
-            <p className={styles.unavailable}>
-              {live.status === "loading" ? "Loading the explanation…" : `No ${MODEL_LABELS[model].name} explanation is available while the prediction API is offline.`}
-            </p>
-          )}
-          <p className={styles.whyNote}>
-            SHAP describes the model&apos;s arithmetic for this player&apos;s inputs, not what causes market value. Model B can be explained only by the live
-            service; Model A also has a published explanation for the research players.
           </p>
         </div>
       </section>

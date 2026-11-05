@@ -1,5 +1,12 @@
 # Development changelog
 
+## 2026-11-05: Dossier, stage 2: Valuation Journey as centrepiece (branch `feat/multipage-experience`)
+- **Journey (D-047):** first section after the opening, full width and first in reading order. The
+  heading names the explained estimate and its source, and explains why it differs from the held-out
+  figure. The biggest raising and lowering inputs come above the waterfall. A loading skeleton replaces
+  the loading text.
+- **Tests:** web 143 (+4: movers, negligible effects, journey framing and order, loading state). Build passes.
+
 ## 2026-11-05: Dossier opening, stage 1 (branch `feat/multipage-experience`)
 - **Dossier hero (D-046):** a valuation lane (one-player theatre: observed line, Model A and Model B
   diamonds with residual arcs, fitted log scale, tier lines when in range) beside a plain-language

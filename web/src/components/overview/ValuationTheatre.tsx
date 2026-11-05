@@ -7,7 +7,7 @@ import { ExpLink } from "@/components/site/ExpLink";
 import { leagueName } from "@/lib/football";
 import { formatEur } from "@/lib/format";
 import { factor } from "@/lib/journey";
-import { logScaleFor, pathOf, residualOf, shortName, squareToQuad, type CastMember, type Pt, type Quad } from "@/lib/theatre";
+import { logScaleFor, pathOf, pitchDrawing, residualOf, shortName, squareToQuad, type CastMember, type Quad } from "@/lib/theatre";
 import styles from "./Theatre.module.css";
 
 // The pitch in screen space (viewBox 1200 × 720), seen from a high camera behind the near
@@ -24,64 +24,16 @@ const QUAD: Quad = [
 ];
 const P = squareToQuad(QUAD);
 
-// Real pitch proportions (105 × 68 m), as fractions of length (u) and width (v).
-const L = 105;
-const Wd = 68;
-const fu = (m: number) => m / L;
-const fv = (m: number) => m / Wd;
-
 /** Values occupy the middle of the pitch, never the goal lines. */
 const U0 = 0.05;
 const U1 = 0.95;
 
-function line(u0: number, v0: number, u1: number, v1: number) {
-  return pathOf([P(u0, v0), P(u1, v1)]);
-}
-function rect(u0: number, v0: number, u1: number, v1: number) {
-  return pathOf([P(u0, v0), P(u1, v0), P(u1, v1), P(u0, v1)], true);
-}
-/** An ellipse on the pitch: a circle of radius r metres around (cu, cv), optionally an arc. */
-function arc(cu: number, cv: number, r: number, from = 0, to = Math.PI * 2, steps = 64) {
-  const pts: Pt[] = [];
-  for (let i = 0; i <= steps; i++) {
-    const t = from + ((to - from) * i) / steps;
-    pts.push(P(cu + fu(r) * Math.cos(t), cv + fv(r) * Math.sin(t)));
-  }
-  return pathOf(pts);
-}
-
-/** The pitch markings, drawn once: they never depend on data. */
-const MARKINGS: string[] = (() => {
-  const box = fv(40.32) / 2;
-  const six = fv(18.32) / 2;
-  const pen = fu(16.5);
-  const gArea = fu(5.5);
-  const spot = fu(11);
-  // Penalty arc: the part of the 9.15 m circle around the spot outside the box.
-  const a = Math.acos((16.5 - 11) / 9.15);
-  return [
-    rect(0, 0, 1, 1),
-    line(0.5, 0, 0.5, 1),
-    arc(0.5, 0.5, 9.15),
-    rect(0, 0.5 - box, pen, 0.5 + box),
-    rect(1 - pen, 0.5 - box, 1, 0.5 + box),
-    rect(0, 0.5 - six, gArea, 0.5 + six),
-    rect(1 - gArea, 0.5 - six, 1, 0.5 + six),
-    arc(spot, 0.5, 9.15, -a, a, 24),
-    arc(1 - spot, 0.5, 9.15, Math.PI - a, Math.PI + a, 24),
-    arc(0, 0, 1, 0, Math.PI / 2, 8),
-    arc(1, 0, 1, Math.PI / 2, Math.PI, 8),
-    arc(1, 1, 1, Math.PI, Math.PI * 1.5, 8),
-    arc(0, 1, 1, Math.PI * 1.5, Math.PI * 2, 8),
-  ];
-})();
-
-const SPOTS: Pt[] = [P(0.5, 0.5), P(fu(11), 0.5), P(1 - fu(11), 0.5)];
-const GOALS = [rect(-0.018, 0.5 - fv(7.32) / 2, 0, 0.5 + fv(7.32) / 2), rect(1, 0.5 - fv(7.32) / 2, 1.018, 0.5 + fv(7.32) / 2)];
-/** Mown stripes: twelve bands along the pitch, every other one lit. */
-const STRIPES = Array.from({ length: 12 }, (_, i) => i)
-  .filter((i) => i % 2 === 0)
-  .map((i) => rect(i / 12, 0, (i + 1) / 12, 1));
+const PITCH = pitchDrawing(P);
+const { line } = PITCH;
+const MARKINGS = PITCH.markings;
+const SPOTS = PITCH.spots;
+const GOALS = PITCH.goals;
+const STRIPES = PITCH.stripes;
 
 interface Props {
   cast: CastMember[];

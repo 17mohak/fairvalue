@@ -1,5 +1,13 @@
 # Development changelog
 
+## 2026-11-05: Dossier opening, stage 1 (branch `feat/multipage-experience`)
+- **Dossier hero (D-046):** a valuation lane (one-player theatre: observed line, Model A and Model B
+  diamonds with residual arcs, fitted log scale, tier lines when in range) beside a plain-language
+  reading of the valuation. A small monogram badge replaces the large empty portrait frame. The lane
+  comes first when stacked, and its labels scale up on phones.
+- **Shared code:** `pitchDrawing` now draws the pitch for both the Overview and the dossier.
+- **Tests:** web 139 (+9: reading wording and caveats, lane labels and missing estimates). Build passes.
+
 ## 2026-11-05: Valuation Theatre, global search, canonical dossier (branch `feat/multipage-experience`, not committed)
 - **Overview (D-045):** rebuilt as five chapters. The hero is the Valuation Theatre, an SVG pitch whose
   length is a log value scale fitted to the plotted values. Its lanes are the seven most valuable players

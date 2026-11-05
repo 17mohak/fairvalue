@@ -16,6 +16,8 @@ import { formatEur, integer, signed } from "@/lib/format";
 import { idFromParam, POSITION_PLURAL, type PlayerProfile, type TraitKey } from "@/lib/players";
 import { neighbours, playerById, playerSet } from "@/lib/players.server";
 import { portraitFor } from "@/lib/portraits";
+import { valuationReading } from "@/lib/reading";
+import { shortName } from "@/lib/theatre";
 import { heldOutLogMae, research } from "@/lib/research";
 
 import styles from "./profile.module.css";
@@ -79,7 +81,20 @@ export default async function PlayerPage({ params, searchParams }: Params) {
     <PageTransition>
       <article className={styles.profile} data-from={from ?? undefined}>
         <DossierBar from={from} player={{ id: p.id, slug: p.slug, name: p.name, role_code: p.role_code }} story={story} />
-        <PlayerHero player={p} portrait={portrait} valuedLabel={valued} estimates={heroEstimates} />
+        <PlayerHero
+          player={p}
+          portrait={portrait}
+          valuedLabel={valued}
+          estimates={heroEstimates}
+          reading={valuationReading({
+            lastName: shortName(p),
+            observed: p.market_value_eur,
+            A: heroEstimates[0]!,
+            B: heroEstimates[1]!,
+            maeA: heldOutLogMae("A"),
+            maeB: heldOutLogMae("B"),
+          })}
+        />
 
         <nav className={styles.sections} aria-label="Sections of this dossier">
           <ol>

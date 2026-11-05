@@ -22,9 +22,10 @@ export function ShortcutKbd({ className }: { className?: string }) {
 
 /**
  * Any button that opens global player search. Hovering or focusing it starts loading the player
- * index, so results are usually ready by the time the palette opens.
+ * index, so results are usually ready by the time the palette opens. Pass `label` only when the
+ * visible text can disappear (the header on phones); otherwise the visible text is the name.
  */
-export function SearchTrigger({ className, children, label = "Search players" }: { className?: string; children: ReactNode; label?: string }) {
+export function SearchTrigger({ className, children, label }: { className?: string; children: ReactNode; label?: string }) {
   return (
     <button
       type="button"

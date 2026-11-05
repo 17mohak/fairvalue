@@ -17,7 +17,7 @@ import { formatEur, integer, signed } from "@/lib/format";
 import { idFromParam, POSITION_PLURAL, type PlayerProfile, type TraitKey } from "@/lib/players";
 import { playerById, playerSet } from "@/lib/players.server";
 import { portraitFor } from "@/lib/portraits";
-import { nearestByValue, standingText, valueStanding } from "@/lib/peers";
+import { MIN_GROUP, nearestByValue, standingText, valueStanding } from "@/lib/peers";
 import { valuationReading } from "@/lib/reading";
 import { shareDescription } from "@/lib/share";
 import { encodeSequence, parseSequence, stepFor, type Sequence } from "@/lib/sequence";
@@ -258,7 +258,7 @@ export default async function PlayerPage({ params, searchParams }: Params) {
                     </span>
                   </p>
                   <p className={styles.standingText}>{standingText(g.standing, g.noun)}</p>
-                  {g.standing.n >= 12 && (
+                  {g.standing.n >= MIN_GROUP && (
                     <ValueSilhouette
                       values={g.values}
                       value={p.market_value_eur}

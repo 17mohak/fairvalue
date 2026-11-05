@@ -161,7 +161,8 @@ export function PlayerHero({ player: p, portrait, valuedLabel, estimates, readin
         </figure>
       </div>
 
-      <dl className={styles.strip} aria-label="Club football in the two years to the valuation date">
+      <div className={styles.strip}>
+      <dl className={styles.stripList} aria-label="Club football in the two years to the valuation date">
         <div>
           <dt>Apps</dt>
           <dd className="num">{w.appearances}</dd>
@@ -201,8 +202,9 @@ export function PlayerHero({ player: p, portrait, valuedLabel, estimates, readin
             <small>R</small>
           </dd>
         </div>
-        <p className={styles.stripNote}>Club matches, two years to the valuation date</p>
       </dl>
+        <p className={styles.stripNote}>Club matches, two years to the valuation date</p>
+      </div>
     </section>
   );
 }

@@ -39,9 +39,13 @@
   line-height: 1;
 }
 
-.summary span {
+/* The date under each figure: a second <dd> in the same group (valid list markup). */
+.summary dd.when {
+  font-family: var(--font-ui);
   font-size: 0.75rem;
-  color: #6c786f;
+  font-weight: 400;
+  line-height: 1.4;
+  color: #8f9b93;
 }
 
 .plot {

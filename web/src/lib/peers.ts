@@ -25,6 +25,9 @@ export function valueStanding(values: number[], value: number): ValueStanding {
   return { n, rank: above + 1, below, tied: n - above - below, median, min: sorted[0] ?? NaN, max: sorted[n - 1] ?? NaN };
 }
 
+/** Smallest group in which a standing is stated (and its silhouette drawn). */
+export const MIN_GROUP = 12;
+
 const ordinal = (k: number) => {
   const s = ["th", "st", "nd", "rd"];
   const v = k % 100;
@@ -39,6 +42,8 @@ export function standingText(s: ValueStanding, group: string): string {
   const joint = s.tied > 1 ? "joint " : "";
   const n = s.n.toLocaleString("en-GB");
   if (s.n <= 1) return `No other ${group} in this build.`;
+  // A rank among a handful of players (the eight-player showcase) says nothing; do not claim one.
+  if (s.n < MIN_GROUP) return `Only ${n} ${group} in this build: too few to place this value.`;
   if (s.rank === 1) return `The ${joint}highest observed value among ${n} ${group}.`;
   if (s.below === 0) return `The ${joint}lowest observed value among ${n} ${group}.`;
   if (s.rank <= 10) return `${s.tied > 1 ? "Joint " : ""}${ordinal(s.rank)} highest observed value among ${n} ${group}.`;

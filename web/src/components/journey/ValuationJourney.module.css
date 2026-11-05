@@ -1,0 +1,405 @@
+/* Valuation Journey: a waterfall laid out as a table. Every row shares one log-euro axis, so the
+   bars chain into a path from the starting point to the estimate. */
+
+.journey {
+  --cols: minmax(8.5rem, 13rem) minmax(0, 1fr) 4.25rem 4.75rem;
+  --row: 2.6rem;
+  --bar: 0.7rem;
+  --up: var(--raise);
+  --down: var(--lower);
+  display: grid;
+  gap: 0.75rem;
+  margin: 0;
+  container-type: inline-size;
+}
+
+.journey[data-variant="compact"] {
+  --cols: minmax(7rem, 10rem) minmax(0, 1fr) 3.5rem 4.25rem;
+  --row: 2.1rem;
+  --bar: 0.55rem;
+  gap: 0.55rem;
+}
+
+.journey[data-variant="compact"] .reading,
+.journey[data-variant="compact"] .detail {
+  font-size: 0.8rem;
+}
+
+.journey[data-variant="story"] {
+  --row: 2.9rem;
+  --bar: 0.85rem;
+}
+
+.reading {
+  max-width: 62ch;
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+  color: var(--chalk-2);
+}
+
+.reading b {
+  color: var(--chalk);
+}
+
+.head,
+.row {
+  display: grid;
+  grid-template-columns: var(--cols);
+  align-items: center;
+  column-gap: 0.9rem;
+}
+
+.head {
+  padding-bottom: 0.35rem;
+  border-bottom: 1px solid var(--rule);
+  font-size: 0.68rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+
+.head > span:nth-child(3),
+.head > span:nth-child(4) {
+  text-align: right;
+}
+
+.ticks {
+  position: relative;
+  height: 1em;
+}
+
+.ticks i {
+  position: absolute;
+  top: 0;
+  translate: -50% 0;
+  font-style: normal;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.steps li {
+  position: relative;
+  transition: opacity 260ms var(--ease-out);
+}
+
+.row {
+  width: 100%;
+  height: var(--row);
+  padding: 0;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: default;
+}
+
+.row:focus-visible {
+  outline: 2px solid var(--flood);
+  outline-offset: -2px;
+}
+
+.steps li[data-active] .row {
+  background: rgb(237 239 230 / 0.045);
+}
+
+.label {
+  display: grid;
+  min-width: 0;
+  padding-left: 0.5rem;
+  line-height: 1.15;
+}
+
+.label b {
+  overflow: hidden;
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.label small {
+  overflow: hidden;
+  font-size: 0.72rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--fog);
+}
+
+.journey[data-variant="compact"] .label small {
+  display: none;
+}
+
+.steps li[data-kind="final"] .label b {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--flood);
+}
+
+.track {
+  position: relative;
+  align-self: stretch;
+}
+
+.grid {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--rule);
+}
+
+.observedLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed rgb(237 239 230 / 0.42);
+}
+
+.bar {
+  position: absolute;
+  top: calc(50% - var(--bar) / 2);
+  height: var(--bar);
+  border-radius: 2px;
+  transform-origin: left center;
+  animation: grow 520ms var(--ease-out) both;
+  animation-delay: calc(var(--i) * 55ms);
+}
+
+.bar[data-dir="up"] {
+  background: var(--up);
+}
+
+.bar[data-dir="down"] {
+  background: var(--down);
+  transform-origin: right center;
+}
+
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+/* The step from one bar's end to the next bar's start. */
+.connector {
+  position: absolute;
+  top: calc(50% + var(--bar) / 2);
+  height: calc(var(--row) - var(--bar));
+  width: 0;
+  border-left: 1px solid rgb(237 239 230 / 0.35);
+}
+
+.origin {
+  position: absolute;
+  top: 50%;
+  width: 0.6rem;
+  height: 0.6rem;
+  translate: -50% -50%;
+  border-radius: 50%;
+  background: var(--chalk);
+  box-shadow: 0 0 0 2px var(--surface, #0f1713);
+}
+
+.steps li[data-kind="base"] .origin::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 100%;
+  height: calc(var(--row) / 2 - var(--bar) / 2);
+  border-left: 1px solid rgb(237 239 230 / 0.35);
+}
+
+.net {
+  position: absolute;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: rgb(233 185 73 / 0.55);
+}
+
+.estimate {
+  position: absolute;
+  top: 50%;
+  width: 0.85rem;
+  height: 0.85rem;
+  translate: -50% -50%;
+  rotate: 45deg;
+  background: var(--flood);
+  box-shadow: 0 0 0 2px var(--surface, #0f1713);
+}
+
+.observed {
+  position: absolute;
+  top: 50%;
+  width: 0.7rem;
+  height: 0.7rem;
+  translate: -50% -50%;
+  border: 2px solid var(--chalk);
+  border-radius: 50%;
+  background: var(--surface, #0f1713);
+}
+
+.observed span {
+  position: absolute;
+  bottom: calc(100% + 0.3rem);
+  left: 50%;
+  translate: -50% 0;
+  padding: 0 0.3rem;
+  font-size: 0.68rem;
+  white-space: nowrap;
+  color: var(--chalk-2);
+  background: var(--surface, #0f1713);
+}
+
+.effect,
+.running {
+  display: grid;
+  justify-items: end;
+  line-height: 1.1;
+  font-variant-numeric: tabular-nums;
+}
+
+.effect {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.steps li[data-dir="up"] .effect {
+  color: var(--chalk);
+}
+
+.steps li[data-dir="down"] .effect {
+  color: var(--chalk);
+}
+
+.effect small {
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: var(--fog);
+}
+
+.running {
+  padding-right: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--chalk-2);
+}
+
+.steps li[data-kind="final"] .running {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--flood);
+}
+
+.steps li[data-kind="final"] {
+  border-top: 1px solid var(--rule-strong);
+}
+
+/* Story mode: later steps wait offstage until the narrative reaches them. */
+.steps li[data-hidden] {
+  opacity: 0.12;
+}
+
+.steps li[data-hidden] .bar {
+  animation: none;
+  transform: scaleX(0);
+}
+
+.journey[data-variant="story"] .bar {
+  animation: none;
+  transition: transform 520ms var(--ease-out);
+}
+
+.detail {
+  min-height: 2.9em;
+  margin: 0;
+  padding: 0.6rem 0.8rem;
+  border-left: 2px solid var(--flood);
+  background: rgb(237 239 230 / 0.03);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--chalk-2);
+}
+
+.detail b {
+  color: var(--chalk);
+  font-weight: 600;
+}
+
+.caption {
+  display: grid;
+  gap: 0.35rem;
+  font-size: 0.75rem;
+  line-height: 1.45;
+  color: var(--fog);
+}
+
+.key {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.35rem 0.5rem;
+  color: var(--chalk-2);
+}
+
+.key i {
+  display: inline-block;
+  width: 0.9rem;
+  height: 0.5rem;
+  border-radius: 2px;
+}
+
+.key i[data-dir="up"] {
+  background: var(--up);
+}
+
+.key i[data-dir="down"] {
+  margin-left: 0.5rem;
+  background: var(--down);
+}
+
+.key i[data-k="obs"] {
+  width: 0;
+  height: 0.8rem;
+  margin-left: 0.75rem;
+  border-left: 1px dashed var(--chalk-2);
+  border-radius: 0;
+}
+
+.refused {
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--error);
+  border-radius: var(--radius-s);
+  background: var(--error-soft);
+  font-size: 0.9rem;
+  color: var(--chalk-2);
+}
+
+@container (max-width: 520px) {
+  .journey {
+    --cols: minmax(6.5rem, 8.5rem) minmax(0, 1fr) 3.25rem;
+  }
+  .head > span:nth-child(4),
+  .running {
+    display: none;
+  }
+  .label small {
+    display: none;
+  }
+  .ticks i:nth-child(even) {
+    display: none;
+  }
+}

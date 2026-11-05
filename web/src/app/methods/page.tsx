@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-import { room } from "@/lib/rooms";
 import Link from "next/link";
-import { RoomTransition } from "@/components/site/RoomTransition";
+import { PageTransition } from "@/components/site/PageTransition";
 import { BarList } from "@/components/charts/BarList";
 import { featureLabel } from "@/lib/football";
 import { decimal, formatEur, integer, percent, signed } from "@/lib/format";
@@ -97,12 +96,12 @@ export default function MethodsPage() {
   const pop = funnel[funnel.length - 1]!;
 
   return (
-    <RoomTransition>
+    <PageTransition>
     <div className="paper">
     <article className={styles.layout}>
       <header className={styles.masthead}>
         <p className={styles.kicker}>
-          <b className="num">{room("methods").index}</b> Methods · technical account
+          <b>Stories</b> · Research · Methods, the technical account
         </p>
         <h1 className={styles.title}>How FairValue works</h1>
         <p className={styles.lede}>
@@ -497,6 +496,6 @@ cd web && npm ci && npm run dev     # this site`}</code>
       </div>
     </article>
     </div>
-    </RoomTransition>
+    </PageTransition>
   );
 }

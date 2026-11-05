@@ -6,7 +6,7 @@ import { Observatory } from "./Observatory";
 const nav = vi.hoisted(() => ({ query: "", replace: vi.fn(), push: vi.fn() }));
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/fairness",
+  usePathname: () => "/terminal/audit",
   useSearchParams: () => new URLSearchParams(nav.query),
   useRouter: () => ({ replace: nav.replace, push: nav.push }),
 }));
@@ -50,18 +50,18 @@ describe("Fairness observatory", () => {
     nav.query = "model=B";
     render(<Observatory data={data} />);
     const rail = screen.getByRole("navigation", { name: "Instruments" });
-    expect(within(rail).getByRole("link", { name: /Robustness/ })).toHaveAttribute("href", "/fairness?view=robustness&model=B");
+    expect(within(rail).getByRole("link", { name: /Robustness/ })).toHaveAttribute("href", "/terminal/audit?view=robustness&model=B");
   });
 
   it("switches model and overlay through the URL", async () => {
     nav.query = "";
     render(<Observatory data={data} />);
     await userEvent.click(screen.getByRole("radio", { name: "Model B" }));
-    expect(nav.replace).toHaveBeenCalledWith("/fairness?model=B", { scroll: false });
+    expect(nav.replace).toHaveBeenCalledWith("/terminal/audit?model=B", { scroll: false });
     // The control responds immediately, before the URL round-trip completes.
     expect(screen.getByText(/Within-league signed gap · Model B/)).toBeInTheDocument();
     await userEvent.click(screen.getByRole("checkbox", { name: /Overlay Model A/ }));
-    expect(nav.replace).toHaveBeenLastCalledWith("/fairness?model=B&compare=1", { scroll: false });
+    expect(nav.replace).toHaveBeenLastCalledWith("/terminal/audit?model=B&compare=1", { scroll: false });
   });
 });
 

@@ -25,10 +25,15 @@ describe("Valuation lab", () => {
     expect(screen.getByText("Cached research result")).toBeInTheDocument(); // the panel's source badge
     expect(screen.queryByText(/Served · live/)).not.toBeInTheDocument();
     expect(screen.getAllByText("€16.5M").length).toBeGreaterThan(0); // reports/explainability, served Model A
-    expect(screen.getByText("Average training player")).toBeInTheDocument(); // the offline SHAP waterfall
-    // Model B has no offline figure: it says so rather than inventing one.
-    await userEvent.click(within(screen.getByRole("radiogroup", { name: "Explain model" })).getByRole("radio", { name: "Model B" }));
-    expect(screen.getByText(/No Model B explanation is available/)).toBeInTheDocument();
+    // The offline Valuation Journey: the published SHAP run, from its starting point to the estimate.
+    expect(screen.getByText("Starting point")).toBeInTheDocument();
+    expect(screen.getByText("Model A estimate")).toBeInTheDocument();
+    expect(screen.getByText(/Published SHAP run for the served Model A/)).toBeInTheDocument();
+    // Model B has no offline explanation: it cannot be selected, and nothing is invented for it.
+    const b = within(screen.getByRole("radiogroup", { name: "Explain model" })).getByRole("radio", { name: "Model B" });
+    expect(b).toHaveAttribute("aria-disabled", "true");
+    await userEvent.click(b);
+    expect(b).toHaveAttribute("aria-checked", "false");
   });
 
   it("uses live served estimates when the verified API answers, and sends only the player's model inputs", async () => {

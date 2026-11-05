@@ -264,8 +264,13 @@
   color: #1b1505;
 }
 
+.toggle button[aria-disabled="true"] {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
 .whyNote {
-  margin-bottom: 0.9rem;
+  margin-top: 0.9rem;
   font-size: 0.78rem;
   color: #8f9b93;
 }

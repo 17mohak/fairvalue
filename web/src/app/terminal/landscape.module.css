@@ -1,0 +1,146 @@
+/* Shared layout for the Terminal's population views (market, leagues, discrepancies). */
+.page {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.context {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem 2rem;
+  margin: 0;
+  padding: 0.6rem 0.85rem;
+  border: 1px solid rgb(237 239 230 / 0.08);
+  border-radius: 4px;
+  background: #0a0e0b;
+  font-size: 0.78rem;
+}
+
+.context div {
+  display: grid;
+}
+
+.context dt {
+  font-size: 0.6rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #6c786f;
+}
+
+.context dd {
+  margin: 0;
+  font-weight: 600;
+  color: #edefe6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.s4 {
+  grid-column: span 4;
+}
+.s5 {
+  grid-column: span 5;
+}
+.s6 {
+  grid-column: span 6;
+}
+.s7 {
+  grid-column: span 7;
+}
+.s8 {
+  grid-column: span 8;
+}
+.s12 {
+  grid-column: 1 / -1;
+}
+
+.body {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.85rem;
+}
+
+.reading {
+  max-width: 70ch;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #c3cbc3;
+}
+
+.reading b {
+  color: #edefe6;
+}
+
+.split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.25rem;
+}
+
+.splitTitle {
+  margin-bottom: 0.4rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #8f9b93;
+}
+
+.warn {
+  display: flex;
+  gap: 0.6rem;
+  align-items: baseline;
+  padding: 0.55rem 0.85rem;
+  border: 1px solid rgb(233 185 73 / 0.3);
+  border-radius: 4px;
+  background: rgb(233 185 73 / 0.05);
+  font-size: 0.8rem;
+  color: #c3cbc3;
+}
+
+.warn b {
+  color: #e9b949;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.sortLinks {
+  display: flex;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+}
+
+.sortLinks a {
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  color: #8f9b93;
+  text-decoration: none;
+}
+
+.sortLinks a[aria-current] {
+  background: rgb(233 185 73 / 0.12);
+  color: #e9b949;
+}
+
+@media (max-width: 1200px) {
+  .s4,
+  .s5,
+  .s6,
+  .s7,
+  .s8 {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 700px) {
+  .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

@@ -37,7 +37,7 @@ export function PortraitSlot({ portrait, name, roleCode, size = "hero" }: { port
       <span className={styles.role} aria-hidden="true">
         {roleCode}
       </span>
-      {size === "hero" && <figcaption className={styles.none}>No licensed portrait</figcaption>}
+      {size === "hero" && <figcaption className={styles.none}>Portrait slot · no licensed image yet</figcaption>}
     </figure>
   );
 }

@@ -1,4 +1,4 @@
-import { RoomLink } from "@/components/site/RoomLink";
+import { ExpLink } from "@/components/site/ExpLink";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import styles from "./Button.module.css";
 
@@ -10,11 +10,11 @@ export function Button({ variant = "primary", className = "", ...props }: Button
 
 export function ButtonLink({ href, variant = "primary", children }: { href: string; variant?: Variant; children: ReactNode }) {
   return (
-    <RoomLink href={href} className={`${styles.button} ${styles[variant]}`}>
+    <ExpLink href={href} className={`${styles.button} ${styles[variant]}`}>
       {children}
       <span className={styles.arrow} aria-hidden="true">
         →
       </span>
-    </RoomLink>
+    </ExpLink>
   );
 }

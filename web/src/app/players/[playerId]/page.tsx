@@ -6,18 +6,21 @@ import { PortraitSlot } from "@/components/players/PortraitSlot";
 import { TraitsRadar } from "@/components/players/TraitsRadar";
 import { ValuationLab } from "@/components/players/ValuationLab";
 import { ValueHistory } from "@/components/players/ValueHistory";
-import { RoomLink } from "@/components/site/RoomLink";
-import { RoomTransition } from "@/components/site/RoomTransition";
+import { ExpLink } from "@/components/site/ExpLink";
+import { DossierBar } from "@/components/players/DossierBar";
+import { PageTransition } from "@/components/site/PageTransition";
+import { parseFrom } from "@/lib/experiences";
+import { storyBySlug } from "@/lib/stories";
 import { leagueName } from "@/lib/football";
 import { formatEur, integer, signed } from "@/lib/format";
 import { idFromParam, POSITION_PLURAL, type PlayerProfile, type TraitKey } from "@/lib/players";
 import { neighbours, playerById, playerSet } from "@/lib/players.server";
 import { portraitFor } from "@/lib/portraits";
 import { heldOutLogMae, research } from "@/lib/research";
-import { room } from "@/lib/rooms";
+
 import styles from "./profile.module.css";
 
-type Params = { params: Promise<{ playerId: string }> };
+type Params = { params: Promise<{ playerId: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 function load(param: string): PlayerProfile {
   const id = idFromParam(param);
@@ -26,7 +29,7 @@ function load(param: string): PlayerProfile {
   return p;
 }
 
-export async function generateMetadata({ params }: Params): Promise<Metadata> {
+export async function generateMetadata({ params }: Pick<Params, "params">): Promise<Metadata> {
   const id = idFromParam((await params).playerId);
   const p = id === null ? undefined : playerById(id);
   return p ? { title: p.name, description: `${p.name}: observed market value, model estimates, explanation and positional traits.` } : { title: "Player not found" };
@@ -40,8 +43,10 @@ function windowLabel(): string {
   return `${f(m[1]!)} – ${f(m[2]!)}`;
 }
 
-export default async function PlayerPage({ params }: Params) {
+export default async function PlayerPage({ params, searchParams }: Params) {
   const p = load((await params).playerId);
+  const from = parseFrom((await searchParams).from);
+  const story = storyBySlug(`valuation-${p.slug}`)?.href ?? null;
   const set = playerSet();
   const peers = set.peers?.[p.position] ?? null;
   const portrait = portraitFor(p.id);
@@ -64,9 +69,10 @@ export default async function PlayerPage({ params }: Params) {
   ) as Partial<Record<TraitKey, number>>;
 
   return (
-    <RoomTransition>
-      <article className={styles.profile}>
-        <PlayerHero player={p} portrait={portrait} roomIndex={room("players").index} valuedLabel={valued} estimates={heroEstimates} />
+    <PageTransition>
+      <article className={styles.profile} data-from={from ?? undefined}>
+        <DossierBar from={from} player={{ id: p.id, slug: p.slug, name: p.name, role_code: p.role_code }} story={story} />
+        <PlayerHero player={p} portrait={portrait} valuedLabel={valued} estimates={heroEstimates} />
 
         <div className={styles.grid} data-history={hasHistory || undefined}>
           <ValuationLab
@@ -130,7 +136,7 @@ export default async function PlayerPage({ params }: Params) {
                 The group comes from first-listed citizenship and is never a model input. Across the population, non-UEFA players&apos; market values
                 sit about {Math.round(Math.expm1(gap.estimate) * 100)}% above Model A&apos;s held-out estimates, relative to UEFA players in the same
                 leagues. One player&apos;s residual says nothing about that pattern (typical miss ×{Math.exp(heldOutLogMae("A")).toFixed(2)}), and none
-                of it is evidence of discrimination: the target may itself be biased. <RoomLink href="/fairness">Open the observatory</RoomLink>
+                of it is evidence of discrimination: the target may itself be biased. <ExpLink href="/terminal/audit">Open the Fairness Audit</ExpLink>
               </p>
             </div>
           </section>
@@ -141,14 +147,14 @@ export default async function PlayerPage({ params }: Params) {
             <h2 id="more-title" className="fv-panel-title">
               More players <small>{set.source === "showcase" ? "research showcase" : "nearest by market value"}</small>
             </h2>
-            <RoomLink href="/players" className={styles.moreAll}>
-              All players →
-            </RoomLink>
+            <ExpLink href="/terminal" className={styles.moreAll}>
+              All players in the Terminal →
+            </ExpLink>
           </header>
           <ul className={styles.moreList}>
             {more.map((q) => (
               <li key={q.id}>
-                <RoomLink href={`/players/${q.slug}`} className={styles.moreCard}>
+                <ExpLink href={from ? `/players/${q.slug}?from=${from}` : `/players/${q.slug}`} className={styles.moreCard}>
                   <span className={styles.moreThumb}>
                     <PortraitSlot portrait={portraitFor(q.id)} name={q.name} roleCode={q.role_code} size="thumb" />
                   </span>
@@ -166,7 +172,7 @@ export default async function PlayerPage({ params }: Params) {
                     </span>
                   </span>
                   <span className={`${styles.moreValue} num`}>{formatEur(q.market_value_eur)}</span>
-                </RoomLink>
+                </ExpLink>
               </li>
             ))}
           </ul>
@@ -176,6 +182,6 @@ export default async function PlayerPage({ params }: Params) {
           </p>
         </section>
       </article>
-    </RoomTransition>
+    </PageTransition>
   );
 }

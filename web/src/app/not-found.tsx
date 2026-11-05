@@ -1,5 +1,5 @@
-import { RoomLink } from "@/components/site/RoomLink";
-import { ROOMS } from "@/lib/rooms";
+import { ExpLink } from "@/components/site/ExpLink";
+import { EXPERIENCES } from "@/lib/experiences";
 import styles from "./status.module.css";
 
 export default function NotFound() {
@@ -11,15 +11,15 @@ export default function NotFound() {
       <h1 id="nf-title" className={styles.title}>
         This page isn&apos;t on the pitch.
       </h1>
-      <p className={styles.body}>The address doesn&apos;t match any part of FairValue. These are the four rooms:</p>
+      <p className={styles.body}>The address doesn&apos;t match any part of FairValue. FairValue has three environments:</p>
       <ol className={styles.rooms}>
-        {ROOMS.map((r) => (
+        {EXPERIENCES.map((r) => (
           <li key={r.id}>
-            <RoomLink href={r.href}>
-              <span className="num">{r.index}</span>
+            <ExpLink href={r.href}>
+              <span className="num">0{r.key}</span>
               <strong>{r.label}</strong>
               <span>{r.summary}</span>
-            </RoomLink>
+            </ExpLink>
           </li>
         ))}
       </ol>

@@ -3,7 +3,7 @@ import path from "node:path";
 
 // Global utility classes used inside CSS modules must be wrapped in :global(), or the module
 // hashes them and the rule silently never matches (this happened three times).
-const GLOBAL_CLASSES = ["num", "prose", "eyebrow", "fv-role", "fv-chip", "fv-label", "fv-source"];
+const GLOBAL_CLASSES = ["num", "prose", "eyebrow", "fv-role", "fv-chip", "fv-label", "fv-source", "tm-panel", "tm-btn", "tm-table", "tm-note", "tm-title"];
 
 function moduleFiles(dir: string): string[] {
   return fs.readdirSync(dir, { withFileTypes: true }).flatMap((e) => {

@@ -6,6 +6,7 @@ import { PortraitSlot } from "@/components/players/PortraitSlot";
 import { TraitsRadar } from "@/components/players/TraitsRadar";
 import { ValuationLab } from "@/components/players/ValuationLab";
 import { ValueHistory } from "@/components/players/ValueHistory";
+import { LeagueFlag } from "@/components/brand/Flag";
 import { ExpLink } from "@/components/site/ExpLink";
 import { DossierBar } from "@/components/players/DossierBar";
 import { PageTransition } from "@/components/site/PageTransition";
@@ -14,9 +15,13 @@ import { storyBySlug } from "@/lib/stories";
 import { leagueName } from "@/lib/football";
 import { formatEur, integer, signed } from "@/lib/format";
 import { idFromParam, POSITION_PLURAL, type PlayerProfile, type TraitKey } from "@/lib/players";
-import { neighbours, playerById, playerSet } from "@/lib/players.server";
+import { playerById, playerSet } from "@/lib/players.server";
 import { portraitFor } from "@/lib/portraits";
+import { nearestByValue, standingText, valueStanding } from "@/lib/peers";
 import { valuationReading } from "@/lib/reading";
+import { PlayerAppearances, type AppearanceLink } from "@/components/players/PlayerAppearances";
+import { ValueSilhouette } from "@/components/players/ValueSilhouette";
+import { STORIES } from "@/lib/stories";
 import { shortName } from "@/lib/theatre";
 import { heldOutLogMae, research } from "@/lib/research";
 
@@ -71,7 +76,34 @@ export default async function PlayerPage({ params, searchParams }: Params) {
   );
   const gap = research.headline.A.signed_gap_league_stratified;
   const residual = p.estimates.heldout.A !== null ? Math.log(p.market_value_eur) - Math.log(p.estimates.heldout.A) : null;
-  const more = neighbours(p.id, 4);
+  // In context: where the observed value sits among comparable players in this build.
+  const leagueShort = leagueName(p.league_id).split(",")[0]!;
+  const leaguePool = set.players.filter((q) => q.league_id === p.league_id);
+  const positionPool = set.players.filter((q) => q.position === p.position);
+  const groups = [
+    {
+      key: "league",
+      title: leagueShort,
+      noun: `${leagueShort} players`,
+      values: leaguePool.map((q) => q.market_value_eur),
+      explorer: `/terminal?league=${p.league_id}&focus=${p.id}`,
+    },
+    {
+      key: "position",
+      title: `${POSITION_PLURAL[p.position][0]!.toUpperCase()}${POSITION_PLURAL[p.position].slice(1)}, all leagues`,
+      noun: POSITION_PLURAL[p.position],
+      values: positionPool.map((q) => q.market_value_eur),
+      explorer: `/terminal?position=${p.position}&focus=${p.id}`,
+    },
+  ].map((g) => ({ ...g, standing: valueStanding(g.values, p.market_value_eur) }));
+  const nearLeague = nearestByValue(leaguePool, p, 4);
+  const nearPosition = nearestByValue(positionPool.filter((q) => !nearLeague.some((n) => n.id === q.id)), p, 4);
+  const near = [...nearLeague.map((q) => ({ q, why: leagueShort })), ...nearPosition.map((q) => ({ q, why: POSITION_PLURAL[p.position] }))];
+  const appearances: AppearanceLink[] = [
+    ...STORIES.filter((s) => s.players.includes(p.id)).map((s) => ({ href: s.href, label: s.title, kind: `Story · ${s.formatLabel}` })),
+    { href: `/terminal?league=${p.league_id}&focus=${p.id}`, label: `${leagueShort} in the Player Explorer`, kind: "Terminal" },
+    { href: "/terminal/leagues", label: `${leagueShort} on the League Landscape`, kind: "Terminal" },
+  ];
   const hasHistory = !!p.history && p.history.length > 1;
   const raw = Object.fromEntries(
     (["goals_p90", "assists_p90", "minutes", "start_share", "minutes_last_365", "intl_club_minutes_share"] as TraitKey[]).map((k) => [k, p.features[k] as number]),
@@ -104,6 +136,7 @@ export default async function PlayerPage({ params, searchParams }: Params) {
               { id: "traits", label: "Traits" },
               ...(hasHistory ? [{ id: "history", label: "History" }] : []),
               { id: "audit", label: "Audit context" },
+              { id: "context", label: "In context" },
             ].map((s, i) => (
               <li key={s.id}>
                 <a href={`#${s.id}`}>
@@ -182,41 +215,80 @@ export default async function PlayerPage({ params, searchParams }: Params) {
           </section>
         </div>
 
-        <section className={styles.more} aria-labelledby="more-title">
+        <section id="context" className={styles.more} aria-labelledby="context-title">
           <header className={styles.moreHead}>
-            <h2 id="more-title" className="fv-panel-title">
-              More players <small>{set.source === "showcase" ? "research showcase" : "nearest by market value"}</small>
+            <h2 id="context-title" className="fv-panel-title">
+              In context <small>observed value among comparable players in this build</small>
             </h2>
             <ExpLink href="/terminal" className={styles.moreAll}>
               All players in the Terminal →
             </ExpLink>
           </header>
-          <ul className={styles.moreList}>
-            {more.map((q) => (
-              <li key={q.id}>
-                <ExpLink href={from ? `/players/${q.slug}?from=${from}` : `/players/${q.slug}`} className={styles.moreCard}>
-                  <span className={styles.moreThumb}>
-                    <PortraitSlot portrait={portraitFor(q.id)} name={q.name} roleCode={q.role_code} size="thumb" />
-                  </span>
-                  <span className={styles.moreText}>
-                    <span className={styles.moreName}>
-                      <ViewTransition name={`name-${q.id}`} share="morph" default="none">
-                        <b>{q.last_name}</b>
-                      </ViewTransition>
-                      <ViewTransition name={`glyph-${q.id}`} share="morph" default="none">
-                        <span className="fv-role">{q.role_code}</span>
-                      </ViewTransition>
+
+          <div className={styles.contextGrid}>
+            <div className={styles.standings}>
+              {groups.map((g) => (
+                <div key={g.key} className={styles.standing}>
+                  <p className={styles.standingHead}>
+                    <b>
+                      {g.key === "league" && <LeagueFlag leagueId={p.league_id} />} {g.title}
+                    </b>
+                    <span className="num">
+                      {integer(g.standing.n)} players · median {formatEur(g.standing.median)}
                     </span>
-                    <span className={styles.moreMeta}>
-                      {q.club ?? leagueName(q.league_id).split(",")[0]} · {Math.floor(q.age)}
-                    </span>
-                  </span>
-                  <span className={`${styles.moreValue} num`}>{formatEur(q.market_value_eur)}</span>
-                </ExpLink>
-              </li>
-            ))}
-          </ul>
+                  </p>
+                  <p className={styles.standingText}>{standingText(g.standing, g.noun)}</p>
+                  {g.standing.n >= 12 && (
+                    <ValueSilhouette
+                      values={g.values}
+                      value={p.market_value_eur}
+                      median={g.standing.median}
+                      label={`Observed values of ${integer(g.standing.n)} ${g.noun}, log scale; ${p.name} at ${formatEur(p.market_value_eur)}, median ${formatEur(g.standing.median)}.`}
+                    />
+                  )}
+                  <ExpLink href={g.explorer} className={styles.standingLink}>
+                    See them in the Explorer →
+                  </ExpLink>
+                </div>
+              ))}
+            </div>
+            <PlayerAppearances playerId={p.id} name={shortName(p)} links={appearances} />
+          </div>
+
+          {near.length > 0 && (
+            <>
+              <h3 className={styles.nearHead}>
+                Near this valuation <small>closest observed values: same league, then same position</small>
+              </h3>
+              <ul className={styles.moreList}>
+                {near.map(({ q, why }) => (
+                  <li key={q.id}>
+                    <ExpLink href={from ? `/players/${q.slug}?from=${from}` : `/players/${q.slug}`} className={styles.moreCard}>
+                      <span className={styles.moreThumb}>
+                        <PortraitSlot portrait={portraitFor(q.id)} name={q.name} roleCode={q.role_code} size="thumb" />
+                      </span>
+                      <span className={styles.moreText}>
+                        <span className={styles.moreName}>
+                          <ViewTransition name={`name-${q.id}`} share="morph" default="none">
+                            <b>{shortName(q)}</b>
+                          </ViewTransition>
+                          <ViewTransition name={`glyph-${q.id}`} share="morph" default="none">
+                            <span className="fv-role">{q.role_code}</span>
+                          </ViewTransition>
+                        </span>
+                        <span className={styles.moreMeta}>
+                          {q.club ?? leagueName(q.league_id).split(",")[0]} · {why}
+                        </span>
+                      </span>
+                      <span className={`${styles.moreValue} num`}>{formatEur(q.market_value_eur)}</span>
+                    </ExpLink>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
           <p className={styles.provenance}>
+            Counts and ranks of observed Transfermarkt values only; model errors are never ranked here.{" "}
             {set.source === "showcase" ? "Research showcase: " : "Full player export: "}
             {set.selection}
           </p>

@@ -94,7 +94,7 @@ Already complete: 2.2, the Terminal on the full population (D-040), and the flag
 | S2-05 | Drill-through between aggregates and players | P1 | M | – | Open |
 | S2-06 | Explorer table fits desktop widths | P1 | S | – | Open |
 | S2-07 | Overview cover: always a valuation, never a placeholder number | P1 | S | S2-01 (S2-03 for the image) | **Partial** (D-045: the hero always shows real held-out valuations; the live-check placeholder is unchanged) |
-| S2-08 | Dossier as the hub: where this player appears | P2 | M | S2-05 | Open |
+| S2-08 | Dossier as the hub: where this player appears | P2 | M | S2-05 | **Partial** (D-048: stories, Explorer and League Landscape links, comparison tray and watchlists; aggregate drill-through S2-05 still open) |
 | S2-09 | Value rulers cover the full value range | P2 | S | – | Open |
 | S2-10 | More valuation stories and Player Spotlight | P2 | L | S2-03, owner decision | Open |
 

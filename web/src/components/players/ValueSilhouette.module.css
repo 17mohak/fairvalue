@@ -1,0 +1,62 @@
+.svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.bar {
+  fill: rgb(237 239 230 / 0.16);
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: vs-grow 700ms var(--ease-out) calc(var(--i) * 12ms) both;
+}
+
+.bar[data-mine] {
+  fill: var(--flood);
+}
+
+.base {
+  stroke: rgb(237 239 230 / 0.2);
+  stroke-width: 1;
+}
+
+.median {
+  stroke: rgb(237 239 230 / 0.45);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+  vector-effect: non-scaling-stroke;
+}
+
+.mark {
+  stroke: var(--flood);
+  stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
+}
+
+.disc {
+  fill: var(--chalk);
+  stroke: #0b100d;
+  stroke-width: 1.5;
+}
+
+.tick {
+  fill: var(--fog);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.markLabel {
+  fill: var(--flood);
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+@keyframes vs-grow {
+  from {
+    transform: scaleY(0);
+  }
+}

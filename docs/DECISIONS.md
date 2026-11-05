@@ -562,6 +562,20 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
 - **Loading:** a skeleton while the live explanation loads, never a number-shaped placeholder; the
   offline message is unchanged.
 
+## D-048 Dossier in context: standings, neighbours, where the player appears — Decided (2026-11-05)
+- **Standings:** where the observed value sits within the player's league and position, in plain words
+  ("The highest observed value among 555 Premier League players", "Valued above 78% of …", "joint"
+  when tied), with a log-scale histogram silhouette of the group (one bar per bin, not one mark per
+  player, to keep the page light). Shown only for groups of 12 or more.
+- **Observed values only:** counts and ranks of Transfermarkt values. Residuals are never ranked or
+  compared between players here (model card); the page says so.
+- **Near this valuation:** the closest observed values (log scale) in the same league, then the same
+  position; replaces the old "More players" strip, which used the whole board. `?from=` is kept.
+- **Where the player appears:** published Stories that include the player, the Player Explorer filtered
+  to the league (with the player in focus) and the League Landscape, plus, from this browser only, the
+  comparison tray and watchlists (rendered after hydration, so the server never claims anything about a
+  viewer's lists). This is ROADMAP S2-08 for the dossier.
+
 ---
 
 # Issues found in the locked technical spec

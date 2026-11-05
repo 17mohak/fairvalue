@@ -43,10 +43,12 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.75rem;
-  letter-spacing: 0.12em;
+  font-size: 0.645rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--fog);
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .live {
@@ -121,10 +123,12 @@
 }
 
 .spec dt {
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--fog-2);
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .spec dd {

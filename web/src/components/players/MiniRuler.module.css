@@ -36,16 +36,20 @@
   border-radius: 50%;
 }
 
+/* Marker grammar (D-039): observed = solid chalk disc, model = gold outline diamond. */
 .mark[data-kind="market"] {
   z-index: 2;
-  background: #e9b949;
+  background: #edefe6;
   box-shadow: 0 0 0 2px #0e1612;
 }
 
 .mark[data-kind="model"] {
   z-index: 1;
+  border-radius: 1px;
+  rotate: 45deg;
+  scale: 0.85;
   background: #0e1612;
-  box-shadow: inset 0 0 0 2px #edefe6;
+  box-shadow: inset 0 0 0 2px #e9b949;
 }
 
 .scale {

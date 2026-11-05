@@ -67,14 +67,15 @@
   height: 2rem;
   padding: 0 1rem;
   border-radius: 999px;
-  font-family: var(--font-display);
-  font-size: 1rem;
+  font-family: var(--font-label);
+  font-size: 0.86rem;
   font-weight: 500;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   text-decoration: none;
   color: #8f9b93;
   transition: color 180ms var(--ease-out);
+  font-variation-settings: var(--label-wdth);
 }
 
 .option:hover {
@@ -262,11 +263,13 @@
   .word {
     display: none;
   }
+  /* Phones: the switcher drops to Archivo's normal width so all three fit beside search. */
   .option {
     height: 1.9rem;
-    padding: 0 0.55rem;
-    font-size: 0.82rem;
-    letter-spacing: 0.03em;
+    padding: 0 0.5rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.01em;
+    font-variation-settings: "wdth" 100;
   }
   .status {
     padding: 0.5rem;

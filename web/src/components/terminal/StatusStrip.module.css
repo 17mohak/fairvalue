@@ -18,10 +18,12 @@
 .item b {
   margin-right: 0.3rem;
   font-weight: 500;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   font-size: 0.62rem;
   color: #56625a;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .service {

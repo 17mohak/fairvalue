@@ -133,10 +133,12 @@
   grid-template-columns: minmax(4.5rem, min(32%, 9.5rem)) minmax(0, 1fr) 4.75rem;
   column-gap: 0.75rem;
   margin-bottom: 0.25rem;
-  font-size: 0.64rem;
-  letter-spacing: 0.06em;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #6c786f;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .divAxisMid {
@@ -195,9 +197,11 @@
 
 .axisLabel {
   font-size: 10px;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.03em;
   fill: #8f9b93;
   text-transform: uppercase;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .diag {

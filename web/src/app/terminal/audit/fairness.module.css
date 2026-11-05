@@ -352,12 +352,13 @@
 }
 
 .viewIndex {
-  font-family: var(--font-display);
-  font-size: 0.85rem;
+  font-family: var(--font-label);
+  font-size: 0.731rem;
   font-weight: 600;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--flood);
+  font-variation-settings: var(--label-wdth);
 }
 
 .h2 {

@@ -37,8 +37,11 @@
   --error-soft: rgb(240 144 127 / 0.1);
 
   /* Type */
-  --font-display: var(--font-barlow-condensed), "Arial Narrow", sans-serif;
-  --font-ui: var(--font-barlow), "Helvetica Neue", Arial, sans-serif;
+  --font-display: var(--font-big-shoulders), "Arial Narrow", sans-serif;
+  --font-ui: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  /* Broadcast labels: Archivo at its expanded width. Set font-variation-settings: var(--label-wdth). */
+  --font-label: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --label-wdth: "wdth" 125;
   --font-serif: var(--font-source-serif), Georgia, serif;
 
   --step--2: 0.75rem;
@@ -150,9 +153,9 @@ h3,
 h4 {
   margin: 0;
   font-family: var(--font-display);
-  font-weight: 600;
-  line-height: 0.98;
-  letter-spacing: -0.01em;
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: 0;
   text-wrap: balance;
 }
 
@@ -352,12 +355,13 @@ table {
   display: inline-flex;
   align-items: baseline;
   gap: 0.6rem;
-  font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-family: var(--font-label);
+  font-size: 0.806rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--fog);
+  font-variation-settings: var(--label-wdth);
 }
 .eyebrow b {
   color: var(--flood);
@@ -411,10 +415,10 @@ table {
   gap: 0.6rem;
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.0625rem;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  line-height: 1.2;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
   text-transform: uppercase;
   color: #edefe6;
 }
@@ -451,19 +455,21 @@ table {
   color: #e9b949;
 }
 
+/* The player ID plate: a gold broadcast tab carrying the position code (D-039). */
 .fv-role {
   display: inline-grid;
   place-items: center;
-  min-width: 2.1rem;
-  height: 1.55rem;
-  padding: 0 0.35rem;
-  border-radius: 4px;
+  min-width: 2.3rem;
+  height: 1.5rem;
+  padding: 0 0.6rem 0 0.4rem;
   background: #e9b949;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 0.38rem) 100%, 0 100%);
   font-family: var(--font-display);
-  font-size: 0.95rem;
-  font-weight: 700;
-  letter-spacing: 0.02em;
-  color: #1b1505;
+  font-size: 1.02rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  color: #120d02;
 }
 
 /* Source badge: where a number came from. */
@@ -471,12 +477,14 @@ table {
   display: inline-flex;
   align-items: center;
   gap: 0.4rem;
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   font-weight: 500;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   white-space: nowrap;
   color: #8f9b93;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .fv-source::before {
@@ -504,11 +512,13 @@ table {
 }
 
 .fv-label {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
   font-weight: 500;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #8f9b93;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .fv-skeleton {
@@ -574,12 +584,13 @@ table {
 }
 
 .tm-title {
-  font-family: var(--font-display);
-  font-size: 0.86rem;
+  font-family: var(--font-label);
+  font-size: 0.74rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: #edefe6;
+  font-variation-settings: var(--label-wdth);
 }
 
 .tm-sub {
@@ -679,23 +690,41 @@ table {
 }
 
 .tm-table th {
-  position: sticky;
-  top: 0;
-  z-index: 2;
   padding: 0.5rem 0.6rem;
   border-bottom: 1px solid rgb(237 239 230 / 0.14);
   background: #0c110e;
-  font-size: 0.66rem;
+  font-size: 0.62rem;
   font-weight: 600;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.03em;
   text-align: left;
   text-transform: uppercase;
   white-space: nowrap;
   color: #8f9b93;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.tm-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Row headers read as data, not as labels. */
+.tm-table tbody th {
+  font-family: var(--font-ui);
+  font-variation-settings: normal;
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #c3cbc3;
+  border-bottom: 1px solid rgb(237 239 230 / 0.055);
+  background: transparent;
 }
 
 .tm-table td {
-  padding: 0.45rem 0.6rem;
+  padding: 0.55rem 0.65rem;
   border-bottom: 1px solid rgb(237 239 230 / 0.055);
   white-space: nowrap;
   color: #c3cbc3;

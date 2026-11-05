@@ -23,12 +23,13 @@
 }
 
 .kicker {
-  font-family: var(--font-display);
-  font-size: 0.9375rem;
+  font-family: var(--font-label);
+  font-size: 0.806rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--fog);
+  font-variation-settings: var(--label-wdth);
 }
 
 .kicker b {
@@ -64,10 +65,12 @@
 }
 
 .meta dt {
-  font-size: 0.7rem;
-  letter-spacing: 0.12em;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--fog);
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .meta dd {
@@ -87,12 +90,13 @@
 
 .abstractTitle {
   margin-bottom: 0.6rem;
-  font-family: var(--font-display);
-  font-size: 0.9rem;
+  font-family: var(--font-label);
+  font-size: 0.774rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--chalk);
+  font-variation-settings: var(--label-wdth);
 }
 
 .abstract p {
@@ -115,12 +119,13 @@
 
 .tocTitle {
   margin-bottom: 0.75rem;
-  font-family: var(--font-display);
-  font-size: 0.8rem;
+  font-family: var(--font-label);
+  font-size: 0.688rem;
   font-weight: 600;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--fog);
+  font-variation-settings: var(--label-wdth);
 }
 
 .tocProgress {
@@ -389,12 +394,14 @@
 
 .table thead th {
   border-bottom: 1px solid var(--chalk);
-  font-size: 0.72rem;
+  font-size: 0.62rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.03em;
   text-transform: uppercase;
   color: var(--fog);
   white-space: nowrap;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
 }
 
 .table tbody th {

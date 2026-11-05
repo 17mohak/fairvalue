@@ -1,0 +1,395 @@
+/* The Valuation Theatre. One scene, built in order:
+   environment -> pitch lines -> value ruler -> markers -> trajectories -> the difference.
+   Every animation fills backwards, so its end state is the element's natural state: with
+   reduced motion (globals.css shortens all animations to ~0) the finished scene is shown. */
+
+.theatre {
+  position: relative;
+  margin: 0;
+  min-width: 0;
+}
+
+.scene {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+/* ---- 1 · environment ---- */
+.env {
+  animation: fv-th-fade 900ms var(--ease-out) both;
+}
+.beam {
+  mix-blend-mode: screen;
+  animation: fv-th-beam 1600ms var(--ease-out) 120ms both;
+}
+.lamps circle {
+  fill: #fff6dc;
+  filter: drop-shadow(0 0 4px rgb(246 231 191 / 0.9));
+  animation: fv-th-fade 500ms var(--ease-out) 60ms both;
+}
+.grid path {
+  stroke: rgb(237 239 230 / 0.035);
+  stroke-width: 1;
+  fill: none;
+}
+.turf {
+  stroke: none;
+}
+.stripe {
+  fill: rgb(237 239 230 / 0.022);
+}
+.pool {
+  mix-blend-mode: screen;
+}
+
+/* ---- 2 · pitch lines ---- */
+.lines path {
+  fill: none;
+  stroke: rgb(237 239 230 / 0.42);
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: fv-th-draw 1100ms var(--ease-in-out) both;
+}
+.lines .goal {
+  stroke: rgb(237 239 230 / 0.26);
+}
+.spot {
+  fill: rgb(237 239 230 / 0.5);
+  animation: fv-th-fade 400ms var(--ease-out) 900ms both;
+}
+
+/* ---- 3 · value ruler ---- */
+.ruler {
+  animation: fv-th-fade 700ms var(--ease-out) 950ms both;
+}
+.tickLine {
+  fill: none;
+  stroke: rgb(237 239 230 / 0.07);
+  stroke-width: 1;
+  stroke-dasharray: 2 7;
+}
+.tick {
+  stroke: rgb(237 239 230 / 0.55);
+  stroke-width: 1.4;
+}
+.tickLabel {
+  fill: var(--chalk-2);
+  font-size: 17px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.axis {
+  stroke: rgb(237 239 230 / 0.16);
+  stroke-width: 1;
+}
+.axisLabel {
+  fill: var(--fog);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---- 4 · the cast ---- */
+.lane {
+  cursor: pointer;
+  outline: none;
+  --dim: 0.36;
+}
+.hit {
+  fill: transparent;
+  stroke: none;
+}
+.laneTrack {
+  fill: none;
+  stroke: rgb(237 239 230 / 0.07);
+  stroke-width: 1;
+  animation: fv-th-fade 500ms var(--ease-out) calc(1000ms + var(--d)) both;
+}
+.gapFloor {
+  fill: none;
+  stroke: rgb(233 185 73 / 0.22);
+  stroke-width: 3;
+  stroke-linecap: round;
+  animation: fv-th-fade 500ms var(--ease-out) calc(1500ms + var(--d)) both;
+}
+.arc {
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  opacity: var(--dim);
+  transition: opacity 220ms var(--ease-out);
+  animation: fv-th-draw 700ms var(--ease-in-out) calc(1450ms + var(--d)) both;
+}
+.shadow {
+  fill: rgb(0 0 0 / 0.45);
+  animation: fv-th-fade 400ms var(--ease-out) calc(1150ms + var(--d)) both;
+}
+.diamond {
+  fill: #0b100d;
+  stroke: var(--flood);
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: var(--dim);
+  transition: opacity 220ms var(--ease-out);
+  animation: fv-th-pop 520ms var(--ease-out) calc(1100ms + var(--d)) both;
+}
+.disc {
+  fill: var(--chalk);
+  stroke: #0b100d;
+  transform-box: fill-box;
+  transform-origin: center;
+  opacity: var(--dim);
+  transition: opacity 220ms var(--ease-out);
+  animation: fv-th-pop 520ms var(--ease-out) calc(1250ms + var(--d)) both;
+}
+.laneName {
+  fill: var(--chalk-2);
+  font-family: var(--font-display);
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  opacity: 0.5;
+  transition: opacity 220ms var(--ease-out), fill 220ms var(--ease-out);
+  animation: fv-th-fade 500ms var(--ease-out) calc(1300ms + var(--d)) both;
+}
+
+.lane[data-on] {
+  --dim: 1;
+}
+.lane[data-on] .laneName {
+  fill: var(--flood);
+  opacity: 1;
+}
+.lane[data-on] .arc {
+  stroke-width: 3;
+  filter: drop-shadow(0 0 6px rgb(233 185 73 / 0.55));
+}
+.lane[data-on] .laneTrack {
+  stroke: rgb(237 239 230 / 0.16);
+}
+.lane[data-on] .gapFloor {
+  stroke: rgb(233 185 73 / 0.45);
+}
+.lane:focus-visible .laneName {
+  text-decoration: underline;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.lane:focus-visible .hit {
+  fill: rgb(233 185 73 / 0.06);
+  stroke: var(--flood);
+  stroke-width: 1.5;
+}
+
+/* ---- 5 · the difference resolves ---- */
+.callout {
+  pointer-events: none;
+  animation: fv-th-rise 520ms var(--ease-out) 2050ms both;
+}
+.theatre[data-touched] .callout {
+  animation: fv-th-rise 240ms var(--ease-out) both;
+}
+.plateText {
+  font-family: var(--font-display);
+  font-weight: 800;
+  paint-order: stroke;
+  stroke: #0b120e;
+  stroke-width: 6px;
+  stroke-linejoin: round;
+}
+.plateDir {
+  fill: var(--flood);
+  font-size: 12px;
+}
+.plateNum {
+  fill: var(--chalk);
+  font-size: 19px;
+  letter-spacing: 0.02em;
+}
+.plateUnit {
+  fill: var(--flood);
+  font-size: 14px;
+}
+.markLabel {
+  fill: var(--chalk);
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 800;
+  paint-order: stroke;
+  stroke: #0b120e;
+  stroke-width: 5px;
+  stroke-linejoin: round;
+}
+.markLabelModel {
+  fill: var(--flood);
+}
+
+/* ---- caption: who is in the lit lane. Compact, so it ends above the far touchline. ---- */
+.caption {
+  display: grid;
+  gap: 0.35rem;
+  margin: 0;
+  padding: 0.7rem 0.9rem 0.75rem;
+  border: 1px solid rgb(237 239 230 / 0.1);
+  border-left: 3px solid var(--flood);
+  background: rgb(7 10 8 / 0.86);
+  backdrop-filter: blur(6px);
+  animation: fv-th-rise 600ms var(--ease-out) 1900ms both;
+}
+.capKicker {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 0.2rem 0.8rem;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.64rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--fog);
+}
+.capMeta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-family: var(--font-ui);
+  font-variation-settings: normal;
+  letter-spacing: 0;
+  text-transform: none;
+  font-size: 0.74rem;
+  color: var(--chalk-2);
+}
+.capName {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  animation: fv-th-fade 260ms var(--ease-out) both;
+}
+.capName b {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 800;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.capVals {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem 1rem;
+  font-size: 0.76rem;
+  color: var(--fog);
+}
+.capVals > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+.capVals b {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--chalk);
+}
+.capVals > span:nth-child(2) b {
+  color: var(--flood);
+}
+.capFoot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgb(237 239 230 / 0.08);
+  font-size: 0.78rem;
+}
+.capLink {
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--flood);
+  text-decoration: none;
+}
+.capLink:hover {
+  text-decoration: underline;
+}
+
+@media (max-width: 1080px) {
+  .axisLabel {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .tickLabel {
+    font-size: 26px;
+  }
+  .axisLabel {
+    display: none;
+  }
+  .laneName {
+    display: none;
+  }
+  .lane[data-on] .laneName {
+    display: inline;
+    font-size: 34px !important;
+  }
+  .markLabel {
+    font-size: 34px;
+  }
+  .plateNum {
+    font-size: 28px;
+  }
+  .caption {
+    max-width: none;
+  }
+}
+
+@keyframes fv-th-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes fv-th-beam {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+}
+@keyframes fv-th-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes fv-th-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  70% {
+    transform: scale(1.12);
+  }
+}
+@keyframes fv-th-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}

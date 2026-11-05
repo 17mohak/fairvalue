@@ -5,8 +5,10 @@ import { usePathname } from "next/navigation";
 import { useEffect, ViewTransition } from "react";
 import { checkService, SERVICE_LABEL, useServiceStatus } from "@/lib/api/service";
 import { contextForPath, EXPERIENCES, transitionTypes } from "@/lib/experiences";
-import { CommandPalette, openPalette } from "./CommandPalette";
+import { recordNavigation } from "@/lib/navHistory";
+import { CommandPalette } from "./CommandPalette";
 import { Mark } from "./Mark";
+import { SearchTrigger, ShortcutKbd } from "./SearchTrigger";
 import styles from "./SiteHeader.module.css";
 
 /**
@@ -22,6 +24,9 @@ export function SiteHeader() {
   useEffect(() => {
     void checkService();
   }, []);
+  useEffect(() => {
+    recordNavigation(path);
+  }, [path]);
 
   return (
     <header className={styles.bar} data-exp={context} style={{ viewTransitionName: "site-header" }}>
@@ -55,20 +60,14 @@ export function SiteHeader() {
         </nav>
 
         <div className={styles.tools}>
-          <button
-            type="button"
-            className={styles.search}
-            onClick={() => openPalette()}
-            aria-label="Search players and workspaces"
-            aria-keyshortcuts="Control+K Meta+K /"
-          >
+          <SearchTrigger className={styles.search} label="Search players">
             <svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true">
               <circle cx="7" cy="7" r="5" fill="none" stroke="currentColor" strokeWidth="1.5" />
               <path d="M11 11l3.5 3.5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
-            <span className={styles.searchText}>Search players, workspaces</span>
-            <kbd className={styles.kbd}>⌘K</kbd>
-          </button>
+            <span className={styles.searchText}>Search players</span>
+            <ShortcutKbd className={styles.kbd} />
+          </SearchTrigger>
           <p className={styles.status} data-state={service} title={reason}>
             <span className={styles.dot} aria-hidden="true" />
             <span className={styles.statusText}>{SERVICE_LABEL[service]}</span>

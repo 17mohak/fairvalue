@@ -42,6 +42,18 @@
   text-transform: uppercase;
 }
 
+.lastLink {
+  color: inherit;
+  text-decoration: none;
+}
+.lastLink:hover,
+.lastLink:focus-visible {
+  text-decoration: underline;
+  text-decoration-color: #e9b949;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 0.08em;
+}
+
 .side[data-side="right"] .last {
   color: transparent;
   -webkit-text-stroke: 2px #f2f1ea;

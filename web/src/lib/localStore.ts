@@ -171,3 +171,16 @@ export const recentPlayers = createLocalStore<RecentPlayer[]>("fv.recent.v1", []
 export function withRecent(list: RecentPlayer[], p: Omit<RecentPlayer, "at">, at = now()): RecentPlayer[] {
   return [{ ...p, at }, ...list.filter((r) => r.id !== p.id)].slice(0, 8);
 }
+
+// ---------------------------------------------------------------------------
+// Recent searches: the queries that led to an opened player, newest first
+// ---------------------------------------------------------------------------
+export const recentSearches = createLocalStore<string[]>("fv.searches.v1", [], (raw) =>
+  Array.isArray(raw) ? raw.filter((q): q is string => typeof q === "string" && q.trim().length > 0).map((q) => q.slice(0, 60)).slice(0, 5) : null,
+);
+
+export function withSearch(list: string[], query: string): string[] {
+  const q = query.trim().replace(/\s+/g, " ").slice(0, 60);
+  if (!q) return list;
+  return [q, ...list.filter((x) => x.toLowerCase() !== q.toLowerCase())].slice(0, 5);
+}

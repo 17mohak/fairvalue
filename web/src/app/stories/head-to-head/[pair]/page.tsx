@@ -73,7 +73,11 @@ export default async function HeadToHead({ params }: Params) {
               {p.role_code} · {p.sub_position}
             </span>
             <p className={h.first}>{p.first_name}</p>
-            <h2 className={h.last}>{p.last_name}</h2>
+            <h2 className={h.last}>
+              <ExpLink href={`/players/${p.slug}?from=stories`} className={h.lastLink} title={`Open ${p.name}'s dossier`}>
+                {p.last_name}
+              </ExpLink>
+            </h2>
             <p className={h.meta}>
               {leagueName(p.league_id).split(",")[0]} · {Math.floor(p.age)} · <span className="num">{formatEur(p.market_value_eur)}</span> observed
             </p>

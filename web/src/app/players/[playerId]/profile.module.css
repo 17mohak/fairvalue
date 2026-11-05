@@ -1,9 +1,66 @@
 .profile {
+  position: relative;
   width: 100%;
   max-width: var(--page-wide);
   margin-inline: auto;
   padding: 1.25rem var(--gutter) clamp(3rem, 6vw, 4.5rem);
   color: #edefe6;
+  isolation: isolate;
+}
+
+/* The same floodlight as the Overview's theatre: the dossier is a destination, lit from above. */
+.profile::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 46rem;
+  z-index: -1;
+  background:
+    radial-gradient(55% 60% at 78% 0%, rgb(233 185 73 / 0.1), transparent 70%),
+    radial-gradient(35% 45% at 12% 10%, rgb(246 231 191 / 0.04), transparent 70%);
+  pointer-events: none;
+}
+
+/* Section index: sticks under the global bar while reading the record. */
+.sections {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 5;
+  margin: 1rem 0 0;
+  padding: 0 1rem;
+  border: 1px solid rgb(237 239 230 / 0.07);
+  border-radius: 6px;
+  background: rgb(10 15 12 / 0.88);
+  backdrop-filter: blur(8px);
+}
+.sections ol {
+  display: flex;
+  gap: 0 1.75rem;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+.sections a {
+  display: block;
+  padding: 0.7rem 0;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #c3cbc3;
+  text-decoration: none;
+}
+.sections a:hover {
+  color: #edefe6;
+}
+.sections a span {
+  margin-right: 0.3rem;
+  color: #e9b949;
 }
 
 /* Analytical surfaces in a 12-column grid, not a stack. */
@@ -217,4 +274,9 @@
   .moreList {
     grid-template-columns: 1fr;
   }
+}
+
+/* Anchored panels clear the sticky section index as well as the global bar. */
+.profile section[id] {
+  scroll-margin-top: 3rem;
 }

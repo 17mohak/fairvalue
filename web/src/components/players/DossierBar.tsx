@@ -1,17 +1,25 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { CompareToggle, useCompareTray, WatchButton } from "@/components/terminal/PlayerActions";
 import { experience, type ExperienceId } from "@/lib/experiences";
 import { recentPlayers, withRecent } from "@/lib/localStore";
+import { useCanGoBack } from "@/lib/navHistory";
 import { COMPARE_MIN } from "@/lib/terminal";
 import styles from "./DossierBar.module.css";
 
-const BACK: Record<ExperienceId, { href: string; label: string }> = {
-  terminal: { href: "/terminal", label: "Terminal · Player Explorer" },
-  stories: { href: "/stories", label: "Stories" },
-  overview: { href: "/", label: "Overview" },
+const CRUMBS: Record<ExperienceId, { href: string; label: string }[]> = {
+  terminal: [
+    { href: "/terminal", label: "Terminal" },
+    { href: "/terminal", label: "Player Explorer" },
+  ],
+  stories: [{ href: "/stories", label: "Stories" }],
+  overview: [
+    { href: "/", label: "Overview" },
+    { href: "/#players", label: "The Players" },
+  ],
 };
 
 /**
@@ -20,7 +28,11 @@ const BACK: Record<ExperienceId, { href: string; label: string }> = {
  */
 export function DossierBar({ from, player, story }: { from: ExperienceId | null; player: { id: number; slug: string; name: string; role_code: string }; story: string | null }) {
   const tray = useCompareTray();
-  const back = from ? BACK[from] : null;
+  const router = useRouter();
+  const canGoBack = useCanGoBack();
+  // Opened from a shared link (no ?from=): the trail starts at the Overview.
+  const trail = from ? CRUMBS[from] : [{ href: "/", label: "Overview" }];
+  const env: ExperienceId = from ?? "overview";
 
   useEffect(() => {
     recentPlayers.set((list) => withRecent(list, player));
@@ -29,14 +41,24 @@ export function DossierBar({ from, player, story }: { from: ExperienceId | null;
   const compareIds = tray.includes(player.id) ? tray : [...tray, player.id].slice(-4);
 
   return (
-    <nav className={styles.bar} aria-label="Dossier" data-from={from ?? undefined}>
-      {back ? (
-        <Link href={back.href} className={styles.back} transitionTypes={[`to-${from}`]}>
-          <span aria-hidden="true">←</span> {back.label}
-        </Link>
-      ) : (
-        <span className={styles.context}>Shared player record · opens the same in every environment</span>
-      )}
+    <nav className={styles.bar} aria-label="Dossier navigation" data-from={from ?? undefined}>
+      <span className={styles.where}>
+        {canGoBack && (
+          <button type="button" className={styles.backBtn} onClick={() => router.back()}>
+            <span aria-hidden="true">←</span> Back
+          </button>
+        )}
+        <ol className={styles.crumbs} aria-label="Breadcrumb">
+          {trail.map((c, i) => (
+            <li key={`${c.href}-${i}`}>
+              <Link href={c.href} transitionTypes={[`to-${env}`]}>
+                {c.label}
+              </Link>
+            </li>
+          ))}
+          <li aria-current="page">{player.name}</li>
+        </ol>
+      </span>
       <span className={styles.actions}>
         <CompareToggle id={player.id} name={player.name} className={styles.btn} withLabel />
         <WatchButton id={player.id} name={player.name} className={styles.btn} withLabel />

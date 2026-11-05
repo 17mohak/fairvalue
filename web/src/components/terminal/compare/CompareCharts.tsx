@@ -99,7 +99,17 @@ export function ValueLadder({ players }: { players: PlayerProfile[] }) {
 // ---------------------------------------------------------------------------
 // Explanation matrix: the same inputs, side by side, on one diverging scale.
 // ---------------------------------------------------------------------------
-export function ExplanationMatrix({ players }: { players: PlayerProfile[] }) {
+/** Where the compared explanations came from; every column shares one basis. */
+export type ExplanationBasis = "published" | "live" | "live-unverified";
+
+const BASIS_NOTE: Record<ExplanationBasis, string> = {
+  published: "Published SHAP values for the served Model A; these players were in its training data.",
+  live: "Live SHAP values from the prediction API's served Model A, each checked to add up to its prediction; these players were in its training data.",
+  "live-unverified":
+    "Live SHAP values from a prediction API that does not match the research registry; treat them with caution. Each was checked to add up to its prediction.",
+};
+
+export function ExplanationMatrix({ players, basis = "published" }: { players: PlayerProfile[]; basis?: ExplanationBasis }) {
   const rows = explanationMatrix(players, 10);
   const max = Math.max(0.05, ...rows.flatMap((r) => r.cells.map((c) => Math.abs(c?.contribution ?? 0))));
   const sep = biggestSeparator(rows);
@@ -185,7 +195,7 @@ export function ExplanationMatrix({ players }: { players: PlayerProfile[] }) {
       </table>
       <p className="tm-note">
         Top ten inputs by average effect across these players; the rest are smaller and appear in each dossier&apos;s full journey. Bars share one
-        scale: right raises the estimate, left lowers it. Published SHAP values for the served Model A; these players were in its training data.
+        scale: right raises the estimate, left lowers it. {BASIS_NOTE[basis]}
       </p>
     </div>
   );

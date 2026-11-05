@@ -28,5 +28,7 @@
 @media (max-width: 960px) {
   .terminal {
     grid-template-columns: minmax(0, 1fr);
+    /* Rail on top keeps its own height; spare height goes to the workspace, not the rail. */
+    grid-template-rows: auto 1fr;
   }
 }

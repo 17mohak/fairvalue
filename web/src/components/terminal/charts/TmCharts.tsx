@@ -134,6 +134,9 @@ export interface Point {
   label: string;
 }
 
+/** Above this many points the scatter draws one dense path instead of labelled circles. */
+const DENSE = 200;
+
 /** A scatter with a log-euro y axis (and optionally log-euro x), for player-level views. */
 export function Scatter({ points, xLabel, yLabel, xLog = false, diagonal = false, labelAll = false, xFormat }: { points: Point[]; xLabel: string; yLabel: string; xLog?: boolean; diagonal?: boolean; labelAll?: boolean; xFormat?: (v: number) => string }) {
   const W = 520;
@@ -178,11 +181,17 @@ export function Scatter({ points, xLabel, yLabel, xLog = false, diagonal = false
       <text x={P.l} y={P.t - 2} className={styles.axisLabel}>
         {yLabel}
       </text>
-      {points.map((p) => (
-        <circle key={p.key} cx={X(p.x)} cy={Y(p.y)} r={points.length > 200 ? 2 : 4.5} className={styles.dot}>
-          <title>{p.label}</title>
-        </circle>
-      ))}
+      {points.length > DENSE ? (
+        // Thousands of points (the full export): one path of round dots with rounded coordinates.
+        // Separate circles with tooltips made the page several megabytes, and 2px dots cannot be hovered.
+        <path d={points.map((p) => `M${X(p.x).toFixed(1)} ${Y(p.y).toFixed(1)}h0`).join("")} className={styles.dense} />
+      ) : (
+        points.map((p) => (
+          <circle key={p.key} cx={X(p.x)} cy={Y(p.y)} r={4.5} className={styles.dot}>
+            <title>{p.label}</title>
+          </circle>
+        ))
+      )}
       {labelAll &&
         placeLabels(
           points.map((p) => ({ key: p.key, x: X(p.x), y: Y(p.y), text: p.label.split(":")[0]! })),

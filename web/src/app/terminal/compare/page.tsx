@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ExpLink } from "@/components/site/ExpLink";
-import { ExplanationMatrix, FactsTable, HistoryCompare, TraitStrips, ValueLadder } from "@/components/terminal/compare/CompareCharts";
+import { FactsTable, HistoryCompare, TraitStrips, ValueLadder } from "@/components/terminal/compare/CompareCharts";
+import { CompareExplanations } from "@/components/terminal/compare/CompareExplanations";
 import { ComparePicker } from "@/components/terminal/compare/ComparePicker";
 import { WorkspaceHead } from "@/components/terminal/WorkspaceHead";
 import type { PlayerProfile } from "@/lib/players";
@@ -66,7 +67,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
               <span className="tm-sub">Model A, input by input</span>
             </header>
             <div className="tm-panel-body">
-              <ExplanationMatrix players={players} />
+              <CompareExplanations players={players} />
             </div>
           </section>
           <section className={`tm-panel ${styles.areaTraits}`} aria-labelledby="cmp-traits">

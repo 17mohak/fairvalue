@@ -1,5 +1,20 @@
 # Development changelog
 
+## 2026-11-05: Release foundation and identity assets (branch `feat/multipage-experience`)
+- **Roadmap:** `docs/ROADMAP.md` is now the single plan: the research milestones plus product
+  Sprints 0–6, each with status, priority, dependencies, acceptance criteria and blockers.
+- **Sprint 0:** CI is green on the pushed integration commit. The Docker Compose stack runs with a
+  Caddy edge proxy (D-041), and the player index drops from 1.78 MB to 320 KB. The containerised
+  API passes 27/27. Configuration is documented in DEPLOYMENT.md.
+- **Sprint 1 (D-042):**
+  - Nationality flags (dossier only) and league flags (Explorer, dossier, League board, Compare)
+    from flag-icons (MIT).
+  - Asset coverage report `src.product.asset_coverage`: flags 99.6% and 14/14 leagues; portraits,
+    shirt numbers and crests 0.
+  - The portrait finder is blocked by Wikimedia's User-Agent policy; shirt numbers and crests are
+    blocked for the documented reasons.
+- **Tests:** web 108 (+4), Python 137 (+1); production build passes.
+
 ## 2026-11-05: Full-population integration (branch `feat/multipage-experience`, not pushed)
 - **Data:** the full export was generated locally from the existing dataset and held-out
   predictions: 5,820 players. `verify_players` passed 24/24, and 27/27 against the live API. No

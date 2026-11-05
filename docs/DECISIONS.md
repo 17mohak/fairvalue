@@ -452,6 +452,38 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   Next.js does not compress route-handler responses and strips a manual `Content-Encoding`. Gzip
   belongs to the reverse proxy or CDN in deployment.
 
+
+## D-041 Compression belongs at the edge — Decided (2026-11-05)
+- **Context:** `/api/players` (the index behind search, watchlists and compare) is 1.8 MB of JSON.
+  Next.js compresses pages but not route-handler responses, and it strips a handler's own
+  `Content-Encoding` header (tried and reverted in D-040).
+- **Decision:** add a Caddy edge proxy (`deploy/Caddyfile`, `encode zstd gzip`) to the compose stack
+  on host port 3000; `web` becomes internal. Responses Next already compresses pass through
+  unchanged.
+- **Result:** the index drops from 1.78 MB to 320 KB with gzip and decodes to all 5,820 players. The
+  compose stack is healthy, and `verify_players --api` passes 27/27 against the containerised API.
+- **For hosting:** the chosen platform must compress at its edge, or keep this proxy.
+
+## D-042 Identity assets: flags yes, crests and shirt numbers no (for now) — Decided (2026-11-05)
+- **Flags:** come from flag-icons (MIT), copied selectively by a script and mapped in
+  `web/src/data/countries.json`. A test keeps the mapping, the shipped files and the league list in
+  step.
+  - Countries with no single settled flag are text only: Northern Ireland (the Ulster Banner is
+    contested), Guadeloupe, Martinique, French Guiana and Bonaire.
+  - Coverage: 5,798 of 5,820 players (99.6%) and 14/14 leagues
+    (`reports/product/asset_coverage.md`).
+- **Placement:** league flags appear in the Explorer, dossier, League board and Compare record.
+  Nationality flags appear **only in the dossier**, where the audit-context panel explains the
+  nationality grouping. They are kept out of residual rankings and tables, so the product does not
+  invite reading a single player's residual as a nationality effect.
+- **Shirt numbers:** not shown. They are not in the acquired tables, and the upstream `game_lineups`
+  table is match-level. Showing them needs approval to acquire it and a rule for the number at the
+  valuation date.
+- **Crests:** not shown, because no licensed source exists. **Second nationalities:** not in the
+  data.
+- **Portraits:** the finder is blocked by Wikimedia's User-Agent policy (403). The owner supplies
+  the contact. No personal details are sent on their behalf.
+
 ---
 
 # Issues found in the locked technical spec

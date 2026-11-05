@@ -19,6 +19,7 @@ import { playerById, playerSet } from "@/lib/players.server";
 import { portraitFor } from "@/lib/portraits";
 import { nearestByValue, standingText, valueStanding } from "@/lib/peers";
 import { valuationReading } from "@/lib/reading";
+import { shareDescription } from "@/lib/share";
 import { encodeSequence, parseSequence, stepFor, type Sequence } from "@/lib/sequence";
 import { DossierStepper } from "@/components/players/DossierStepper";
 import { PlayerAppearances, type AppearanceLink } from "@/components/players/PlayerAppearances";
@@ -45,8 +46,10 @@ export async function generateMetadata({ params }: Pick<Params, "params">): Prom
   return p
     ? {
         title: p.name,
-        description: `${p.name}: observed market value, model estimates, explanation and positional traits.`,
+        description: shareDescription(p),
         alternates: { canonical: `/players/${p.slug}` },
+        openGraph: { type: "profile", title: `${p.name} · FairValue`, description: shareDescription(p), url: `/players/${p.slug}` },
+        twitter: { card: "summary_large_image", title: `${p.name} · FairValue`, description: shareDescription(p) },
       }
     : { title: "Player not found" };
 }

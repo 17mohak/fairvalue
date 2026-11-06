@@ -1,5 +1,9 @@
 # Development changelog
 
+## 2026-11-06: Health check waits for a cold-starting API (PR 5)
+- **Fix:** on the live site `/api/health` answered 503 "unreachable" while the scaled-to-zero API was waking up: the route gave up after 4 s, and a cold start took 11.5 s to answer `/health` (Cloud Run logs). The route now waits 20 s; the browser's `health()` call waits 25 s so it always outlasts the server.
+- **Tests:** `app/api/health/route.test.ts`: an API answering after 11.5 s reads "ok" (fails on the old 4 s limit), one that never answers still gives 503. Web 181 pass. Not yet checked on the live site (needs a deploy).
+
 ## 2026-11-06: Clean checkouts build without the FootyLogos files (PR 5)
 - **Fix:** CI failed because the app imports the git-ignored `portrait_cards_fl.json`. `web/scripts/ensure-portrait-manifest.mjs` now writes an empty manifest when it is missing (never overwrites), run before dev, build, typecheck and test. A build without the real file shows monograms instead of FootyLogos portraits, so a deploy must copy the file and images in first.
 - **Tests:** FootyLogos checks skip when the manifest is empty; the PlayerCard test uses a committed Berlin portrait. Web 179 pass with the real files; 177 pass and 2 skip with the stub (simulated clean checkout).

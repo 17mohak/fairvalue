@@ -2,6 +2,7 @@
   "name": "fairvalue-web",
   "version": "0.1.0",
   "private": true,
+  "license": "MIT",
   "description": "FairValue product front end: valuation studio, explanations and the fairness research explorer.",
   "scripts": {
     "predev": "node scripts/ensure-portrait-manifest.mjs",

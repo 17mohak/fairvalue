@@ -65,6 +65,12 @@ export function SiteFooter() {
                 <ExpLink href="/methods#limitations">Known limitations</ExpLink>
               </dd>
             </div>
+            <div>
+              <dt>Images</dt>
+              <dd>
+                <ExpLink href="/credits">Image credits</ExpLink>
+              </dd>
+            </div>
           </dl>
         </div>
       </footer>

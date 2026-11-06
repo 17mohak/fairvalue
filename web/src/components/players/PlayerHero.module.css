@@ -45,9 +45,20 @@
 
 .frame {
   grid-area: frame;
-  align-self: end;
-  height: 21rem;
+  align-self: start;
   margin-bottom: 1.5rem;
+}
+
+/* The card is designed on a 360px board; this column shows it at 0.77. */
+.frame > article {
+  --scale: 0.77;
+}
+
+.credit {
+  margin: 0.5rem 0 0;
+  font-size: 0.62rem;
+  line-height: 1.3;
+  color: var(--fog);
 }
 
 .nameRow {
@@ -383,8 +394,8 @@
       "read read"
       "strip strip";
   }
-  .frame {
-    height: 17rem;
+  .frame > article {
+    --scale: 0.62;
   }
   .value {
     margin-top: 1rem;
@@ -424,8 +435,12 @@
     padding: 1rem 1rem 0;
   }
   .frame {
-    height: 13rem;
     margin-bottom: 1rem;
+    display: grid;
+    justify-items: center;
+  }
+  .frame > article {
+    --scale: 0.8;
   }
   .badge {
     width: 3.6rem;

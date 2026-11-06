@@ -1,0 +1,347 @@
+{
+  "policy": "Card portraits (D-053). Berlin / WikiPortraits frames are CC BY-SA 4.0 with the background removed by FairValue; they are committed. FootyLogos images are unlicensed and used at the owner's risk (D-044): they are git-ignored, listed in src/data/generated/portrait_cards_fl.json, and switched off with FAIRVALUE_FOOTYLOGOS_PORTRAITS=off.",
+  "berlin": [
+    {
+      "id": 182906,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mike_Maignan_France_v_Senegal_16_June_2026-211.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 262396,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Unai_Simon_France_v_Spain_7.24.26-066.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 288230,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ousmane_Dembele_France_v_Norway_26_June_26-085.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 315779,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Christian_Pulisic_USMNT_v_Belgium_Mar_28_2026-73.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 315969,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Scott_McTominay_Scotland_v_Bolivia_6_June_2026-61.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 318528,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Marcus_Thuram_France_v_Senegal_16_June_2026-261_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 332697,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Weston_McKennie_USMNT_v_Belgium_Mar_28_2026-68_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 346314,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Trevoh_Chalobah_England_v_Panama_27_June_26-051.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 350219,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Fabian_Ruiz_Argentina_v_Spain_19_July_2026-315.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 351478,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Mikel_Oyarzabal_France_v_Spain_7.24.26-161.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 357153,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Diogo_Costa_Croatia_v_Portugal_2_July_2026-218.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 368887,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Loïs_Openda_USMNT_v_Belgium_Mar_28_2026-19_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 370789,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Julian_Ryerson_France_v_Norway_26_June_26-113.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 371998,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Vinícius_Júnior_Brazil_V_Morocco_13_June_2026-207_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 398073,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Achraf_Hakimi_Morocco_v_Norway_7_June_2026-32.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 398184,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ferran_Torres_France_v_Spain_7.24.26-025.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 406625,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Lautaro_Martinez_Argentina_v_Egypt_7_July_2026-040.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 412669,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Francisco_Trincão_USMNT_v_Portugal_Mar_31_2026-55_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 413112,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Aurelien_Tchouameni_France_v_Paraguay_4_July_2026-086.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 424784,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Luis_Suárez_NE_Revolution_Inter_Miami_7.9.25-053_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 426620,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Pedro_Gonçalves_USMNT_v_Portugal_Mar_31_2026-7.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 429983,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Jørgen_Strand_Larsen_Morocco_v_Norway_7_June_2026-41.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 435772,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Charles_De_Ketelaere_USMNT_v_Belgium_Mar_28_2026-15.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 455661,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Nick_Woltemade_Ecuador_v_Germany_25_June_2026-069.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 483348,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Djed_Spence_England_v_Ghana_23_June_2026-065.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 487474,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Francisco_Conceição_USMNT_v_Portugal_Mar_31_2026-62_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 503770,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Folarin_Balogun_Australia_v_USA_19_June_2026-64.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 533738,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Jonathan_David_Canada_v_Qatar_18_June_2026-242_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 548111,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Alex_Baena_France_v_Spain_7.24.26-024.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 548254,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Nathan_Ngoy_Belgium_v_USA_6_July_2026-009.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 568693,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Pape_Matar_Sarr_France_v_Senegal_16_June_2026-227.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 579287,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Daniel_Svensson_France_v_Sweden_6.30.26-165.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 580451,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Martin_Baturina_Croatia_v_Portugal_2_July_2026-029.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 581678,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Jude_Bellingham_England_v_Ghana_23_June_2026-028.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 627207,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ricardo_Pepi_USMNT_v_Belgium_Mar_28_2026-47.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 661171,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Willian_Pacho_Ecuador_v_Germany_25_June_2026-228.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 668207,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Petar_Sucic_Croatia_v_Portugal_2_July_2026-190_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 670103,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Andreas_Schjelderup_Morocco_v_Norway_7_June_2026-43_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 670681,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Joao_Neves_Croatia_v_Portugal_2_July_2026-102.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 709187,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Nico_Williams_France_v_Spain_7.24.26-030.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 743515,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Robin_Risser_France_v_Senegal_16_June_2026-403_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 745200,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Maghnes_Akliouche_France_v_Senegal_16_June_2026-512.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 800175,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Luiz_Henrique_Brazil_V_Morocco_13_June_2026-146.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 810092,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Warren_Zaire-Emery_France_v_Paraguay_4_July_2026-084.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 827734,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ange-Yoan_Bonny_Cote_D'Ivoire_v_Ecuador_14_June_2026-54.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 844637,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Marc_Pubill_Argentina_v_Spain_19_July_2026-018.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 893661,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Joel_Ordonez_Cote_D'Ivoire_v_Ecuador_14_June_2026-154_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 901019,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Neil_El_Aynaoui_Neil_El_Aynaoui_Morocco_v_Norway_7_June_2026-13_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 914562,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Desire_Doue_France_v_Norway_26_June_26-032.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 921655,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ismaël_Kone_Canada_v_Qatar_18_June_2026-062.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 937958,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Lamine_Yamal_France_v_Spain_7.24.26-144.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 948294,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Nico_Paz_Argentina_v_Egypt_7_July_2026-031.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 1061282,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Assane_Diao_France_v_Senegal_16_June_2026-241.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 1097139,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Ayyoub_Bouaddi_France_v_Morocco_9_July_2026-003.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 1130514,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Samir_El_Mourabet_France_v_Morocco_9_July_2026-036.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 1279526,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Christ_Inao_Oulaï_Cote_D'Ivoire_v_Ecuador_14_June_2026-56.jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    },
+    {
+      "id": 1390649,
+      "source_url": "https://commons.wikimedia.org/wiki/File:Yan_Diomande_Cote_D'Ivoire_v_Ecuador_14_June_2026-17_(cropped).jpg",
+      "author": "Bryan Berlin / WikiPortraits",
+      "licence": "CC-BY-SA-4.0"
+    }
+  ]
+}

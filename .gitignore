@@ -40,3 +40,6 @@ reports/pipeline_log*.txt
 
 # Full player export (python -m src.product.players): per-player dataset content, never committed
 web/src/data/generated/
+
+# Player-card portraits from FootyLogos: unlicensed, never committed (D-044, D-053)
+web/public/players/portraits/cards/fl/

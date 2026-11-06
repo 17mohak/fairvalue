@@ -1,5 +1,11 @@
 # Development changelog
 
+## 2026-11-06: Player cards, direction C (branch `feat/portrait-cards`, D-053)
+- **Card:** `PlayerCard` ("The Denomination") in the dossier hero: observed value as the denomination, ink by value tier, held-out Model A and residual on the foot, engraved monogram when there is no portrait. Guilloche background from `lib/guilloche.ts`.
+- **Portraits:** `portraitFor` now falls back to card portraits: 57 Berlin / WikiPortraits frames (CC BY-SA 4.0, background removed, committed) and 1,128 FootyLogos images (unlicensed, owner's risk per D-044, git-ignored). `scripts/portraits/build_card_assets.py` builds both from `research/portrait_sourcing/`.
+- **Safeguards:** `/credits` page and footer link, `FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` removes every unlicensed image, `cardPortraitProblems` checks credit and source on each entry.
+- **Tests:** web 177 (+6). tsc and production build pass. Checked by eye on three dossiers (FootyLogos, Berlin, monogram) at desktop width only; mobile and other browsers not checked. Not yet on Explorer rows, Stories or the Overview.
+
 ## 2026-11-06: Pre-live deployment setup (branch `feat/pre-live`)
 - **Reviewer gate (D-052):** HTTP Basic auth on every page when `FAIRVALUE_REVIEW_PASSWORD` is set
   (`web/src/proxy.ts`), `/api/ping` open for health checks; noindex header and disallow-all

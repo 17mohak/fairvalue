@@ -1,7 +1,7 @@
 [project]
 name = "fairvalue"
 version = "0.1.0"
-description = "Football player market value prediction with a nationality-based fairness audit (BTECH CAP 501)"
+description = "Football player market value prediction with a nationality-based fairness audit"
 requires-python = ">=3.11"
 
 [tool.pytest.ini_options]

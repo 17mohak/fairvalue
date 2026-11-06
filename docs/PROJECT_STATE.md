@@ -1,12 +1,15 @@
 # Project state
 
-_Last updated: 2026-11-05_
+_Last updated: 2026-11-06_
 
 ## Where we are
 - All eight milestones are implemented, tested and run on the full data. The research design is
   **locked** (`docs/RESEARCH_DESIGN.md`).
 - Every reported number was regenerated from the committed code with `scripts/run_pipeline.sh` (D-028).
 - Nothing has been pushed, published or deployed.
+- Pre-live deployment is prepared but not run (D-052): Cloud Run in `asia-south1`, private API,
+  reviewer password gate and noindex on the web app, `scripts/deploy_gcp.sh` (dry run by default).
+  Pushing images and deploying need the owner's approval.
 
 | Area | State | Evidence |
 |---|---|---|
@@ -22,7 +25,7 @@ _Last updated: 2026-11-05_
 | CI | Private repo [17mohak/fairvalue](https://github.com/17mohak/fairvalue). First run (2026-11-04, about 6 min) **passed**: 79 unit tests (+10 data tests skipped as designed); data re-downloaded with an unchanged manifest; 9 data/leakage tests; quick-run gate with numbers identical to the local run (0.851 / 0.581 / 0.718); refit; Docker build, health and predict smoke test. No image pushed | `.github/workflows/ci.yml`, GitHub Actions |
 | Product (branch `feat/product-experience`) | Next.js app in `web/`: landing, valuation studio (live predict + per-prediction SHAP), fairness explorer, methods. `POST /explain`, `GET /metadata`. Compose stack built and smoke-tested locally. Not pushed or deployed | `docs/PRODUCT.md`, D-032, D-033 |
 | Responsible AI | Model card, data card, EU AI Act assessment | `docs/MODEL_CARD.md`, `docs/DATA_CARD.md`, `docs/EU_AI_ACT_ASSESSMENT.md` |
-| Tests | Python 137 passing with data present; web 158 (`npm test`) | `pytest -q`, `web/` vitest |
+| Tests | Python 137 passing with data present; web 171 (`npm test`) | `pytest -q`, `web/` vitest |
 | Reviews | Three independent read-only reviews; all findings addressed | DECISIONS D-015, D-023, D-028 |
 
 ## Key results (held-out, within the selected population)

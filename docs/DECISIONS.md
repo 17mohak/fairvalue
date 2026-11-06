@@ -618,6 +618,33 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   skip link, global nav, search, breadcrumb, actions, stepper, section index, journey; no positive tabindex.
 - **Still open:** Safari, Firefox and a screen-reader pass; brand fonts in share cards (D-050).
 
+## D-052 Pre-live deployment on Cloud Run: private API, password-gated web app — Decided (2026-11-06)
+- **Host:** Google Cloud Run in `asia-south1`, project `fairvalue-513904`, on free-trial credit with a
+  ₹1,000/month enforced budget cap. Both services run with **min-instances 0**, so idle cost is zero;
+  max-instances caps (API 2, web 3) bound burst cost. Images go only to the private Artifact Registry
+  repository (cleanup keeps the latest two), because the web image carries the full player export.
+- **Reviewer-only launch:** until the owner settles the data-rights question, every page is behind HTTP
+  Basic auth (`FAIRVALUE_REVIEW_PASSWORD`, user `FAIRVALUE_REVIEW_USER`, default `fairvalue`) in
+  `web/src/proxy.ts`. Credentials are compared as SHA-256 digests in constant time. Only `/api/ping`
+  (the container health check) and static assets are open. With no password set the gate is off, so
+  local and compose runs are unchanged.
+- **Not indexed:** `X-Robots-Tag: noindex, nofollow` on every response and a `robots.txt` that disallows
+  everything, unless `FAIRVALUE_NOINDEX=0`.
+- **Private API:** the API service refuses unauthenticated requests (Cloud Run IAM; rejected requests
+  are not billed). The web app runs as its own service account with `roles/run.invoker` on the API, and
+  with `FAIRVALUE_API_AUTH=gcp-id-token` sends a Google identity token from the metadata server
+  (cached until five minutes before expiry). A failed token fetch becomes the usual clean 503.
+- **Compression in the app:** Cloud Run has no Caddy in front. The cause of D-041 was found: Next.js
+  does compress responses, but a route handler's `Content-Type` reaches its compression filter as an
+  array, which the filter rejects (and a handler cannot gzip its own body, because Next.js drops a
+  handler's `Content-Encoding`). `next.config.ts` now sets `/api/players`' `Content-Type` up front, so
+  Next.js gzips it: 1.92 MB raw to 324 KB, measured on the standalone server and the Docker image
+  (2026-11-06). Compose keeps Caddy, which leaves an already-encoded response alone.
+- **Deploy:** `scripts/deploy_gcp.sh` prints the full plan by default and runs it only with `--execute`.
+  It refuses uncommitted code (the image tag is the commit), masks the password in its output, and
+  bakes the deterministic `run.app` URL into the web build. Pushing images and deploying still need the
+  owner's explicit approval each time.
+
 ---
 
 # Issues found in the locked technical spec

@@ -1,0 +1,33 @@
+.cover {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 2.5rem;
+  align-items: end;
+  min-height: min(78vh, 52rem);
+  padding-top: clamp(2.5rem, 6vw, 5rem);
+  padding-bottom: clamp(2.5rem, 5vw, 4rem);
+  border-bottom: 1px solid rgb(242 241 234 / 0.12);
+}
+
+.cover[data-visual] {
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
+}
+
+.text {
+  display: grid;
+  gap: 1.4rem;
+  align-content: end;
+}
+
+.visual {
+  min-width: 0;
+}
+
+@media (max-width: 1000px) {
+  .cover[data-visual] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .cover {
+    min-height: 0;
+  }
+}

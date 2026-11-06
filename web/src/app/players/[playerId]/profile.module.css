@@ -1,0 +1,380 @@
+.profile {
+  position: relative;
+  width: 100%;
+  max-width: var(--page-wide);
+  margin-inline: auto;
+  padding: 1.25rem var(--gutter) clamp(3rem, 6vw, 4.5rem);
+  color: #edefe6;
+  isolation: isolate;
+}
+
+/* The same floodlight as the Overview's theatre: the dossier is a destination, lit from above. */
+.profile::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 46rem;
+  z-index: -1;
+  background:
+    radial-gradient(55% 60% at 78% 0%, rgb(233 185 73 / 0.1), transparent 70%),
+    radial-gradient(35% 45% at 12% 10%, rgb(246 231 191 / 0.04), transparent 70%);
+  pointer-events: none;
+}
+
+/* Section index: sticks under the global bar while reading the record. */
+.sections {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 5;
+  margin: 1rem 0 0;
+  padding: 0 1rem;
+  border: 1px solid rgb(237 239 230 / 0.07);
+  border-radius: 6px;
+  background: rgb(10 15 12 / 0.88);
+  backdrop-filter: blur(8px);
+}
+.sections ol {
+  display: flex;
+  gap: 0 1.75rem;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+.sections a {
+  display: block;
+  padding: 0.7rem 0;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #c3cbc3;
+  text-decoration: none;
+}
+.sections a:hover {
+  color: #edefe6;
+}
+.sections a span {
+  margin-right: 0.3rem;
+  color: #e9b949;
+}
+
+/* Analytical surfaces in a 12-column grid, not a stack. */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  grid-template-areas:
+    "explain explain explain explain explain explain explain explain explain explain explain explain"
+    "compare compare compare compare compare compare compare traits traits traits traits traits"
+    "audit audit audit audit audit audit audit audit audit audit audit audit";
+  gap: 1.25rem;
+  margin-top: 1.25rem;
+  align-items: start;
+}
+
+.grid[data-history] {
+  grid-template-areas:
+    "explain explain explain explain explain explain explain explain explain explain explain explain"
+    "compare compare compare compare compare compare compare traits traits traits traits traits"
+    "history history history history history history history history history history history history"
+    "audit audit audit audit audit audit audit audit audit audit audit audit";
+}
+
+.compare {
+  grid-area: compare;
+}
+
+.traits {
+  grid-area: traits;
+  align-self: stretch;
+}
+
+.history {
+  grid-area: history;
+}
+
+.explain {
+  grid-area: explain;
+}
+
+.audit {
+  grid-area: audit;
+}
+
+.panelFoot {
+  margin-top: 0.9rem;
+  font-size: 0.72rem;
+  color: #6c786f;
+}
+
+.auditFacts {
+  margin: 0;
+}
+
+.auditFacts div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 1rem;
+  padding: 0.6rem 0;
+  border-bottom: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.auditFacts dt {
+  font-size: 0.82rem;
+  color: #8f9b93;
+}
+
+.auditFacts dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-align: right;
+}
+
+.auditFacts small {
+  display: block;
+  font-family: var(--font-ui);
+  font-size: 0.7rem;
+  font-weight: 400;
+  color: #8f9b93;
+}
+
+.auditNote {
+  margin-top: 0.85rem;
+  font-size: 0.8rem;
+  line-height: 1.55;
+  color: #8f9b93;
+}
+
+.auditNote a {
+  color: #e9b949;
+}
+
+/* ---- More players ---- */
+.more {
+  margin-top: 2rem;
+}
+
+.moreHead {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 0.75rem;
+}
+
+.moreAll {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e9b949;
+  text-decoration: none;
+}
+
+.moreList {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.moreCard {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.6rem 0.8rem 0.6rem 0.6rem;
+  border: 1px solid rgb(237 239 230 / 0.08);
+  border-radius: 10px;
+  background: #0e1612;
+  color: #edefe6;
+  text-decoration: none;
+  transition: border-color 180ms var(--ease-out), background-color 180ms var(--ease-out);
+}
+
+.moreCard:hover {
+  border-color: rgb(233 185 73 / 0.45);
+  background: #121c17;
+}
+
+.moreThumb {
+  height: 3.25rem;
+}
+
+.moreText {
+  display: grid;
+  min-width: 0;
+}
+
+.moreName {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.moreName b {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.moreName :global(.fv-role) {
+  height: 1.2rem;
+  min-width: 1.7rem;
+  font-size: 0.75rem;
+}
+
+.moreMeta {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.75rem;
+  color: #8f9b93;
+}
+
+.moreValue {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #e9b949;
+}
+
+.provenance {
+  margin-top: 1rem;
+  font-size: 0.75rem;
+  color: #6c786f;
+}
+
+@media (max-width: 1100px) {
+  .grid,
+  .grid[data-history] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: "explain" "compare" "traits" "history" "audit";
+  }
+  .grid:not([data-history]) {
+    grid-template-areas: "explain" "compare" "traits" "audit";
+  }
+  .moreList {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .moreList {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Anchored panels clear the sticky section index as well as the global bar. */
+.profile section[id] {
+  scroll-margin-top: 3rem;
+}
+
+/* ---- In context ---- */
+.contextGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
+  gap: 1.5rem 2.5rem;
+  margin: 0.4rem 0 1.6rem;
+}
+
+.standings {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.5rem 2rem;
+}
+
+.standing {
+  display: grid;
+  align-content: start;
+  gap: 0.45rem;
+  min-width: 0;
+}
+
+.standingHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.2rem 1rem;
+}
+
+.standingHead b {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.standingHead span {
+  font-size: 0.74rem;
+  color: #8f9b93;
+}
+
+.standingText {
+  font-family: var(--font-serif);
+  font-size: 0.98rem;
+  color: #edefe6;
+}
+
+.standingLink {
+  justify-self: start;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #e9b949;
+  text-decoration: none;
+}
+
+.standingLink:hover {
+  text-decoration: underline;
+}
+
+.nearHead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.3rem 0.8rem;
+  margin: 0 0 0.8rem;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 800;
+  text-transform: uppercase;
+}
+
+.nearHead small {
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  font-weight: 400;
+  text-transform: none;
+  color: #8f9b93;
+}
+
+@media (max-width: 1080px) {
+  .contextGrid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .standings {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

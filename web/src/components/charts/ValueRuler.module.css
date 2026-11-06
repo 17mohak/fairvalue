@@ -1,0 +1,113 @@
+.wrap {
+  width: 100%;
+  min-width: 0;
+  /* The SVG is drawn at the measured width; containment stops that width feeding back into
+     the wrapper's own size, so the ruler can shrink inside grid and flex parents. */
+  contain: inline-size;
+}
+
+.svg {
+  display: block;
+  overflow: visible;
+  font-family: var(--font-display);
+}
+
+.zone {
+  fill: rgb(237 239 230 / 0.028);
+}
+
+.zoneAlt {
+  fill: rgb(237 239 230 / 0.06);
+}
+
+.zoneLabel {
+  fill: var(--chalk-2);
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  opacity: 0.8;
+}
+
+.zoneLabelSmall {
+  font-size: 12px;
+}
+
+.boundary {
+  stroke: var(--tier-line);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+
+.boundaryLabel {
+  fill: var(--chalk);
+  font-size: 13px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.axis {
+  stroke: var(--chalk);
+  stroke-width: 1.5;
+}
+
+.minor {
+  stroke: rgb(237 239 230 / 0.42);
+  stroke-width: 1;
+}
+
+.major {
+  stroke: var(--chalk);
+  stroke-width: 1.5;
+}
+
+.majorLabel {
+  fill: var(--fog);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+
+.band {
+  fill: var(--flood-soft);
+  stroke: rgb(233 185 73 / 0.45);
+  stroke-width: 1;
+  rx: 2;
+}
+
+.markerStem {
+  stroke-width: 2;
+}
+
+.markerPrimary .markerStem {
+  stroke: var(--flood);
+}
+
+.markerPrimary .markerDot {
+  fill: var(--flood);
+  stroke: var(--turf-900);
+  stroke-width: 2;
+}
+
+.markerPrimary .markerLabel {
+  fill: var(--chalk);
+  font-size: 17px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.markerGhost .markerStem {
+  stroke: var(--chalk-2);
+  stroke-dasharray: 3 3;
+}
+
+.markerGhost .markerDot {
+  fill: var(--turf-900);
+  stroke: var(--chalk-2);
+  stroke-width: 2;
+}
+
+.markerGhost .markerLabel {
+  fill: var(--chalk-2);
+  font-size: 14px;
+  font-weight: 500;
+  font-variant-numeric: tabular-nums;
+}

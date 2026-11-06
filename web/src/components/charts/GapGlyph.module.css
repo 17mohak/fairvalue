@@ -1,0 +1,148 @@
+.figure {
+  margin: 2rem 0 0;
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row,
+.axis {
+  display: grid;
+  grid-template-columns: 9.5rem 1fr 4.5rem;
+  align-items: center;
+  gap: 1rem;
+}
+
+.row {
+  padding: 0.8rem 0;
+  border-bottom: 1px solid var(--rule);
+}
+
+.label {
+  display: grid;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--chalk-2);
+}
+
+.label small {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--fog);
+}
+
+.row[data-emphasis] .label {
+  color: var(--chalk);
+}
+
+.track {
+  position: relative;
+  height: 1.5rem;
+}
+
+.zero {
+  position: absolute;
+  top: -0.8rem;
+  bottom: -0.8rem;
+  width: 0;
+  border-left: 1px dashed var(--rule-strong);
+}
+
+.ci {
+  position: absolute;
+  top: 50%;
+  height: 3px;
+  margin-top: -1.5px;
+  background: var(--fog);
+  border-radius: 2px;
+  transform-origin: left center;
+  animation: draw 700ms var(--ease-out) both;
+}
+
+.row[data-emphasis] .ci {
+  background: var(--flood);
+  height: 5px;
+  margin-top: -2.5px;
+}
+
+.dot {
+  position: absolute;
+  top: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  border-radius: 50%;
+  background: var(--turf-900);
+  border: 2px solid var(--fog);
+  animation: pop 360ms var(--ease-out) both;
+}
+
+.row[data-emphasis] .dot {
+  border-color: var(--flood);
+  background: var(--flood);
+}
+
+.value {
+  justify-self: end;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.row[data-emphasis] .value {
+  color: var(--flood);
+}
+
+.ticks {
+  position: relative;
+  height: 1.5rem;
+}
+
+.ticks span {
+  position: absolute;
+  top: 0.35rem;
+  transform: translateX(-50%);
+  font-size: 0.72rem;
+  color: var(--fog-2);
+}
+
+.caption {
+  display: flex;
+  justify-content: space-between;
+  margin-left: calc(9.5rem + 1rem);
+  margin-right: calc(4.5rem + 1rem);
+  font-size: 0.75rem;
+  color: var(--fog);
+}
+
+@keyframes draw {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+@keyframes pop {
+  from {
+    transform: scale(0);
+  }
+}
+
+@media (max-width: 560px) {
+  .row,
+  .axis {
+    grid-template-columns: 6.5rem 1fr 3.5rem;
+    gap: 0.6rem;
+  }
+  .caption {
+    margin-left: 0;
+    margin-right: 0;
+  }
+  .value {
+    font-size: 1.2rem;
+  }
+}

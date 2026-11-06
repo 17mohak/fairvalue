@@ -1,0 +1,1376 @@
+{
+  "source": "showcase",
+  "generated_by": "python -m src.product.export (from reports/explainability/shap_local_representative_players.csv)",
+  "selection": "One player per audit group and predicted tier: the player closest to that cell's median Model A prediction (src/fairness/explain_shap.py).",
+  "peers": null,
+  "players": [
+    {
+      "id": 918332,
+      "slug": "918332-german-ignatov",
+      "name": "German Ignatov",
+      "first_name": "German",
+      "last_name": "Ignatov",
+      "position": "Defender",
+      "sub_position": "Centre-Back",
+      "role_code": "CB",
+      "foot": "right",
+      "height_cm": 180.0,
+      "age": 20.79,
+      "league_id": "RU1",
+      "club": null,
+      "valuation_date": null,
+      "nationality": null,
+      "market_value_eur": 600000.0,
+      "market_tier": "Emerging",
+      "features": {
+        "age": 20.788501,
+        "height_in_cm": 180.0,
+        "position": "Defender",
+        "sub_position": "Centre-Back",
+        "foot": "right",
+        "valuation_league_id": "RU1",
+        "club_ppg": 1.1,
+        "appearances": 29,
+        "minutes": 1615.0,
+        "start_share": 0.586207,
+        "goals_p90": 0.055728,
+        "assists_p90": 0.0,
+        "yellow_p90": 0.167183,
+        "red_p90": 0.0,
+        "intl_club_minutes_share": 0.0,
+        "minutes_last_365": 621.0,
+        "days_since_last_match": 15,
+        "valuation_club_minutes_share": 1.0
+      },
+      "window": {
+        "appearances": 29,
+        "minutes": 1615,
+        "goals": 1,
+        "assists": 0,
+        "started": 17,
+        "yellow_cards": 3,
+        "red_cards": 0
+      },
+      "estimates": {
+        "served": {
+          "A": 646335.0,
+          "B": null
+        },
+        "heldout": {
+          "A": null,
+          "B": null
+        }
+      },
+      "explanation": {
+        "model": "A",
+        "source": "reports/explainability/shap_local_representative_players.csv",
+        "base_log_value": 14.592339,
+        "predicted_log_value": 13.379073,
+        "contributions": [
+          {
+            "feature": "valuation_league_id",
+            "value": "RU1",
+            "contribution": -0.484914
+          },
+          {
+            "feature": "age",
+            "value": 20.788501026694046,
+            "contribution": 0.480335
+          },
+          {
+            "feature": "minutes_last_365",
+            "value": 621.0,
+            "contribution": -0.320896
+          },
+          {
+            "feature": "appearances",
+            "value": 29.0,
+            "contribution": -0.271236
+          },
+          {
+            "feature": "club_ppg",
+            "value": 1.1,
+            "contribution": -0.262078
+          },
+          {
+            "feature": "intl_club_minutes_share",
+            "value": 0.0,
+            "contribution": -0.182024
+          },
+          {
+            "feature": "goal_contrib_p90",
+            "value": 0.05572755417956656,
+            "contribution": -0.117634
+          },
+          {
+            "feature": "days_since_last_match",
+            "value": 15.0,
+            "contribution": 0.095189
+          },
+          {
+            "feature": "start_share",
+            "value": 0.5862068965517242,
+            "contribution": -0.079604
+          },
+          {
+            "feature": "minutes",
+            "value": 1615.0,
+            "contribution": -0.042399
+          },
+          {
+            "feature": "minutes_per_appearance",
+            "value": 55.689655172413794,
+            "contribution": -0.02547
+          },
+          {
+            "feature": "position",
+            "value": "Defender",
+            "contribution": -0.011534
+          },
+          {
+            "feature": "sub_position",
+            "value": "Centre-Back",
+            "contribution": 0.009578
+          },
+          {
+            "feature": "goals_p90",
+            "value": 0.05572755417956656,
+            "contribution": 0.009101
+          },
+          {
+            "feature": "assists_p90",
+            "value": 0.0,
+            "contribution": -0.00791
+          },
+          {
+            "feature": "height_in_cm",
+            "value": 180.0,
+            "contribution": -0.006799
+          },
+          {
+            "feature": "valuation_club_minutes_share",
+            "value": 1.0,
+            "contribution": 0.001895
+          },
+          {
+            "feature": "foot",
+            "value": "right",
+            "contribution": 0.001197
+          },
+          {
+            "feature": "yellow_p90",
+            "value": 0.16718266253869968,
+            "contribution": 0.00117
+          },
+          {
+            "feature": "red_p90",
+            "value": 0.0,
+            "contribution": 0.000767
+          }
+        ]
+      },
+      "traits": null,
+      "history": null,
+      "audit": {
+        "group": "UEFA"
+      }
+    },
+    {
+      "id": 885226,
+      "slug": "885226-riyad-idrissi",
+      "name": "Riyad Idrissi",
+      "first_name": "Riyad",
+      "last_name": "Idrissi",
+      "position": "Defender",
+      "sub_position": "Left-Back",
+      "role_code": "LB",
+      "foot": "left",
+      "height_cm": 182.0,
+      "age": 20.96,
+      "league_id": "IT1",
+      "club": null,
+      "valuation_date": null,
+      "nationality": null,
+      "market_value_eur": 4000000.0,
+      "market_tier": "Established",
+      "features": {
+        "age": 20.958248,
+        "height_in_cm": 182.0,
+        "position": "Defender",
+        "sub_position": "Left-Back",
+        "foot": "left",
+        "valuation_league_id": "IT1",
+        "club_ppg": 1.131579,
+        "appearances": 26,
+        "minutes": 950.0,
+        "start_share": 0.230769,
+        "goals_p90": 0.189474,
+        "assists_p90": 0.094737,
+        "yellow_p90": 0.284211,
+        "red_p90": 0.0,
+        "intl_club_minutes_share": 0.0,
+        "minutes_last_365": 950.0,
+        "days_since_last_match": 83,
+        "valuation_club_minutes_share": 1.0
+      },
+      "window": {
+        "appearances": 26,
+        "minutes": 950,
+        "goals": 2,
+        "assists": 1,
+        "started": 6,
+        "yellow_cards": 3,
+        "red_cards": 0
+      },
+      "estimates": {
+        "served": {
+          "A": 4120186.0,
+          "B": null
+        },
+        "heldout": {
+          "A": null,
+          "B": null
+        }
+      },
+      "explanation": {
+        "model": "A",
+        "source": "reports/explainability/shap_local_representative_players.csv",
+        "base_log_value": 14.592339,
+        "predicted_log_value": 15.231409,
+        "contributions": [
+          {
+            "feature": "valuation_league_id",
+            "value": "IT1",
+            "contribution": 1.017939
+          },
+          {
+            "feature": "age",
+            "value": 20.958247775496236,
+            "contribution": 0.73012
+          },
+          {
+            "feature": "appearances",
+            "value": 26.0,
+            "contribution": -0.263978
+          },
+          {
+            "feature": "club_ppg",
+            "value": 1.131578947368421,
+            "contribution": -0.182454
+          },
+          {
+            "feature": "days_since_last_match",
+            "value": 83.0,
+            "contribution": -0.158175
+          },
+          {
+            "feature": "minutes",
+            "value": 950.0,
+            "contribution": -0.138833
+          },
+          {
+            "feature": "start_share",
+            "value": 0.23076923076923073,
+            "contribution": -0.114905
+          },
+          {
+            "feature": "intl_club_minutes_share",
+            "value": 0.0,
+            "contribution": -0.109589
+          },
+          {
+            "feature": "minutes_per_appearance",
+            "value": 36.53846153846154,
+            "contribution": -0.095281
+          },
+          {
+            "feature": "minutes_last_365",
+            "value": 950.0,
+            "contribution": -0.091306
+          },
+          {
+            "feature": "goals_p90",
+            "value": 0.18947368421052632,
+            "contribution": 0.061071
+          },
+          {
+            "feature": "sub_position",
+            "value": "Left-Back",
+            "contribution": -0.023858
+          },
+          {
+            "feature": "position",
+            "value": "Defender",
+            "contribution": -0.017046
+          },
+          {
+            "feature": "goal_contrib_p90",
+            "value": 0.28421052631578947,
+            "contribution": 0.01228
+          },
+          {
+            "feature": "height_in_cm",
+            "value": 182.0,
+            "contribution": -0.009626
+          },
+          {
+            "feature": "yellow_p90",
+            "value": 0.28421052631578947,
+            "contribution": 0.006547
+          },
+          {
+            "feature": "valuation_club_minutes_share",
+            "value": 1.0,
+            "contribution": 0.006372
+          },
+          {
+            "feature": "assists_p90",
+            "value": 0.09473684210526316,
+            "contribution": 0.006348
+          },
+          {
+            "feature": "foot",
+            "value": "left",
+            "contribution": 0.002711
+          },
+          {
+            "feature": "red_p90",
+            "value": 0.0,
+            "contribution": 0.000733
+          }
+        ]
+      },
+      "traits": null,
+      "history": null,
+      "audit": {
+        "group": "UEFA"
+      }
+    },
+    {
+      "id": 605184,
+      "slug": "605184-jean-clair-todibo",
+      "name": "Jean-Clair Todibo",
+      "first_name": "Jean-Clair",
+      "last_name": "Todibo",
+      "position": "Defender",
+      "sub_position": "Centre-Back",
+      "role_code": "CB",
+      "foot": "right",
+      "height_cm": 190.0,
+      "age": 26.43,
+      "league_id": "GB1",
+      "club": null,
+      "valuation_date": null,
+      "nationality": null,
+      "market_value_eur": 22000000.0,
+      "market_tier": "Elite",
+      "features": {
+        "age": 26.425736,
+        "height_in_cm": 190.0,
+        "position": "Defender",
+        "sub_position": "Centre-Back",
+        "foot": "right",
+        "valuation_league_id": "GB1",
+        "club_ppg": 1.026316,
+        "appearances": 53,
+        "minutes": 3903.0,
+        "start_share": 0.849057,
+        "goals_p90": 0.0,
+        "assists_p90": 0.023059,
+        "yellow_p90": 0.207533,
+        "red_p90": 0.0,
+        "intl_club_minutes_share": 0.0,
+        "minutes_last_365": 2025.0,
+        "days_since_last_match": 17,
+        "valuation_club_minutes_share": 1.0
+      },
+      "window": {
+        "appearances": 53,
+        "minutes": 3903,
+        "goals": 0,
+        "assists": 1,
+        "started": 45,
+        "yellow_cards": 9,
+        "red_cards": 0
+      },
+      "estimates": {
+        "served": {
+          "A": 16480374.0,
+          "B": null
+        },
+        "heldout": {
+          "A": null,
+          "B": null
+        }
+      },
+      "explanation": {
+        "model": "A",
+        "source": "reports/explainability/shap_local_representative_players.csv",
+        "base_log_value": 14.592339,
+        "predicted_log_value": 16.617681,
+        "contributions": [
+          {
+            "feature": "valuation_league_id",
+            "value": "GB1",
+            "contribution": 1.844732
+          },
+          {
+            "feature": "club_ppg",
+            "value": 1.0263157894736843,
+            "contribution": -0.288415
+          },
+          {
+            "feature": "age",
+            "value": 26.425735797399042,
+            "contribution": 0.276764
+          },
+          {
+            "feature": "minutes",
+            "value": 3903.0,
+            "contribution": 0.105359
+          },
+          {
+            "feature": "intl_club_minutes_share",
+            "value": 0.0,
+            "contribution": -0.102592
+          },
+          {
+            "feature": "goal_contrib_p90",
+            "value": 0.023059185242121444,
+            "contribution": -0.086153
+          },
+          {
+            "feature": "minutes_last_365",
+            "value": 2025.0,
+            "contribution": 0.08599
+          },
+          {
+            "feature": "days_since_last_match",
+            "value": 17.0,
+            "contribution": 0.085738
+          },
+          {
+            "feature": "valuation_club_minutes_share",
+            "value": 1.0,
+            "contribution": 0.07387
+          },
+          {
+            "feature": "goals_p90",
+            "value": 0.0,
+            "contribution": -0.066884
+          },
+          {
+            "feature": "start_share",
+            "value": 0.8490566037735849,
+            "contribution": 0.054055
+          },
+          {
+            "feature": "appearances",
+            "value": 53.0,
+            "contribution": 0.033953
+          },
+          {
+            "feature": "sub_position",
+            "value": "Centre-Back",
+            "contribution": 0.01661
+          },
+          {
+            "feature": "position",
+            "value": "Defender",
+            "contribution": -0.011625
+          },
+          {
+            "feature": "assists_p90",
+            "value": 0.023059185242121444,
+            "contribution": -0.009436
+          },
+          {
+            "feature": "minutes_per_appearance",
+            "value": 73.64150943396227,
+            "contribution": 0.00646
+          },
+          {
+            "feature": "height_in_cm",
+            "value": 190.0,
+            "contribution": 0.003098
+          },
+          {
+            "feature": "yellow_p90",
+            "value": 0.207532667179093,
+            "contribution": 0.001847
+          },
+          {
+            "feature": "red_p90",
+            "value": 0.0,
+            "contribution": 0.001654
+          },
+          {
+            "feature": "foot",
+            "value": "right",
+            "contribution": 0.000316
+          }
+        ]
+      },
+      "traits": null,
+      "history": null,
+      "audit": {
+        "group": "UEFA"
+      }
+    },
+    {
+      "id": 463618,
+      "slug": "463618-khephren-thuram",
+      "name": "Khéphren Thuram",
+      "first_name": "Khéphren",
+      "last_name": "Thuram",
+      "position": "Midfield",
+      "sub_position": "Central Midfield",
+      "role_code": "CM",
+      "foot": "right",
+      "height_cm": 192.0,
+      "age": 25.17,
+      "league_id": "IT1",
+      "club": null,
+      "valuation_date": null,
+      "nationality": null,
+      "market_value_eur": 38000000.0,
+      "market_tier": "World Class",
+      "features": {
+        "age": 25.174538,
+        "height_in_cm": 192.0,
+        "position": "Midfield",
+        "sub_position": "Central Midfield",
+        "foot": "right",
+        "valuation_league_id": "IT1",
+        "club_ppg": 1.815789,
+        "appearances": 96,
+        "minutes": 6468.0,
+        "start_share": 0.78125,
+        "goals_p90": 0.125232,
+        "assists_p90": 0.180891,
+        "yellow_p90": 0.125232,
+        "red_p90": 0.0,
+        "intl_club_minutes_share": 0.20671,
+        "minutes_last_365": 3394.0,
+        "days_since_last_match": 5,
+        "valuation_club_minutes_share": 1.0
+      },
+      "window": {
+        "appearances": 96,
+        "minutes": 6468,
+        "goals": 9,
+        "assists": 13,
+        "started": 75,
+        "yellow_cards": 9,
+        "red_cards": 0
+      },
+      "estimates": {
+        "served": {
+          "A": 41387967.0,
+          "B": null
+        },
+        "heldout": {
+          "A": null,
+          "B": null
+        }
+      },
+      "explanation": {
+        "model": "A",
+        "source": "reports/explainability/shap_local_representative_players.csv",
+        "base_log_value": 14.592339,
+        "predicted_log_value": 17.538501,
+        "contributions": [
+          {
+            "feature": "appearances",
+            "value": 96.0,
+            "contribution": 0.669283
+          },
+          {
+            "feature": "valuation_league_id",
+            "value": "IT1",
+            "contribution": 0.569669
+          },
+          {
+            "feature": "club_ppg",
+            "value": 1.8157894736842106,
+            "contribution": 0.451991
+          },
+          {
+            "feature": "age",
+            "value": 25.17453798767967,
+            "contribution": 0.352624
+          },
+          {
+            "feature": "minutes_last_365",
+            "value": 3394.0,
+            "contribution": 0.30353
+          },
+          {
+            "feature": "intl_club_minutes_share",
+            "value": 0.2067099567099567,
+            "contribution": 0.232608
+          },
+          {
+            "feature": "days_since_last_match",
+            "value": 5.0,
+            "contribution": 0.077439
+          },
+          {
+            "feature": "minutes",
+            "value": 6468.0,
+            "contribution": 0.063035
+          },
+          {
+            "feature": "goal_contrib_p90",
+            "value": 0.30612244897959184,
+            "contribution": 0.049279
+          },
+          {
+            "feature": "position",
+            "value": "Midfield",
+            "contribution": 0.047889
+          },
+          {
+            "feature": "sub_position",
+            "value": "Central Midfield",
+            "contribution": 0.043762
+          },
+          {
+            "feature": "goals_p90",
+            "value": 0.12523191094619665,
+            "contribution": 0.032563
+          },
+          {
+            "feature": "valuation_club_minutes_share",
+            "value": 1.0,
+            "contribution": 0.025931
+          },
+          {
+            "feature": "start_share",
+            "value": 0.78125,
+            "contribution": 0.022657
+          },
+          {
+            "feature": "assists_p90",
+            "value": 0.18089053803339517,
+            "contribution": 0.017367
+          },
+          {
+            "feature": "yellow_p90",
+            "value": 0.12523191094619665,
+            "contribution": -0.015136
+          },
+          {
+            "feature": "height_in_cm",
+            "value": 192.0,
+            "contribution": 0.003343
+          },
+          {
+            "feature": "minutes_per_appearance",
+            "value": 67.375,
+            "contribution": -0.003197
+          },
+          {
+            "feature": "red_p90",
+            "value": 0.0,
+            "contribution": 0.001219
+          },
+          {
+            "feature": "foot",
+            "value": "right",
+            "contribution": 0.000306
+          }
+        ]
+      },
+      "traits": null,
+      "history": null,
+      "audit": {
+        "group": "UEFA"
+      }
+    },
+    {
+      "id": 126665,
+      "slug": "126665-idrissa-gueye",
+      "name": "Idrissa Gueye",
+      "first_name": "Idrissa",
+      "last_name": "Gueye",
+      "position": "Midfield",
+      "sub_position": "Defensive Midfield",
+      "role_code": "DM",
+      "foot": "right",
+      "height_cm": 174.0,
+      "age": 36.68,
+      "league_id": "GB1",
+      "club": null,
+      "valuation_date": null,
+      "nationality": null,
+      "market_value_eur": 500000.0,
+      "market_tier": "Emerging",
+      "features": {
+        "age": 36.684463,
+        "height_in_cm": 174.0,
+        "position": "Midfield",
+        "sub_position": "Defensive Midfield",
+        "foot": "right",
+        "valuation_league_id": "GB1",
+        "club_ppg": 1.289474,
+        "appearances": 65,
+        "minutes": 5369.0,
+        "start_share": 0.953846,
+        "goals_p90": 0.033526,
+        "assists_p90": 0.100577,
+        "yellow_p90": 0.150866,
+        "red_p90": 0.0,
+        "intl_club_minutes_share": 0.0,
+        "minutes_last_365": 2102.0,
+        "days_since_last_match": 39,
+        "valuation_club_minutes_share": 1.0
+      },
+      "window": {
+        "appearances": 65,
+        "minutes": 5369,
+        "goals": 2,
+        "assists": 6,
+        "started": 62,
+        "yellow_cards": 9,
+        "red_cards": 0
+      },
+      "estimates": {
+        "served": {
+          "A": 795589.0,
+          "B": null
+        },
+        "heldout": {
+          "A": null,
+          "B": null
+        }
+      },
+      "explanation": {
+        "model": "A",
+        "source": "reports/explainability/shap_local_representative_players.csv",
+        "base_log_value": 14.592339,
+        "predicted_log_value": 13.586838,
+        "contributions": [
+          {
+            "feature": "age",
+            "value": 36.68446269678302,
+            "contribution": -2.473763
+          },
+          {
+            "feature": "valuation_league_id",
+            "value": "GB1",
+            "contribution": 1.147162
+          },
+          {
+            "feature": "appearances",
+            "value": 65.0,
+            "contribution": 0.376256
+          },
+          {
+            "feature": "days_since_last_match",
+            "value": 39.0,
+            "contribution": -0.157428
+          },
+          {
+            "feature": "intl_club_minutes_share",
+            "value": 0.0,
+            "contribution": -0.148913
+          },
+          {
+            "feature": "minutes_last_365",
+            "value": 2102.0,
+            "contribution": 0.08621
+          },
+          {
+            "feature": "goal_contrib_p90",
+            "value": 0.13410318495064258,
+            "contribution": -0.077904
+          },
+          {
+            "feature": "club_ppg",
+            "value": 1.2894736842105263,
+            "contribution": 0.068513
+          },
+          {
+            "feature": "minutes_per_appearance",
+            "value": 82.6,
+            "contribution": 0.06322
+          },
+          {
+            "feature": "goals_p90",
+            "value": 0.033525796237660645,
+            "contribution": -0.058752
+          },
+          {
+            "feature": "start_share",
+            "value": 0.9538461538461538,
+            "contribution": 0.045394
+          },
+          {
+            "feature": "sub_position",
+            "value": "Defensive Midfield",
+            "contribution": 0.037467
+          },
+          {
+            "feature": "valuation_club_minutes_share",
+            "value": 1.0,
+            "contribution": 0.03378
+          },
+          {
+            "feature": "minutes",
+            "value": 5369.0,
+            "contribution": 0.031185
+          },
+          {
+            "feature": "position",
+            "value": "Midfield",
+            "contribution": 0.028241
+          },
+          {
+            "feature": "height_in_cm",
+            "value": 174.0,
+            "contribution": -0.004185
+          },
+          {
+            "feature": "yellow_p90",
+            "value": 0.1508660830694729,
+            "contribution": -0.001032
+          },
+          {
+            "feature": "assists_p90",
+            "value": 0.10057738871298194,
+            "contribution": -0.000559
+          },
+          {
+            "feature": "red_p90",
+            "value": 0.0,
+            "contribution": -0.000248
+          },
+          {
+            "feature": "foot",
+            "value": "right",
+            "contribution": -0.000146
+          }
+        ]
+      },
+      "traits": null,
+      "history": null,
+      "audit": {
+        "group": "non-UEFA"
+      }
+    },
+    {
+      "id": 364258,
+      "slug": "364258-bernardo",
+      "name": "Bernardo",
+      "first_name": "",
+      "last_name": "Bernardo",
+      "position": "Defender",
+      "sub_position": "Left-Back",
+      "role_code": "LB",
+      "foot": "left",
+      "height_cm": 186.0,
+      "age": 31.04,
+      "league_id": "L1",
+      "club": null,
+      "valuation_date": null,
+      "nationality": null,
+      "market_value_eur": 4000000.0,
+      "market_tier": "Established",
+      "features": {
+        "age": 31.036277,
+        "height_in_cm": 186.0,
+        "position": "Defender",
+        "sub_position": "Left-Back",
+        "foot": "left",
+        "valuation_league_id": "L1",
+        "club_ppg": 1.794118,
+        "appearances": 52,
+        "minutes": 4310.0,
+        "start_share": 0.903846,
+        "goals_p90": 0.0,
+        "assists_p90": 0.0,
+        "yellow_p90": 0.292343,
+        "red_p90": 0.0,
+        "intl_club_minutes_share": 0.0,
+        "minutes_last_365": 2529.0,
+        "days_since_last_match": 11,
+        "valuation_club_minutes_share": 0.586775
+      },
+      "window": {
+        "appearances": 52,
+        "minutes": 4310,
+        "goals": 0,
+        "assists": 0,
+        "started": 47,
+        "yellow_cards": 14,
+        "red_cards": 0
+      },
+      "estimates": {
+        "served": {
+          "A": 4262931.0,
+          "B": null
+        },
+        "heldout": {
+          "A": null,
+          "B": null
+        }
+      },
+      "explanation": {
+        "model": "A",
+        "source": "reports/explainability/shap_local_representative_players.csv",
+        "base_log_value": 14.592339,
+        "predicted_log_value": 15.265467,
+        "contributions": [
+          {
+            "feature": "age",
+            "value": 31.0362765229295,
+            "contribution": -0.583399
+          },
+          {
+            "feature": "valuation_league_id",
+            "value": "L1",
+            "contribution": 0.528425
+          },
+          {
+            "feature": "club_ppg",
+            "value": 1.7941176470588236,
+            "contribution": 0.499275
+          },
+          {
+            "feature": "minutes_last_365",
+            "value": 2529.0,
+            "contribution": 0.205181
+          },
+          {
+            "feature": "intl_club_minutes_share",
+            "value": 0.0,
+            "contribution": -0.12875
+          },
+          {
+            "feature": "days_since_last_match",
+            "value": 11.0,
+            "contribution": 0.124047
+          },
+          {
+            "feature": "goal_contrib_p90",
+            "value": 0.0,
+            "contribution": -0.106822
+          },
+          {
+            "feature": "minutes",
+            "value": 4310.0,
+            "contribution": 0.089459
+          },
+          {
+            "feature": "minutes_per_appearance",
+            "value": 82.88461538461539,
+            "contribution": 0.07181
+          },
+          {
+            "feature": "start_share",
+            "value": 0.9038461538461539,
+            "contribution": 0.070767
+          },
+          {
+            "feature": "goals_p90",
+            "value": 0.0,
+            "contribution": -0.070574
+          },
+          {
+            "feature": "sub_position",
+            "value": "Left-Back",
+            "contribution": -0.031602
+          },
+          {
+            "feature": "appearances",
+            "value": 52.0,
+            "contribution": 0.027074
+          },
+          {
+            "feature": "assists_p90",
+            "value": 0.0,
+            "contribution": -0.021709
+          },
+          {
+            "feature": "valuation_club_minutes_share",
+            "value": 0.5867749419953596,
+            "contribution": 0.019873
+          },
+          {
+            "feature": "position",
+            "value": "Defender",
+            "contribution": -0.018586
+          },
+          {
+            "feature": "foot",
+            "value": "left",
+            "contribution": -0.003635
+          },
+          {
+            "feature": "yellow_p90",
+            "value": 0.29234338747099764,
+            "contribution": 0.003617
+          },
+          {
+            "feature": "height_in_cm",
+            "value": 186.0,
+            "contribution": -0.001553
+          },
+          {
+            "feature": "red_p90",
+            "value": 0.0,
+            "contribution": 0.00023
+          }
+        ]
+      },
+      "traits": null,
+      "history": null,
+      "audit": {
+        "group": "non-UEFA"
+      }
+    },
+    {
+      "id": 405398,
+      "slug": "405398-takefusa-kubo",
+      "name": "Takefusa Kubo",
+      "first_name": "Takefusa",
+      "last_name": "Kubo",
+      "position": "Attack",
+      "sub_position": "Right Winger",
+      "role_code": "RW",
+      "foot": "left",
+      "height_cm": 173.0,
+      "age": 25.0,
+      "league_id": "ES1",
+      "club": null,
+      "valuation_date": null,
+      "nationality": null,
+      "market_value_eur": 20000000.0,
+      "market_tier": "Elite",
+      "features": {
+        "age": 25.002053,
+        "height_in_cm": 173.0,
+        "position": "Attack",
+        "sub_position": "Right Winger",
+        "foot": "left",
+        "valuation_league_id": "ES1",
+        "club_ppg": 1.210526,
+        "appearances": 79,
+        "minutes": 5236.0,
+        "start_share": 0.746835,
+        "goals_p90": 0.154698,
+        "assists_p90": 0.13751,
+        "yellow_p90": 0.154698,
+        "red_p90": 0.0,
+        "intl_club_minutes_share": 0.133499,
+        "minutes_last_365": 1746.0,
+        "days_since_last_match": 22,
+        "valuation_club_minutes_share": 1.0
+      },
+      "window": {
+        "appearances": 79,
+        "minutes": 5236,
+        "goals": 9,
+        "assists": 8,
+        "started": 59,
+        "yellow_cards": 9,
+        "red_cards": 0
+      },
+      "estimates": {
+        "served": {
+          "A": 15595565.0,
+          "B": null
+        },
+        "heldout": {
+          "A": null,
+          "B": null
+        }
+      },
+      "explanation": {
+        "model": "A",
+        "source": "reports/explainability/shap_local_representative_players.csv",
+        "base_log_value": 14.592339,
+        "predicted_log_value": 16.562497,
+        "contributions": [
+          {
+            "feature": "valuation_league_id",
+            "value": "ES1",
+            "contribution": 0.602383
+          },
+          {
+            "feature": "appearances",
+            "value": 79.0,
+            "contribution": 0.59406
+          },
+          {
+            "feature": "age",
+            "value": 25.00205338809035,
+            "contribution": 0.336187
+          },
+          {
+            "feature": "days_since_last_match",
+            "value": 22.0,
+            "contribution": 0.140904
+          },
+          {
+            "feature": "club_ppg",
+            "value": 1.2105263157894737,
+            "contribution": -0.13604
+          },
+          {
+            "feature": "intl_club_minutes_share",
+            "value": 0.1334988540870894,
+            "contribution": 0.12697
+          },
+          {
+            "feature": "minutes",
+            "value": 5236.0,
+            "contribution": 0.106172
+          },
+          {
+            "feature": "height_in_cm",
+            "value": 173.0,
+            "contribution": 0.060416
+          },
+          {
+            "feature": "goals_p90",
+            "value": 0.15469824293353704,
+            "contribution": 0.057186
+          },
+          {
+            "feature": "goal_contrib_p90",
+            "value": 0.2922077922077922,
+            "contribution": 0.032297
+          },
+          {
+            "feature": "start_share",
+            "value": 0.7468354430379747,
+            "contribution": 0.022707
+          },
+          {
+            "feature": "valuation_club_minutes_share",
+            "value": 1.0,
+            "contribution": 0.021449
+          },
+          {
+            "feature": "minutes_last_365",
+            "value": 1746.0,
+            "contribution": -0.008329
+          },
+          {
+            "feature": "sub_position",
+            "value": "Right Winger",
+            "contribution": 0.007576
+          },
+          {
+            "feature": "position",
+            "value": "Attack",
+            "contribution": -0.00553
+          },
+          {
+            "feature": "minutes_per_appearance",
+            "value": 66.27848101265823,
+            "contribution": 0.004082
+          },
+          {
+            "feature": "foot",
+            "value": "left",
+            "contribution": 0.00344
+          },
+          {
+            "feature": "assists_p90",
+            "value": 0.13750954927425516,
+            "contribution": 0.001511
+          },
+          {
+            "feature": "red_p90",
+            "value": 0.0,
+            "contribution": 0.001472
+          },
+          {
+            "feature": "yellow_p90",
+            "value": 0.15469824293353704,
+            "contribution": 0.001246
+          }
+        ]
+      },
+      "traits": null,
+      "history": null,
+      "audit": {
+        "group": "non-UEFA"
+      }
+    },
+    {
+      "id": 849520,
+      "slug": "849520-santiago-castro",
+      "name": "Santiago Castro",
+      "first_name": "Santiago",
+      "last_name": "Castro",
+      "position": "Attack",
+      "sub_position": "Centre-Forward",
+      "role_code": "CF",
+      "foot": "right",
+      "height_cm": 179.0,
+      "age": 21.69,
+      "league_id": "IT1",
+      "club": null,
+      "valuation_date": null,
+      "nationality": null,
+      "market_value_eur": 32000000.0,
+      "market_tier": "World Class",
+      "features": {
+        "age": 21.691992,
+        "height_in_cm": 179.0,
+        "position": "Attack",
+        "sub_position": "Centre-Forward",
+        "foot": "right",
+        "valuation_league_id": "IT1",
+        "club_ppg": 1.473684,
+        "appearances": 97,
+        "minutes": 6263.0,
+        "start_share": 0.752577,
+        "goals_p90": 0.301772,
+        "assists_p90": 0.172441,
+        "yellow_p90": 0.201182,
+        "red_p90": 0.0,
+        "intl_club_minutes_share": 0.185215,
+        "minutes_last_365": 3443.0,
+        "days_since_last_match": 6,
+        "valuation_club_minutes_share": 1.0
+      },
+      "window": {
+        "appearances": 97,
+        "minutes": 6263,
+        "goals": 21,
+        "assists": 12,
+        "started": 73,
+        "yellow_cards": 14,
+        "red_cards": 0
+      },
+      "estimates": {
+        "served": {
+          "A": 39722203.0,
+          "B": null
+        },
+        "heldout": {
+          "A": null,
+          "B": null
+        }
+      },
+      "explanation": {
+        "model": "A",
+        "source": "reports/explainability/shap_local_representative_players.csv",
+        "base_log_value": 14.592339,
+        "predicted_log_value": 17.497421,
+        "contributions": [
+          {
+            "feature": "age",
+            "value": 21.691991786447637,
+            "contribution": 0.725902
+          },
+          {
+            "feature": "appearances",
+            "value": 97.0,
+            "contribution": 0.712305
+          },
+          {
+            "feature": "valuation_league_id",
+            "value": "IT1",
+            "contribution": 0.680226
+          },
+          {
+            "feature": "minutes_last_365",
+            "value": 3443.0,
+            "contribution": 0.284191
+          },
+          {
+            "feature": "intl_club_minutes_share",
+            "value": 0.18521475331310874,
+            "contribution": 0.19158
+          },
+          {
+            "feature": "goal_contrib_p90",
+            "value": 0.4742136356378732,
+            "contribution": 0.088945
+          },
+          {
+            "feature": "days_since_last_match",
+            "value": 6.0,
+            "contribution": 0.070273
+          },
+          {
+            "feature": "minutes",
+            "value": 6263.0,
+            "contribution": 0.060496
+          },
+          {
+            "feature": "valuation_club_minutes_share",
+            "value": 1.0,
+            "contribution": 0.039067
+          },
+          {
+            "feature": "goals_p90",
+            "value": 0.3017723135877375,
+            "contribution": 0.038408
+          },
+          {
+            "feature": "club_ppg",
+            "value": 1.4736842105263157,
+            "contribution": 0.032594
+          },
+          {
+            "feature": "assists_p90",
+            "value": 0.1724413220501357,
+            "contribution": 0.019295
+          },
+          {
+            "feature": "position",
+            "value": "Attack",
+            "contribution": -0.019008
+          },
+          {
+            "feature": "minutes_per_appearance",
+            "value": 64.56701030927834,
+            "contribution": -0.010133
+          },
+          {
+            "feature": "sub_position",
+            "value": "Centre-Forward",
+            "contribution": -0.009534
+          },
+          {
+            "feature": "height_in_cm",
+            "value": 179.0,
+            "contribution": -0.005319
+          },
+          {
+            "feature": "yellow_p90",
+            "value": 0.201181542391825,
+            "contribution": 0.004403
+          },
+          {
+            "feature": "foot",
+            "value": "right",
+            "contribution": 0.001196
+          },
+          {
+            "feature": "red_p90",
+            "value": 0.0,
+            "contribution": 0.001072
+          },
+          {
+            "feature": "start_share",
+            "value": 0.7525773195876289,
+            "contribution": -0.000877
+          }
+        ]
+      },
+      "traits": null,
+      "history": null,
+      "audit": {
+        "group": "non-UEFA"
+      }
+    }
+  ]
+}

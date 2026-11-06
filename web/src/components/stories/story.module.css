@@ -1,0 +1,486 @@
+/* Stories: a black stage with broadcast-scale condensed type, serif reading text and gold as the
+   single accent. Big numbers are the imagery until licensed photography exists. */
+
+.stories {
+  --st-bg: #050605;
+  --st-ink: #f2f1ea;
+  --st-ink-2: #c9cbc2;
+  --st-dim: #8d968f;
+  --st-rule: rgb(242 241 234 / 0.12);
+  --st-gold: #e9b949;
+  --surface: #050605;
+  min-height: calc(100dvh - var(--header-h));
+  background: var(--st-bg);
+  color: var(--st-ink);
+}
+
+/* ---- Masthead ---- */
+.nav {
+  position: sticky;
+  top: var(--header-h);
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  height: 2.75rem;
+  padding-inline: clamp(1rem, 3vw, 2.5rem);
+  border-bottom: 1px solid var(--st-rule);
+  background: rgb(5 6 5 / 0.96);
+}
+
+.navMast {
+  font-family: var(--font-serif);
+  font-size: 1.05rem;
+  font-style: italic;
+  color: var(--st-ink-2);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.navMast b {
+  font-family: var(--font-display);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--st-gold);
+}
+
+.navList {
+  display: flex;
+  gap: 1.5rem;
+  margin: 0;
+  padding: 0;
+  overflow-x: auto;
+  list-style: none;
+  scrollbar-width: none;
+}
+
+.navList a {
+  font-family: var(--font-label);
+  font-size: 0.705rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--st-dim);
+  text-decoration: none;
+  font-variation-settings: var(--label-wdth);
+}
+
+.navList a:hover,
+.navMast:hover {
+  color: var(--st-ink);
+}
+
+/* ---- Shared editorial pieces ---- */
+.wrap {
+  width: 100%;
+  max-width: 1440px;
+  margin-inline: auto;
+  padding-inline: clamp(1.25rem, 4vw, 4rem);
+}
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: fit-content;
+  padding: 0.3rem 1.4rem 0.3rem 0.7rem;
+  background: var(--st-gold);
+  clip-path: polygon(0 0, 100% 0, calc(100% - 0.75rem) 100%, 0 100%);
+  font-family: var(--font-label);
+  font-size: 0.688rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #120d02;
+  font-variation-settings: var(--label-wdth);
+}
+
+.tag[data-quiet] {
+  background: rgb(242 241 234 / 0.1);
+  color: var(--st-ink-2);
+}
+
+.display {
+  font-family: var(--font-display);
+  font-size: clamp(3.25rem, 8.4vw, 8.5rem);
+  font-weight: 700;
+  line-height: 0.86;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+.dek {
+  max-width: 44rem;
+  font-family: var(--font-serif);
+  font-size: clamp(1.15rem, 1.6vw, 1.45rem);
+  font-style: italic;
+  line-height: 1.45;
+  color: var(--st-ink-2);
+}
+
+.basis {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.25rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: var(--st-dim);
+}
+
+.basis b {
+  font-weight: 600;
+  color: var(--st-ink-2);
+}
+
+.read {
+  font-style: normal;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  width: fit-content;
+  padding-bottom: 0.2rem;
+  border-bottom: 2px solid var(--st-gold);
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--st-ink);
+  text-decoration: none;
+}
+
+.read:hover {
+  color: var(--st-gold);
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 3.5rem 0 1.25rem;
+  border-bottom: 1px solid var(--st-rule);
+}
+
+.sectionHead h2 {
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 2.4vw, 2.25rem);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.sectionHead p {
+  max-width: 36rem;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-style: italic;
+  color: var(--st-dim);
+  text-align: right;
+}
+
+/* ---- Reading text ---- */
+.copy {
+  display: grid;
+  gap: 1.1rem;
+  font-family: var(--font-serif);
+  font-size: 1.2rem;
+  line-height: 1.65;
+  color: var(--st-ink-2);
+}
+
+.copy strong {
+  color: var(--st-ink);
+  font-weight: 600;
+}
+
+.copy em {
+  color: var(--st-ink);
+}
+
+.caveat {
+  padding: 1rem 1.25rem;
+  border-left: 3px solid var(--st-gold);
+  background: rgb(242 241 234 / 0.04);
+  font-family: var(--font-ui);
+  font-size: 0.9rem;
+  line-height: 1.55;
+  color: var(--st-ink-2);
+}
+
+/* ---- Big broadcast numerals ---- */
+.numeral {
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 11vw, 11rem);
+  font-weight: 700;
+  line-height: 0.85;
+  letter-spacing: -0.02em;
+  color: var(--st-gold);
+  font-variant-numeric: tabular-nums;
+}
+
+.numeralLabel {
+  max-width: 24rem;
+  font-size: 0.688rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--st-dim);
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+/* ---- Typographic portrait: what Stories shows until a licensed photograph exists ---- */
+.typeface {
+  position: relative;
+  display: grid;
+  align-content: end;
+  overflow: hidden;
+  min-height: 20rem;
+  padding: 1.5rem;
+  border: 1px solid var(--st-rule);
+  background: repeating-linear-gradient(90deg, rgb(242 241 234 / 0.025) 0 1px, transparent 1px 64px), #070907;
+}
+
+.typefaceName {
+  font-family: var(--font-display);
+  font-size: clamp(5rem, 13vw, 12rem);
+  font-weight: 700;
+  line-height: 0.8;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(242 241 234 / 0.5);
+  overflow-wrap: anywhere;
+}
+
+.typefaceRole {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--st-gold);
+}
+
+.typefaceNote {
+  position: absolute;
+  top: 1.4rem;
+  right: 1.5rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--st-dim);
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+/* ---- Scrollytelling ---- */
+.scrolly {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  gap: clamp(2rem, 5vw, 5rem);
+  align-items: start;
+}
+
+.steps {
+  display: grid;
+  gap: 0;
+  padding-bottom: 30vh;
+}
+
+.step {
+  display: grid;
+  align-content: center;
+  gap: 0.9rem;
+  min-height: 72vh;
+  padding: 2rem 0;
+  opacity: 0.22;
+  translate: 0 1.25rem;
+  transition: opacity 450ms var(--ease-out), translate 600ms var(--ease-out);
+}
+
+.step[data-active] {
+  opacity: 1;
+  translate: 0 0;
+}
+
+/* Chapter numerals: oversized outline figures, gold stroke, the chapter's broadcast slate. */
+.stepNo {
+  font-family: var(--font-display);
+  font-size: clamp(4.5rem, 8vw, 7.5rem);
+  font-weight: 900;
+  line-height: 0.78;
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--st-gold);
+  transition: color 500ms var(--ease-out);
+}
+
+.step[data-active] .stepNo {
+  color: rgb(233 185 73 / 0.12);
+}
+
+.stepTitle {
+  font-family: var(--font-display);
+  font-size: clamp(2rem, 3.4vw, 3.25rem);
+  font-weight: 700;
+  line-height: 0.95;
+  text-transform: uppercase;
+}
+
+.stage {
+  position: sticky;
+  top: calc(var(--header-h) + 2.75rem + 1.5rem);
+  display: grid;
+  align-content: center;
+  min-height: calc(100dvh - var(--header-h) - 2.75rem - 3rem);
+}
+
+@media (max-width: 900px) {
+  .nav {
+    gap: 1rem;
+  }
+  .scrolly {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* On narrow screens the graphic rides above the text, pinned under the masthead. */
+  .stage {
+    top: calc(var(--header-h) + 2.75rem);
+    z-index: 5;
+    grid-row: 1;
+    min-height: 0;
+    padding: 0.75rem 0;
+    background: var(--st-bg);
+    border-bottom: 1px solid var(--st-rule);
+  }
+  .step {
+    min-height: 60vh;
+  }
+  .sectionHead {
+    flex-direction: column;
+  }
+  .sectionHead p {
+    text-align: left;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .step {
+    opacity: 1;
+    translate: none;
+  }
+}
+
+/* Reading progress: a gold rule under the masthead that fills as the story scrolls
+   (CSS scroll-driven animation; browsers without it simply show no rule). */
+.progress {
+  position: sticky;
+  top: calc(var(--header-h) + 2.75rem);
+  z-index: 29;
+  height: 2px;
+  margin-top: -2px;
+  background: var(--st-gold);
+  transform-origin: left center;
+  transform: scaleX(0);
+}
+
+@supports (animation-timeline: scroll()) {
+  .progress {
+    animation: read-progress linear both;
+    animation-timeline: scroll(root block);
+  }
+}
+
+@keyframes read-progress {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* ---- Interstitial: a broadcast stat break between acts ---- */
+.interstitial {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: clamp(1.5rem, 4vw, 4rem);
+  margin: 0 calc(clamp(1.25rem, 4vw, 4rem) * -1);
+  padding: clamp(3rem, 8vh, 6rem) clamp(1.25rem, 4vw, 4rem);
+  border-top: 1px solid var(--st-rule);
+  border-bottom: 1px solid var(--st-rule);
+  background: repeating-linear-gradient(90deg, rgb(242 241 234 / 0.02) 0 1px, transparent 1px 80px), #070907;
+}
+
+.duel {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.duel:last-child {
+  justify-items: end;
+  text-align: right;
+}
+
+.duelValue {
+  font-family: var(--font-display);
+  font-size: clamp(4rem, 10vw, 9.5rem);
+  font-weight: 900;
+  line-height: 0.8;
+}
+
+.duel:first-child .duelValue {
+  color: transparent;
+  -webkit-text-stroke: 2px var(--st-ink);
+}
+
+.duel:last-child .duelValue {
+  color: var(--st-gold);
+}
+
+.duelLabel {
+  max-width: 22rem;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--st-ink-2);
+}
+
+.duelMid {
+  display: grid;
+  justify-items: center;
+  gap: 0.4rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.6rem, 3vw, 2.6rem);
+  font-weight: 900;
+  line-height: 0.9;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.duelMid small {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  font-style: italic;
+  font-weight: 400;
+  text-transform: none;
+  color: var(--st-dim);
+}
+
+@media (max-width: 900px) {
+  .interstitial {
+    grid-template-columns: minmax(0, 1fr);
+    text-align: center;
+  }
+  .duel,
+  .duel:last-child {
+    justify-items: center;
+    text-align: center;
+  }
+}

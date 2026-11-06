@@ -1,0 +1,101 @@
+.mark {
+  flex: none;
+  display: inline-block;
+  vertical-align: -0.08em;
+}
+
+.key {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.9rem;
+  font-size: 0.74rem;
+  color: #8f9b93;
+}
+
+.key > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+/* Residual direction */
+.residual {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.3rem;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.residual > span {
+  font-size: 0.62em;
+  transform: translateY(-0.08em);
+}
+
+.residual b {
+  font-weight: 600;
+}
+
+.residual small {
+  font-size: 0.82em;
+  color: #8f9b93;
+}
+
+.residual[data-dir="up"] > span,
+.residual[data-dir="up"] b {
+  color: #e9b949;
+}
+
+.residual[data-dir="down"] > span,
+.residual[data-dir="down"] b {
+  color: #9fb7d9;
+}
+
+/* Tier gauge */
+.tier {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  white-space: nowrap;
+  font-size: 0.78rem;
+  color: #c3cbc3;
+}
+
+.steps {
+  display: inline-flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 0.8rem;
+}
+
+.steps i {
+  width: 3px;
+  background: rgb(237 239 230 / 0.16);
+}
+
+.steps i:nth-child(1) {
+  height: 40%;
+}
+.steps i:nth-child(2) {
+  height: 60%;
+}
+.steps i:nth-child(3) {
+  height: 80%;
+}
+.steps i:nth-child(4) {
+  height: 100%;
+}
+
+.steps i[data-on] {
+  background: #e9b949;
+}
+
+.tier[data-tier="3"],
+.tier[data-tier="2"] {
+  color: #edefe6;
+}
+
+.tierNone {
+  color: #56625a;
+}

@@ -668,7 +668,7 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
 - **Conditions:** every image shows a credit; Berlin images carry "background removed" and CC BY-SA 4.0; a credits page and a takedown contact ship with the portraits; one flag turns FootyLogos images off at once if a
   takedown arrives. Portraits are a presentation layer and say nothing about the model or the audit. Card faces show Transfermarkt value, club and league only.
 - **Known limits:** close-up flag is a heuristic checked on a sample; FootyLogos kits are often older than the current club; Berlin kits are national-team kits; personality-rights warnings on Berlin files remain open.
-- **Built (2026-11-06):** `PlayerCard` in the dossier hero, `portraitFor` serves Berlin and FootyLogos card portraits, `/credits` page, `FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` switch. FootyLogos image files and their id list are git-ignored (`web/public/players/portraits/cards/fl/`, `web/src/data/generated/portrait_cards_fl.json`); regenerate with `scripts/portraits/build_card_assets.py`. Not yet on other screens (Explorer rows, Stories heroes, Overview). Deploying publicly still needs the owner's explicit go-ahead.
+- **Built (2026-11-06):** `PlayerCard` in the dossier hero, `portraitFor` serves Berlin and FootyLogos card portraits, `/credits` page, `NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` (build-time) switch. FootyLogos image files and their id list are git-ignored (`web/public/players/portraits/cards/fl/`, `web/src/data/generated/portrait_cards_fl.json`); regenerate with `scripts/portraits/build_card_assets.py`. Not yet on other screens (Explorer rows, Stories heroes, Overview). Deploying publicly still needs the owner's explicit go-ahead.
 
 ---
 

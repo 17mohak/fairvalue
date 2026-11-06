@@ -1,5 +1,5 @@
 {
-  "policy": "Card portraits (D-053). Berlin / WikiPortraits frames are CC BY-SA 4.0 with the background removed by FairValue; they are committed. FootyLogos images are unlicensed and used at the owner's risk (D-044): they are git-ignored, listed in src/data/generated/portrait_cards_fl.json, and switched off with FAIRVALUE_FOOTYLOGOS_PORTRAITS=off.",
+  "policy": "Card portraits (D-053). Berlin / WikiPortraits frames are CC BY-SA 4.0 with the background removed by FairValue; they are committed. FootyLogos images are unlicensed and used at the owner's risk (D-044): they are git-ignored, listed in src/data/generated/portrait_cards_fl.json, and switched off with NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off (build-time).",
   "berlin": [
     {
       "id": 182906,

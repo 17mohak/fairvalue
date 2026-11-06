@@ -1,9 +1,15 @@
 # Development changelog
 
+## 2026-11-06: Player card on every player surface (branch `feat/portrait-cards`, D-053)
+- **Chip:** `PlayerChip`, the card's small slanted form (ink by tier, engraved monogram when there is no portrait), now in Explorer rows, Overview spotlights, the dossier's "near this valuation" list and Head-to-Head covers.
+- **Stories:** valuation story covers show the full card (held-out Model A from the full export) with its credit; the "no licensed photograph" typographic cover is gone. Head-to-Head covers link to `/credits`.
+- **Switch:** renamed to `NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` so client rows and server pages agree; it is read at build time, so rebuild after changing it.
+- **Checked:** web tests 177 pass, tsc passes; by eye at desktop width on Explorer, Overview, a valuation story and a head-to-head. Not checked: mobile, other browsers, Inspector panel, Comparison Studio, Watchlists (still monogram-free text).
+
 ## 2026-11-06: Player cards, direction C (branch `feat/portrait-cards`, D-053)
 - **Card:** `PlayerCard` ("The Denomination") in the dossier hero: observed value as the denomination, ink by value tier, held-out Model A and residual on the foot, engraved monogram when there is no portrait. Guilloche background from `lib/guilloche.ts`.
 - **Portraits:** `portraitFor` now falls back to card portraits: 57 Berlin / WikiPortraits frames (CC BY-SA 4.0, background removed, committed) and 1,128 FootyLogos images (unlicensed, owner's risk per D-044, git-ignored). `scripts/portraits/build_card_assets.py` builds both from `research/portrait_sourcing/`.
-- **Safeguards:** `/credits` page and footer link, `FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` removes every unlicensed image, `cardPortraitProblems` checks credit and source on each entry.
+- **Safeguards:** `/credits` page and footer link, `NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` (build-time) removes every unlicensed image, `cardPortraitProblems` checks credit and source on each entry.
 - **Tests:** web 177 (+6). tsc and production build pass. Checked by eye on three dossiers (FootyLogos, Berlin, monogram) at desktop width only; mobile and other browsers not checked. Not yet on Explorer rows, Stories or the Overview.
 
 ## 2026-11-06: Pre-live deployment setup (branch `feat/pre-live`)

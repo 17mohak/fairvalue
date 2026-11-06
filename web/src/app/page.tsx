@@ -8,7 +8,7 @@ import { Reveal } from "@/components/overview/Reveal";
 import { ServiceLine } from "@/components/overview/ServiceLine";
 import { ValuationTheatre } from "@/components/overview/ValuationTheatre";
 import { MiniRuler } from "@/components/players/MiniRuler";
-import { PortraitSlot } from "@/components/players/PortraitSlot";
+import { PlayerChip } from "@/components/players/PlayerChip";
 import { ExpLink } from "@/components/site/ExpLink";
 import { PageTransition } from "@/components/site/PageTransition";
 import { SearchTrigger, ShortcutKbd } from "@/components/site/SearchTrigger";
@@ -372,7 +372,7 @@ export default function Overview() {
                   <ExpLink href={`/players/${c.slug}?from=overview`} className={styles.spot}>
                     <span className={styles.spotPos}>{c.position}</span>
                     <span className={styles.spotFrame}>
-                      <PortraitSlot portrait={portraitFor(c.id)} name={c.name} roleCode={c.role_code} size="card" />
+                      <PlayerChip name={c.name} tier={c.market_tier} portrait={portraitFor(c.id)} />
                     </span>
                     <span className={styles.spotName}>
                       <small>{c.first_name}</small>

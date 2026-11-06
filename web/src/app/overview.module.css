@@ -743,7 +743,8 @@
   color: var(--flood);
 }
 .spotFrame {
-  display: block;
+  display: grid;
+  justify-content: center;
   aspect-ratio: 16 / 7;
   overflow: hidden;
 }

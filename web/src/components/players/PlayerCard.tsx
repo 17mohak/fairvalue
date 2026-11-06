@@ -36,6 +36,8 @@ interface Props {
   modelA: number | null;
   valuedLabel: string;
   portrait: Portrait | null;
+  /** 1 = the 360 x 504 board. The dossier uses 0.77; story covers use 1. */
+  scale?: number;
 }
 
 const W = 360;
@@ -47,7 +49,7 @@ const H = 504;
  * residual; nothing here is a rating or a claim about the player. Without a portrait the engraved
  * monogram takes the arch.
  */
-export function PlayerCard({ id, name, firstName, lastName, roleCode, club, nationality, tier, observed, modelA, valuedLabel, portrait }: Props) {
+export function PlayerCard({ id, name, firstName, lastName, roleCode, club, nationality, tier, observed, modelA, valuedLabel, portrait, scale }: Props) {
   const ink = tier ? INK[tier] : "green";
   const g = guilloche(W, H, 200, 160, 158);
   const mono = guilloche(248, 290, 124, 150, 92, { noField: true });
@@ -59,7 +61,7 @@ export function PlayerCard({ id, name, firstName, lastName, roleCode, club, nati
   const pb = modelA !== null ? pos(modelA) : null;
 
   return (
-    <article className={styles.card} data-ink={ink} aria-label={`${name}, observed value ${value}`} style={{ "--obs": `${pa}%` } as CSSProperties}>
+    <article className={styles.card} data-ink={ink} aria-label={`${name}, observed value ${value}`} style={{ "--obs": `${pa}%`, ...(scale ? { "--scale": scale } : {}) } as CSSProperties}>
       <div className={styles.paper}>
         <svg className={styles.guil} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid slice" aria-hidden="true">
           {g.field.map((d, i) => <path key={`f${i}`} className={styles.f} d={d} />)}

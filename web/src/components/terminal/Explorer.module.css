@@ -223,6 +223,12 @@
   gap: 0.6rem;
 }
 
+.chipBox {
+  flex: none;
+  display: block;
+  height: 2.1rem;
+}
+
 .who > span:last-child {
   display: grid;
   line-height: 1.2;

@@ -19,13 +19,3 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
-
----------------------------------------------------------------------------
-Scope: this licence covers the source code and documentation written for
-FairValue. It does not cover:
-- web/public/players/portraits/cards/berlin/ and web/src/data/portrait_cards.json
-  entries derived from Wikimedia Commons: CC BY-SA 4.0, credited per image;
-- web/public/flags/: flag-icons, MIT (see LICENSE-flag-icons.txt in that folder);
-- any data derived from Transfermarkt (via dcaribou/transfermarkt-datasets),
-  whose licensing is uncertain (see docs/DATA_CARD.md);
-- third-party fonts and packages, under their own licences.

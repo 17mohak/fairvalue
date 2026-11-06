@@ -670,6 +670,23 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
 - **Known limits:** close-up flag is a heuristic checked on a sample; FootyLogos kits are often older than the current club; Berlin kits are national-team kits; personality-rights warnings on Berlin files remain open.
 - **Built (2026-11-06):** `PlayerCard` in the dossier hero, `portraitFor` serves Berlin and FootyLogos card portraits, `/credits` page, `NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` (build-time) switch. FootyLogos image files and their id list are git-ignored (`web/public/players/portraits/cards/fl/`, `web/src/data/generated/portrait_cards_fl.json`); regenerate with `scripts/portraits/build_card_assets.py`. Not yet on other screens (Explorer rows, Stories heroes, Overview). Deploying publicly still needs the owner's explicit go-ahead.
 
+## D-054 Public launch: password gate and noindex removed, repository public — Decided (2026-11-06)
+- **Decision (owner):** open the site to everyone and make `17mohak/fairvalue` public, for a LinkedIn
+  post. This ends the reviewer-only stage of D-052. The owner accepts the open data-rights questions
+  rather than waiting on them: Transfermarkt's terms (not reviewed), the unlicensed FootyLogos
+  portraits (D-044), personality rights on the Berlin files.
+- **Done:** `fairvalue-web` env changed in place (no rebuild): `FAIRVALUE_REVIEW_PASSWORD` and
+  `FAIRVALUE_REVIEW_USER` removed, `FAIRVALUE_NOINDEX=0`. The API stays private (IAM). A site-wide
+  share image (`app/opengraph-image.tsx`) and Open Graph metadata give the home page a preview card.
+  `scripts/deploy_gcp.sh` gains `FAIRVALUE_PUBLIC=1` so a redeploy does not restore the gate.
+- **Repository:** history scanned before going public (all 90 commits): no review password, keys or
+  tokens, no email address in any file, no data, model or FootyLogos files; README screenshots show
+  monograms only. Commit author emails are visible; the owner chose to publish as is.
+- **Takedown:** the `/credits` contact (GitHub issues) now works for outsiders. Switch for unlicensed
+  images is unchanged (`NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off`, rebuild and redeploy).
+- **Not changed:** models, data, metrics and the fairness audit. Cost guard rails stay: scale to zero,
+  max instances, the Rs 1,000/month Cloud Run cap.
+
 ---
 
 # Issues found in the locked technical spec

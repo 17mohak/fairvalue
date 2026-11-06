@@ -106,6 +106,19 @@ showcase.
 
 Details are in `docs/PRODUCT.md`. Hosting and image publishing still need owner approval.
 
+## Cloud Run (public since 2026-11-06, D-054)
+The site is public and indexable; the API stays private. **Deploy with `FAIRVALUE_PUBLIC=1`**:
+without it the script restores the reviewer password and noindex (the pre-live mode below).
+
+```bash
+FAIRVALUE_PUBLIC=1 bash scripts/deploy_gcp.sh             # print the plan
+FAIRVALUE_PUBLIC=1 bash scripts/deploy_gcp.sh --execute   # build, push, deploy
+```
+
+The switch to public was made in place on 2026-11-06 (revision `fairvalue-web-00005`):
+`FAIRVALUE_REVIEW_PASSWORD` and `FAIRVALUE_REVIEW_USER` removed, `FAIRVALUE_NOINDEX=0`. Both are read at
+run time, so changing them needs a new revision, not a rebuild.
+
 ## Cloud Run (pre-live, D-052)
 `scripts/deploy_gcp.sh` deploys both services to Cloud Run in `asia-south1` (project
 `fairvalue-513904`). It is a **dry run by default**: it prints every command. `--execute` runs them,

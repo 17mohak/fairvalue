@@ -49,7 +49,7 @@ def main() -> None:
     (ROOT / "web" / "src" / "data" / "portrait_cards.json").write_text(json.dumps({
         "policy": "Card portraits (D-053). Berlin / WikiPortraits frames are CC BY-SA 4.0 with the background removed by FairValue; "
                   "they are committed. FootyLogos images are unlicensed and used at the owner's risk (D-044): they are git-ignored, "
-                  "listed in src/data/generated/portrait_cards_fl.json, and switched off with FAIRVALUE_FOOTYLOGOS_PORTRAITS=off.",
+                  "listed in src/data/generated/portrait_cards_fl.json, and switched off with NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off.",
         "berlin": sorted(berlin, key=lambda b: b["id"]),
     }, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     gen = ROOT / "web" / "src" / "data" / "generated"

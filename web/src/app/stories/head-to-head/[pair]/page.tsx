@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ValuationJourney } from "@/components/journey/ValuationJourney";
+import { PlayerChip } from "@/components/players/PlayerChip";
 import { ExpLink } from "@/components/site/ExpLink";
 import { StoryEnd } from "@/components/stories/StoryEnd";
 import styles from "@/components/stories/story.module.css";
@@ -9,6 +10,7 @@ import { leagueName, TIER_BOUNDARIES_EUR } from "@/lib/football";
 import { formatEur, integer, signed } from "@/lib/format";
 import { euroTicks, factor, toEur } from "@/lib/journey";
 import type { PlayerProfile } from "@/lib/players";
+import { portraitFor } from "@/lib/portraits";
 import { PAIRS, showcasePlayer, storyBySlug } from "@/lib/stories";
 import h from "./h2h.module.css";
 
@@ -69,6 +71,9 @@ export default async function HeadToHead({ params }: Params) {
       <header className={h.cover}>
         {players.map((p, i) => (
           <div key={p.id} className={h.side} data-side={i === 0 ? "left" : "right"}>
+            <span className={h.chip}>
+              <PlayerChip name={p.name} tier={p.market_tier} portrait={portraitFor(p.id)} />
+            </span>
             <span className={styles.tag} data-quiet={i === 1 || undefined}>
               {p.role_code} · {p.sub_position}
             </span>
@@ -94,7 +99,9 @@ export default async function HeadToHead({ params }: Params) {
             <span>
               <b>Built from</b> {story.basis}
             </span>
-            <span>No licensed photographs: typographic covers only.</span>
+            <span>
+              Portraits: <ExpLink href="/credits">image credits</ExpLink>
+            </span>
           </p>
         </div>
       </header>

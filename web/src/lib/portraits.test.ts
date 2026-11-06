@@ -54,13 +54,13 @@ describe("card portraits (D-053)", () => {
     expect(cardPortraitProblems({ ...fl, src: "/players/portraits/cards/berlin/1.webp" })).toContain("only FootyLogos images may be unlicensed");
   });
 
-  it("FAIRVALUE_FOOTYLOGOS_PORTRAITS=off removes every unlicensed image but keeps licensed ones", () => {
-    process.env.FAIRVALUE_FOOTYLOGOS_PORTRAITS = "off";
+  it("NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off removes every unlicensed image but keeps licensed ones", () => {
+    process.env.NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS = "off";
     try {
       expect(portraitFor(605184)).toBeNull();
       expect(portraitFor(670681)).not.toBeNull();
     } finally {
-      delete process.env.FAIRVALUE_FOOTYLOGOS_PORTRAITS;
+      delete process.env.NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS;
     }
   });
 });

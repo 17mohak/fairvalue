@@ -37,9 +37,9 @@ const CARD_SIZE = { width: 400, height: 500 };
 const BERLIN = new Map(cardManifest.berlin.map((b) => [b.id, b]));
 const FOOTYLOGOS = new Map((flManifest.footylogos as { id: number; closeup: boolean }[]).map((f) => [f.id, f]));
 
-/** FAIRVALUE_FOOTYLOGOS_PORTRAITS=off removes every unlicensed image at once (a takedown, D-044). */
+/** NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off removes every unlicensed image at once (a takedown, D-044). Build-time: Next inlines it so client rows agree with server pages; rebuild after changing it. */
 export function footylogosEnabled(): boolean {
-  return process.env.FAIRVALUE_FOOTYLOGOS_PORTRAITS !== "off";
+  return process.env.NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS !== "off";
 }
 
 /** A licensed cutout from the manifest, else a card portrait (D-053), else null. */

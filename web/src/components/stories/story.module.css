@@ -484,3 +484,22 @@
     text-align: center;
   }
 }
+
+/* ---- The player card as a story cover (D-053) ---- */
+.cardCover {
+  display: grid;
+  justify-items: center;
+  gap: 0.75rem;
+  padding: 1.5rem 0;
+}
+
+.cardCredit {
+  margin: 0;
+  font-size: 0.68rem;
+  color: var(--st-dim);
+  text-align: center;
+}
+
+.cardCredit a {
+  color: var(--st-gold);
+}

@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "FairValue market value API",
-    "description": "Research prototype. Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit.",
+    "description": "Research prototype. Research use only. Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit.",
     "version": "0.2.0"
   },
   "paths": {
@@ -170,7 +170,7 @@
           "disclaimer": {
             "type": "string",
             "title": "Disclaimer",
-            "default": "Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
+            "default": "Research use only. Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
           }
         },
         "type": "object",
@@ -347,7 +347,7 @@
           "disclaimer": {
             "type": "string",
             "title": "Disclaimer",
-            "default": "Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
+            "default": "Research use only. Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
           }
         },
         "type": "object",
@@ -674,7 +674,7 @@
           "disclaimer": {
             "type": "string",
             "title": "Disclaimer",
-            "default": "Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
+            "default": "Research use only. Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
           }
         },
         "type": "object",

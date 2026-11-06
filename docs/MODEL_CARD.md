@@ -7,13 +7,13 @@ held-out (out-of-fold) evaluation unless stated otherwise. Sources: `docs/report
 ## Model details
 | | |
 |---|---|
-| Developer | Mohak Mandwani (solo), BTECH CAP 501, ATLAS SkillTech University; mentor Shakti Sangram Behera |
+| Developer | Mohak Mandwani |
 | Date / version | 2026-11-05 (regenerated after D-028) · `fairvalue-regressor_A-hgb_tuned-91174c39-20261104` (+ classifier and Model B variants) |
 | Type | scikit-learn `Pipeline`: shared `ColumnTransformer` + `HistGradientBoostingRegressor` (target: ln EUR value). Separate `HistGradientBoostingClassifier` for 4 value tiers |
 | Variants | **Model A** (served default): performance + profile + league + club strength. **Model B** (ablation): performance + profile only |
 | Hyperparameters | Median of the per-fold Optuna optima (25 trials, nested CV); listed in the registry |
 | Training data | 5,820 players, valuations 2025-06-12 to 2026-06-12, clubs in 14 European first divisions, ≥ 450 club minutes (`docs/DATA_CARD.md`) |
-| Licence | Code: course project. Data: see the data card (licensing uncertain) |
+| Licence | Code: no open-source licence chosen yet. Data: see the data card (licensing uncertain) |
 | Interface | `POST /predict` (FastAPI): value in EUR, tier, tier probabilities, model version, disclaimer |
 
 ## Intended use

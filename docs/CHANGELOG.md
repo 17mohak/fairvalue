@@ -1,5 +1,8 @@
 # Development changelog
 
+## 2026-11-06: MIT licence for the code
+- `LICENSE` (MIT, Mohak Mandwani) for the source code and documentation, with a scope note: data, Berlin portraits (CC BY-SA 4.0), flag icons and third-party fonts and packages keep their own terms. README, model card, `pyproject.toml` and `web/package.json` updated.
+
 ## 2026-11-06: Site address fairvalue.web.app
 - Firebase Hosting site `fairvalue` forwards to Cloud Run `fairvalue-web`; deployed from main `901c424` with `FAIRVALUE_SITE_URL=https://fairvalue.web.app`, so canonical links and share cards use it. README, DEPLOYMENT and PROJECT_STATE updated; README no longer says the repository is private.
 

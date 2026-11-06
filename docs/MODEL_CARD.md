@@ -13,7 +13,7 @@ held-out (out-of-fold) evaluation unless stated otherwise. Sources: `docs/report
 | Variants | **Model A** (served default): performance + profile + league + club strength. **Model B** (ablation): performance + profile only |
 | Hyperparameters | Median of the per-fold Optuna optima (25 trials, nested CV); listed in the registry |
 | Training data | 5,820 players, valuations 2025-06-12 to 2026-06-12, clubs in 14 European first divisions, ≥ 450 club minutes (`docs/DATA_CARD.md`) |
-| Licence | Code: no open-source licence chosen yet. Data: see the data card (licensing uncertain) |
+| Licence | Code: MIT (`LICENSE`). Data: see the data card (licensing uncertain) |
 | Interface | `POST /predict` (FastAPI): value in EUR, tier, tier probabilities, model version, disclaimer |
 
 ## Intended use

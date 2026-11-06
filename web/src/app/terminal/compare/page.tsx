@@ -24,7 +24,7 @@ export default async function ComparePage({ searchParams }: { searchParams: Prom
   const ids = parseIds((await searchParams).ids);
   const players = ids.map(playerById).filter((p): p is PlayerProfile => !!p);
   const missing = ids.length - players.length;
-  const chips = players.map((p) => ({ id: p.id, name: p.name, role_code: p.role_code }));
+  const chips = players.map((p) => ({ id: p.id, name: p.name, role_code: p.role_code, market_tier: p.market_tier }));
   const set = playerSet();
 
   return (

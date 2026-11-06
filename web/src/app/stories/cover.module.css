@@ -119,6 +119,17 @@
   text-align: right;
 }
 
+/* The player card's small form (D-053) above each name; decorative, the name carries the meaning. */
+.pairSide > .pairChip {
+  display: block;
+  height: 4.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.pairSide[data-right] > .pairChip {
+  justify-self: end;
+}
+
 .pairSide small {
   font-size: 0.62rem;
   letter-spacing: 0.03em;
@@ -214,6 +225,24 @@
   font-family: var(--font-display);
   font-weight: 700;
   color: #e9b949;
+}
+
+.valHead {
+  display: flex;
+  align-items: flex-end;
+  gap: 0.6rem;
+  min-width: 0;
+}
+
+.valChip {
+  flex: none;
+  display: block;
+  height: 3.2rem;
+}
+
+/* Let a long name shrink and ellipsise beside the chip. */
+.valHead .valName {
+  min-width: 0;
 }
 
 .valName {

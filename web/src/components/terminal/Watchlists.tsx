@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
+import { PlayerChip } from "@/components/players/PlayerChip";
 import { leagueName } from "@/lib/football";
 import { formatEur } from "@/lib/format";
 import { createList, deleteList, renameList, setInList, useHydrated, watchlists, type Watchlist } from "@/lib/localStore";
 import { matchesQuery, type IndexRow, type PlayerIndex } from "@/lib/players";
+import { portraitFor } from "@/lib/portraits";
 import { COMPARE_MAX, COMPARE_MIN } from "@/lib/terminal";
 import styles from "./Watchlists.module.css";
 
@@ -283,6 +285,9 @@ export function Watchlists() {
                           </td>
                           <td>
                             <span className={styles.who}>
+                              <span className={styles.chipBox}>
+                                <PlayerChip name={p.name} tier={p.market_tier} portrait={portraitFor(p.id)} />
+                              </span>
                               <span className="fv-role">{p.role_code}</span>
                               <b>{p.name}</b>
                             </span>

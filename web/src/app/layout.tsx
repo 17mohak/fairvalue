@@ -32,6 +32,15 @@ export const metadata: Metadata = {
   title: { default: "FairValue: football market value, measured and audited", template: "%s · FairValue" },
   description:
     "Estimate a footballer's Transfermarkt market value from match data, see why the model said so, and explore an audit of whether its errors differ for players from inside and outside UEFA.",
+  // Share previews (LinkedIn, X, Slack). The image comes from app/opengraph-image.tsx; dossiers override both.
+  openGraph: {
+    type: "website",
+    siteName: "FairValue",
+    title: "FairValue: price the player, audit the price",
+    description:
+      "A nationality-blind model of football transfer values, and an audit of whose values it gets wrong. Explore 5,820 players, the explanations behind each estimate, and the fairness audit.",
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export const viewport: Viewport = { themeColor: "#0f1713", colorScheme: "dark" };

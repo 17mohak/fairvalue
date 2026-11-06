@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
-# Deploy FairValue to Google Cloud Run (D-052): a private API and a password-gated, noindexed web app.
+# Deploy FairValue to Google Cloud Run: a private API and the web app, either public (D-054,
+# FAIRVALUE_PUBLIC=1, the live mode since 2026-11-06) or password-gated and noindexed (D-052).
 #
 # Dry run by default: prints every command and changes nothing. Pass --execute to run them.
 # Pushing images and deploying both need the owner's explicit approval (CLAUDE.md).
 #
 # Usage (repo root, Git Bash or Cloud Shell, with gcloud and docker logged in):
+#   FAIRVALUE_PUBLIC=1 bash scripts/deploy_gcp.sh --execute             # the public site (current)
 #   FAIRVALUE_REVIEW_PASSWORD=... bash scripts/deploy_gcp.sh            # print the plan
 #   FAIRVALUE_REVIEW_PASSWORD=... bash scripts/deploy_gcp.sh --execute  # build, push, deploy
 #
@@ -27,6 +29,9 @@ WEB_SA="fairvalue-web@${PROJECT}.iam.gserviceaccount.com"
 REGISTRY="${REGION}-docker.pkg.dev/${PROJECT}/${REPO}"
 TAG="$(git rev-parse --short HEAD)"
 REVIEW_USER="${FAIRVALUE_REVIEW_USER:-fairvalue}"
+# FAIRVALUE_PUBLIC=1: the public site (D-054), no reviewer password and indexable. Otherwise the
+# reviewer-only pre-live mode (D-052): password-gated and noindexed.
+PUBLIC="${FAIRVALUE_PUBLIC:-0}"
 
 EXECUTE=0
 [ "${1:-}" = "--execute" ] && EXECUTE=1
@@ -36,17 +41,18 @@ if [ "$EXECUTE" = 1 ] && [ -n "$(git status --porcelain -- src web/src web/packa
   echo "Uncommitted changes under src/, web/ or models/: commit them first so the image tag ($TAG) is honest." >&2
   exit 1
 fi
-if [ -z "${FAIRVALUE_REVIEW_PASSWORD:-}" ]; then
-  echo "Set FAIRVALUE_REVIEW_PASSWORD (the reviewer password). It is never stored in the repo." >&2
+if [ "$PUBLIC" != 1 ] && [ -z "${FAIRVALUE_REVIEW_PASSWORD:-}" ]; then
+  echo "Set FAIRVALUE_REVIEW_PASSWORD (the reviewer password; never stored in the repo), or FAIRVALUE_PUBLIC=1 for the public site." >&2
   exit 1
 fi
+FAIRVALUE_REVIEW_PASSWORD="${FAIRVALUE_REVIEW_PASSWORD:-}"
 # gcloud splits --set-env-vars on a delimiter; "^|^" makes it "|" so commas in the password are safe.
 case "$FAIRVALUE_REVIEW_PASSWORD" in *"|"*) echo "The reviewer password must not contain '|'." >&2; exit 1 ;; esac
 
 # Print a command; run it too with --execute. Secrets are masked in the printout.
 run() {
   local shown="$*"
-  shown="${shown//${FAIRVALUE_REVIEW_PASSWORD}/********}"
+  [ -n "$FAIRVALUE_REVIEW_PASSWORD" ] && shown="${shown//${FAIRVALUE_REVIEW_PASSWORD}/********}"
   echo "+ $shown"
   if [ "$EXECUTE" = 1 ]; then "$@"; fi
 }
@@ -64,7 +70,7 @@ SITE_URL="${FAIRVALUE_SITE_URL:-https://${WEB_SERVICE}-${PROJECT_NUMBER}.${REGIO
 
 echo "Project $PROJECT ($PROJECT_NUMBER), region $REGION, tag $TAG"
 echo "API  $API_URL (private)"
-echo "Site $SITE_URL (password-gated, noindex)"
+if [ "$PUBLIC" = 1 ]; then echo "Site $SITE_URL (PUBLIC, indexable)"; else echo "Site $SITE_URL (password-gated, noindex)"; fi
 [ "$EXECUTE" = 1 ] || echo "DRY RUN: nothing is executed. Re-run with --execute after approval."
 echo
 
@@ -89,13 +95,25 @@ run gcloud run deploy "$API_SERVICE" --project "$PROJECT" --region "$REGION" \
 run gcloud run services add-iam-policy-binding "$API_SERVICE" --project "$PROJECT" --region "$REGION" \
   --member "serviceAccount:${WEB_SA}" --role roles/run.invoker
 
+# The web app's settings. --set-env-vars replaces them all, so public mode drops the reviewer gate.
+WEB_ENV="^|^FAIRVALUE_API_URL=${API_URL}|FAIRVALUE_API_AUTH=gcp-id-token|FAIRVALUE_SITE_URL=${SITE_URL}"
+if [ "$PUBLIC" = 1 ]; then
+  WEB_ENV="${WEB_ENV}|FAIRVALUE_NOINDEX=0"
+else
+  WEB_ENV="${WEB_ENV}|FAIRVALUE_NOINDEX=1|FAIRVALUE_REVIEW_USER=${REVIEW_USER}|FAIRVALUE_REVIEW_PASSWORD=${FAIRVALUE_REVIEW_PASSWORD}"
+fi
+
 # 4. The web app: public URL, but every page sits behind the reviewer password and is noindexed.
 run gcloud run deploy "$WEB_SERVICE" --project "$PROJECT" --region "$REGION" \
   --image "${REGISTRY}/web:${TAG}" --port 3000 \
   --service-account "$WEB_SA" \
   --allow-unauthenticated \
   --min-instances 0 --max-instances 3 --memory 512Mi --cpu 1 --cpu-boost \
-  --set-env-vars "^|^FAIRVALUE_API_URL=${API_URL}|FAIRVALUE_API_AUTH=gcp-id-token|FAIRVALUE_SITE_URL=${SITE_URL}|FAIRVALUE_NOINDEX=1|FAIRVALUE_REVIEW_USER=${REVIEW_USER}|FAIRVALUE_REVIEW_PASSWORD=${FAIRVALUE_REVIEW_PASSWORD}"
+  --set-env-vars "$WEB_ENV"
 
 echo
-echo "Done. Check: curl -sI $SITE_URL  (expect 401), then open it with user '$REVIEW_USER'."
+if [ "$PUBLIC" = 1 ]; then
+  echo "Done. Check: curl -sI $SITE_URL  (expect 200, no X-Robots-Tag)."
+else
+  echo "Done. Check: curl -sI $SITE_URL  (expect 401), then open it with user '$REVIEW_USER'."
+fi

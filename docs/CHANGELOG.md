@@ -1,5 +1,12 @@
 # Development changelog
 
+## 2026-11-06: Public launch (D-054)
+- **Site public:** reviewer password and noindex removed from `fairvalue-web` (revision 00005, env change only; image `a2f4f92`). The API stays private. Checked live: pages 200 without a password, `robots.txt` allows all, no `X-Robots-Tag`, API direct 403, health "online".
+- **Repository public:** `17mohak/fairvalue`, after scanning all 90 commits for secrets, emails in files, data, models and FootyLogos images (none found).
+- **Share card:** `app/opengraph-image.tsx` plus Open Graph and Twitter metadata in the layout, so the home page and other pages without their own card get a 1200×630 preview (figures from `research.json`). Dossiers keep their per-player card.
+- **Deploy script:** `FAIRVALUE_PUBLIC=1` deploys the public site; without it the script restores the reviewer gate. Docs: README live link, DEPLOYMENT, PROJECT_STATE, PLAYER_ASSETS (takedown contact now reachable), DECISIONS D-054.
+- **Checks:** web 181 pass, tsc and build pass; share image rendered and checked locally. The new card is not live until the next deploy.
+
 ## 2026-11-06: Player chip on the remaining player surfaces (branch `feat/card-everywhere`, D-053)
 - **Chip:** `PlayerChip` now in the Terminal Inspector header, Comparison Studio slot tags, Watchlist rows, and the Stories index (Head-to-Head pairs and Valuation cards). Market and League pages show players only as chart points or not at all, so they get none.
 - **Checked:** web tests 181, tsc and the production build pass. By eye on the local production build with the full export, at desktop and 375 px: FootyLogos, Berlin and monogram chips render, no horizontal scroll, no console errors. Not checked: Safari, Firefox, screen readers.

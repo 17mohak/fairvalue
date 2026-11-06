@@ -1,5 +1,8 @@
 # Development changelog
 
+## 2026-11-06: Site address fairvalue.web.app
+- Firebase Hosting site `fairvalue` forwards to Cloud Run `fairvalue-web`; deployed from main `901c424` with `FAIRVALUE_SITE_URL=https://fairvalue.web.app`, so canonical links and share cards use it. README, DEPLOYMENT and PROJECT_STATE updated; README no longer says the repository is private.
+
 ## 2026-11-06: Public launch (D-054)
 - **Site public:** reviewer password and noindex removed from `fairvalue-web` (revision 00005, env change only; image `a2f4f92`). The API stays private. Checked live: pages 200 without a password, `robots.txt` allows all, no `X-Robots-Tag`, API direct 403, health "online".
 - **Repository public:** `17mohak/fairvalue`, after scanning all 90 commits for secrets, emails in files, data, models and FootyLogos images (none found).

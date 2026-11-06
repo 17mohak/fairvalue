@@ -107,13 +107,23 @@ showcase.
 Details are in `docs/PRODUCT.md`. Hosting and image publishing still need owner approval.
 
 ## Cloud Run (public since 2026-11-06, D-054)
-The site is public and indexable; the API stays private. **Deploy with `FAIRVALUE_PUBLIC=1`**:
-without it the script restores the reviewer password and noindex (the pre-live mode below).
+The site is public and indexable at **https://fairvalue.web.app**; the API stays private. **Deploy
+with `FAIRVALUE_PUBLIC=1` and the site address**: without `FAIRVALUE_PUBLIC=1` the script restores
+the reviewer password and noindex (the pre-live mode below); without `FAIRVALUE_SITE_URL`, canonical
+links and share cards point at the longer `run.app` address.
 
 ```bash
-FAIRVALUE_PUBLIC=1 bash scripts/deploy_gcp.sh             # print the plan
-FAIRVALUE_PUBLIC=1 bash scripts/deploy_gcp.sh --execute   # build, push, deploy
+FAIRVALUE_PUBLIC=1 FAIRVALUE_SITE_URL=https://fairvalue.web.app bash scripts/deploy_gcp.sh             # print the plan
+FAIRVALUE_PUBLIC=1 FAIRVALUE_SITE_URL=https://fairvalue.web.app bash scripts/deploy_gcp.sh --execute   # build, push, deploy
 ```
+
+**Address:** Firebase Hosting site `fairvalue` in the same project forwards every request
+(`**`) to the Cloud Run service `fairvalue-web` in `asia-south1`; it serves no files of its own. It
+was created on 2026-11-06 through the Firebase Hosting REST API after the owner added Firebase to
+the project. The Cloud Run address `https://fairvalue-web-111067737818.asia-south1.run.app` still
+answers. First public deploy with this address: main `901c424`, revisions `fairvalue-web-00006`
+and `fairvalue-api-00005`; checked live: pages 200, `robots.txt` allows all, API direct 403, health
+"online", the home page share card served from `fairvalue.web.app`.
 
 The switch to public was made in place on 2026-11-06 (revision `fairvalue-web-00005`):
 `FAIRVALUE_REVIEW_PASSWORD` and `FAIRVALUE_REVIEW_USER` removed, `FAIRVALUE_NOINDEX=0`. Both are read at

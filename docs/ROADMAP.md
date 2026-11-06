@@ -35,7 +35,7 @@ blocker), **Open** (not started), **Won't do** (with the reason).
 | 6 | Serving | **Done (local)** | full-data refit + registry, FastAPI + Pydantic, Dockerfile, smoke-tested |
 | 7 | MLOps and monitoring | **Done** | Evidently + PSI drift simulation, retraining policy, quality gates, GitHub Actions |
 | 8 | Responsible AI documentation | **Done** | model card, data card, EU AI Act assessment |
-| 10 | Report integration | Won't do | the academic report was already submitted by the owner |
+| 10 | Report integration | Won't do | not part of this repository |
 
 Optional research follow-ups, outside the locked design: per-90 shrinkage for low-minute players; a
 persistent API request log (EU AI Act Art. 12-style) if the service is ever used beyond research.

@@ -4,9 +4,11 @@ import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { ValuationJourney } from "@/components/journey/ValuationJourney";
 import { MiniRuler } from "@/components/players/MiniRuler";
+import { PlayerChip } from "@/components/players/PlayerChip";
 import { leagueName } from "@/lib/football";
 import { formatEur, integer } from "@/lib/format";
 import type { PlayerProfile } from "@/lib/players";
+import { portraitFor } from "@/lib/portraits";
 import { CompareToggle, WatchButton } from "./PlayerActions";
 import styles from "./Inspector.module.css";
 
@@ -78,6 +80,9 @@ function Body({ p }: { p: PlayerProfile }) {
   return (
     <div className={styles.body}>
       <header className={styles.who}>
+        <span className={styles.chipBox}>
+          <PlayerChip name={p.name} tier={p.market_tier} portrait={portraitFor(p.id)} />
+        </span>
         <span className="fv-role">{p.role_code}</span>
         <div>
           <h2>{p.name}</h2>

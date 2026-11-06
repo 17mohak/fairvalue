@@ -2,10 +2,13 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useId, useMemo, useState, useTransition } from "react";
+import { PlayerChip } from "@/components/players/PlayerChip";
 import { SLOTS } from "@/lib/compare";
+import type { TierName } from "@/lib/football";
 import { formatEur } from "@/lib/format";
 import { compareTray } from "@/lib/localStore";
 import { matchesQuery, type PlayerIndex } from "@/lib/players";
+import { portraitFor } from "@/lib/portraits";
 import { COMPARE_MAX } from "@/lib/terminal";
 import { useCompareTray } from "../PlayerActions";
 import { Marker } from "./Marker";
@@ -14,6 +17,7 @@ import styles from "./Compare.module.css";
 interface Chip {
   id: number;
   name: string;
+  market_tier: TierName | null;
   role_code: string;
 }
 
@@ -54,6 +58,9 @@ export function ComparePicker({ players }: { players: Chip[] }) {
         {players.map((p, i) => (
           <li key={p.id} className={styles.chip}>
             <Marker shape={SLOTS[i]!.shape} color={SLOTS[i]!.color} />
+            <span className={styles.chipBox}>
+              <PlayerChip name={p.name} tier={p.market_tier} portrait={portraitFor(p.id)} />
+            </span>
             <span className="fv-role">{p.role_code}</span>
             <b>{p.name}</b>
             <button type="button" onClick={() => go(ids.filter((x) => x !== p.id))} aria-label={`Remove ${p.name} from the comparison`}>

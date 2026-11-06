@@ -51,7 +51,7 @@ of the source chain are in `docs/DATA_PROVENANCE.md`; coverage evidence is in `d
 ## Licensing and permitted use
 - The repository is CC0 1.0. The underlying content comes from Transfermarkt, whose terms of use were
   **not reviewed**, so licensing is uncertain.
-- The raw data is not redistributed from this repository. Use is academic and non-commercial only.
+- The raw data is not redistributed from this repository. Use is research and non-commercial only.
 
 ## Maintenance
 - Re-acquire with `python -m src.data.acquire`. A changed checksum flags an upstream change.

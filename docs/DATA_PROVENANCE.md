@@ -44,7 +44,7 @@ data/processed/
 - The **underlying data** comes from Transfermarkt's website. CC0 on the repository does
   not necessarily settle the rights to the scraped content. Transfermarkt's terms of use
   were **not reviewed** in this session and should be treated as an open question.
-- Mitigations: academic, non-commercial use; raw data is never committed or
+- Mitigations: research, non-commercial use; raw data is never committed or
   redistributed from this repo; provenance is disclosed in the data card.
 - Data subjects are professional players; profile and performance data are public.
   The project frames processing under legitimate interest (per the report), and treats

@@ -12,6 +12,13 @@
 - **Safeguards:** `/credits` page and footer link, `NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` (build-time) removes every unlicensed image, `cardPortraitProblems` checks credit and source on each entry.
 - **Tests:** web 177 (+6). tsc and production build pass. Checked by eye on three dossiers (FootyLogos, Berlin, monogram) at desktop width only; mobile and other browsers not checked. Not yet on Explorer rows, Stories or the Overview.
 
+## 2026-11-06: Pre-live deployed to Cloud Run (reviewers only)
+- Deployed with the owner's approval from main `fd16b8d` to Cloud Run `asia-south1`. The web app is
+  behind a reviewer password and noindexed; the API is private; min-instances 0 on both.
+- **Fix (PR 3):** `/api/health` now sends the identity token. The first deploy showed the API as
+  offline. A guard test stops any route from calling the API without the token. Web tests 172.
+- **Live check:** gate 401/200, API direct 403, health "online", predict 200, players gzip 324 KB.
+
 ## 2026-11-06: Pre-live deployment setup (branch `feat/pre-live`)
 - **Reviewer gate (D-052):** HTTP Basic auth on every page when `FAIRVALUE_REVIEW_PASSWORD` is set
   (`web/src/proxy.ts`), `/api/ping` open for health checks; noindex header and disallow-all

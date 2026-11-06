@@ -39,7 +39,7 @@ MIN_HEIGHT = 1400
 
 def user_agent() -> str:
     contact = os.environ.get("WIKIMEDIA_CONTACT", "").strip()
-    return "FairValue-portrait-finder/1.0 (academic research project)" + (f" {contact}" if contact else "")
+    return "FairValue-portrait-finder/1.0 (research project)" + (f" {contact}" if contact else "")
 
 
 def commons_file_name(image_url: str) -> str:

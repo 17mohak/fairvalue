@@ -9,7 +9,7 @@
 | Target is an estimate, possibly biased | Transfermarkt crowd valuation | Model can reproduce target bias | Disclosed; audit measures model vs target only |
 | Reputation proxies | league, club_ppg, European cup minutes | Group effects can flow through context | Model B ablation |
 | Frozen snapshot | upstream paused 2026-07 | No new data for "live" monitoring | Drift is simulated historically |
-| Licensing of scraped content | repo CC0; Transfermarkt terms not reviewed | Redistribution rights unclear | Raw data not committed; academic use only |
+| Licensing of scraped content | repo CC0; Transfermarkt terms not reviewed | Redistribution rights unclear | Raw data not committed; research use only |
 | Small per-confederation samples | AFC 127, CONCACAF 154, OFC 7 | Per-confederation results unreliable | Binary comparison primary |
 | Defensive stats are thin | no tackles/passes in the data | Defenders and goalkeepers are described mostly by minutes and context | Expect weaker fit for them; check by position |
 | Features still carry group information | CV AUC 0.671 (A) / 0.644 (B) predicting audit group | "Nationality-blind" ≠ group-blind | Measured; reported with results |

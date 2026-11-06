@@ -60,6 +60,13 @@
   align-items: flex-start;
 }
 
+/* The card's small form beside the name (D-053); decorative, the name carries the meaning. */
+.chipBox {
+  flex: none;
+  display: block;
+  height: 4.2rem;
+}
+
 .who h2 {
   font-size: 1.35rem;
   line-height: 1.05;

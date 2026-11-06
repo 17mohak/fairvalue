@@ -135,6 +135,34 @@ repository's cleanup policy does this).
 | `FAIRVALUE_NOINDEX` | on (anything but `0`) | `X-Robots-Tag: noindex, nofollow` and a disallow-all `robots.txt` |
 | `FAIRVALUE_API_AUTH` | unset | `gcp-id-token`: send a Google identity token to the private API |
 
+### Files to copy into the deploy worktree first
+Deploy from a clean worktree of main (`C:\Users\MOHAK\fairvalue-deploy`), never from a working
+folder. These are git-ignored and must be copied in from a machine that has them:
+
+| Path | Why | If missing |
+|---|---|---|
+| `models/*.joblib` | the served models | the API image has no models to serve |
+| `web/src/data/generated/players.json` | the full 5,820-player export | the site falls back to the eight-player showcase |
+| `web/public/players/portraits/cards/fl/` (1,128 WebP, about 37 MB) and `web/src/data/generated/portrait_cards_fl.json` | FootyLogos card portraits (unlicensed, D-044) | **the build still succeeds** and shows monograms, because `npm` writes an empty manifest. Check the count before deploying |
+
+Before running the script: `ls web/public/players/portraits/cards/fl | wc -l` gives 1128, and
+`git status --short` is empty (these files are ignored, so nothing can be committed by accident).
+The images add about 37 MB to the web image. After the 2026-11-06 deploy the registry held
+420.7 MB across three stored versions; the cleanup policy keeps two.
+
+**Cold starts:** both services scale to zero. On 2026-11-06 the API took 11.5 s to answer its first
+`/health` after idling, so the web app's health route waits up to 20 s and the browser 25 s. The
+first page after a quiet spell shows "Checking model" for that long, not "Model offline".
+
+### Live check (2026-11-06, main `0488e4c`, revisions `fairvalue-api-00003`, `fairvalue-web-00003`)
+- **Gate, noindex, private API:** 401 without the password; `X-Robots-Tag: noindex, nofollow` and a
+  disallow-all `robots.txt`; the API answers 403 directly; `/api/health` reports "online".
+- **Portraits:** dossiers 605184 (FootyLogos), 670681 (Berlin) and 918332 (monogram) answer 200 with
+  the expected image or none; a FootyLogos image is served as `image/webp`. `/credits` lists 1,128
+  FootyLogos images.
+- **Not checked live:** phone-width rendering (needs a reviewer to sign in), the cold-start health
+  wait, and the new API disclaimer text.
+
 ### Live check (2026-11-06, main `fd16b8d`, revisions `fairvalue-api-00002`, `fairvalue-web-00002`)
 - **Gate:** without the password, or with a wrong one, the site answers 401. With it, `/`,
   `/terminal`, `/terminal/valuation`, `/stories` and `/methods` answer 200.

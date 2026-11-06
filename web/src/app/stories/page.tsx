@@ -1,9 +1,11 @@
 import Link from "next/link";
+import { PlayerChip } from "@/components/players/PlayerChip";
 import { JourneySpark } from "@/components/stories/JourneySpark";
 import styles from "@/components/stories/story.module.css";
 import { leagueName } from "@/lib/football";
 import { formatEur, signed } from "@/lib/format";
 import { toEur } from "@/lib/journey";
+import { portraitFor } from "@/lib/portraits";
 import { research } from "@/lib/research";
 import { LEAD_STORY, showcasePlayer, STORY_FORMATS, storiesOf } from "@/lib/stories";
 import c from "./cover.module.css";
@@ -74,6 +76,9 @@ export default function StoriesCover() {
               <li key={s.slug}>
                 <Link href={s.href} className={c.pair} transitionTypes={["chapter"]}>
                   <span className={c.pairSide}>
+                    <span className={c.pairChip}>
+                      <PlayerChip name={a!.name} tier={a!.market_tier} portrait={portraitFor(a!.id)} />
+                    </span>
                     <small>{a!.role_code} · {short(a!.league_id)}</small>
                     <b>{a!.last_name}</b>
                     <span className="num">{formatEur(a!.market_value_eur)}</span>
@@ -82,6 +87,9 @@ export default function StoriesCover() {
                     v
                   </span>
                   <span className={c.pairSide} data-right>
+                    <span className={c.pairChip}>
+                      <PlayerChip name={b!.name} tier={b!.market_tier} portrait={portraitFor(b!.id)} />
+                    </span>
                     <small>{b!.role_code} · {short(b!.league_id)}</small>
                     <b>{b!.last_name}</b>
                     <span className="num">{formatEur(b!.market_value_eur)}</span>
@@ -110,7 +118,12 @@ export default function StoriesCover() {
                     <span className={c.valRole}>{p.role_code}</span>
                     <span className={c.valLeague}>{short(p.league_id)}</span>
                   </span>
-                  <b className={c.valName}>{p.last_name}</b>
+                  <span className={c.valHead}>
+                    <span className={c.valChip}>
+                      <PlayerChip name={p.name} tier={p.market_tier} portrait={portraitFor(p.id)} />
+                    </span>
+                    <b className={c.valName}>{p.last_name}</b>
+                  </span>
                   <JourneySpark explanation={p.explanation!} observed={p.market_value_eur} />
                   <span className={`${c.valNums} num`}>
                     <span>

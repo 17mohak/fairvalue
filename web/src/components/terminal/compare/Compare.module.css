@@ -37,6 +37,13 @@
   background: #0c110e;
 }
 
+/* The player card's small form (D-053), inside the slot tag. */
+.chipBox {
+  flex: none;
+  display: block;
+  height: 1.7rem;
+}
+
 .chip :global(.fv-role) {
   min-width: 1.8rem;
   height: 1.3rem;

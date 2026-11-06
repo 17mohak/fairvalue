@@ -1,5 +1,5 @@
 import { EXPECTED_SERVICE as EXPECTED } from "@/lib/api/expected";
-import { apiBaseUrl } from "@/lib/api/upstream";
+import { apiAuthHeaders, apiBaseUrl } from "@/lib/api/upstream";
 import { verifyHealth } from "@/lib/api/verify";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +15,8 @@ export async function GET(): Promise<Response> {
   let status: number | null = null;
   let body: unknown = null;
   try {
-    const res = await fetch(`${apiBaseUrl()}/health`, { cache: "no-store", signal: ctrl.signal });
+    // The API is private on Cloud Run (D-052): without the identity token it answers 403.
+    const res = await fetch(`${apiBaseUrl()}/health`, { headers: await apiAuthHeaders(), cache: "no-store", signal: ctrl.signal });
     status = res.status;
     body = await res.json().catch(() => null);
   } catch {

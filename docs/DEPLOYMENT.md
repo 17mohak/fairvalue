@@ -51,10 +51,11 @@ docker run -p 8000:8000 fairvalue-api
   run. The engine started normally after the owner rebooted and enabled virtualization.
 - CI repeats the build and smoke test on every push (no push to any registry).
 
-## Hosting and registry: NOT done (approval required)
-- Pushing the image to GitHub Container Registry and deploying to Railway or Render both publish
-  externally, and both need explicit owner approval.
-- Free-tier terms must be checked at that point.
+## Hosting and registry
+- **Pre-live on Google Cloud Run (D-052)**, deployed 2026-11-06 with the owner's approval. See the
+  Cloud Run section below. Images are in the private Artifact Registry repository only. GitHub
+  Container Registry, Railway and Render were not used.
+- Every further push or deploy still needs the owner's explicit approval.
 - Model files are build inputs. A CI publish job would need to train/refit first (as the CI job
   already does) or pull versioned models from a release artefact.
 
@@ -133,6 +134,18 @@ repository's cleanup policy does this).
 | `FAIRVALUE_REVIEW_USER` | `fairvalue` | reviewer user name |
 | `FAIRVALUE_NOINDEX` | on (anything but `0`) | `X-Robots-Tag: noindex, nofollow` and a disallow-all `robots.txt` |
 | `FAIRVALUE_API_AUTH` | unset | `gcp-id-token`: send a Google identity token to the private API |
+
+### Live check (2026-11-06, main `fd16b8d`, revisions `fairvalue-api-00002`, `fairvalue-web-00002`)
+- **Gate:** without the password, or with a wrong one, the site answers 401. With it, `/`,
+  `/terminal`, `/terminal/valuation`, `/stories` and `/methods` answer 200.
+- **Noindex:** the `X-Robots-Tag` header is set and `robots.txt` disallows everything.
+- **Private API:** a direct call to the API answers 403. Through the web app, `/api/health` reports
+  "online" with the registered models, and `POST /api/predict` answers 200 in 0.24 s.
+- **Compression:** `/api/players` is served gzipped, 324 KB.
+- **First deploy:** `/api/health` reported the API offline because that route called the API without
+  the identity token. Fixed in PR 3, with a guard test, and redeployed.
+- **How it was deployed:** from a clean worktree of main. The git-ignored model files and player export
+  were copied in, and nothing uncommitted went into the images.
 
 `/api/ping` stays open for the container health check. Compression no longer needs Caddy: Next.js
 itself gzips `/api/players` (1.92 MB to 324 KB) because `next.config.ts` sets its `Content-Type` up

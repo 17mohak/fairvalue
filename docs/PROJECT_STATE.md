@@ -8,8 +8,9 @@ _Last updated: 2026-11-06_
 - Every reported number was regenerated from the committed code with `scripts/run_pipeline.sh` (D-028).
 - **Public (D-054, 2026-11-06):** on Google Cloud Run (`asia-south1`, project `fairvalue-513904`),
   opened by the owner's decision for a LinkedIn launch. The reviewer password and noindex were
-  removed; image from main `a2f4f92`.
-  - Site: `https://fairvalue-web-111067737818.asia-south1.run.app`, public and indexable.
+  removed. Last deploy: main `901c424` (share card, public deploy mode).
+  - Site: **https://fairvalue.web.app** (Firebase Hosting forwarding to Cloud Run), public and
+    indexable. The `run.app` address still works.
   - The API stays private; only the web app's service account can call it.
   - Images are only in the private Artifact Registry repository.
   - Open data-rights questions (Transfermarkt terms, unlicensed FootyLogos portraits) are accepted
@@ -50,7 +51,7 @@ _Last updated: 2026-11-06_
   27/27 with the local API. The export is git-ignored and must be regenerated on each machine.
 - **Product plan:** `docs/ROADMAP.md` (Sprints 0–6) is authoritative. Sprint 0 is done apart from
   the merge into `main`; Sprint 1 has flags and the coverage report (D-041, D-042).
-- **Player cards and portraits (D-044, D-053): live on the reviewer site.** PlayerCard in the dossier
+- **Player cards and portraits (D-044, D-053): live.** PlayerCard in the dossier
   hero and on valuation story covers; PlayerChip in Explorer rows, Overview spotlights, dossier
   neighbours and Head-to-Head covers. Portraits: 1,128 FootyLogos (unlicensed, git-ignored), 57
   Berlin (CC BY-SA 4.0), 4,635 monograms (`docs/PLAYER_ASSETS.md`). Open:

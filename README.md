@@ -22,10 +22,10 @@ though the model is about equally accurate for both groups.
   <img src="docs/assets/readme/hero-overview.png" alt="The FairValue Overview page: the Valuation Theatre, a perspective football pitch where each of the seven most valuable players is a lane running from the model's held-out estimate to the observed Transfermarkt value." width="100%">
 </p>
 
-> **Live:** [fairvalue-web-111067737818.asia-south1.run.app](https://fairvalue-web-111067737818.asia-south1.run.app),
-> on Google Cloud Run. It scales to zero when idle, so the first page after a quiet spell can take
-> a few seconds while the service wakes.
-> This repository is currently private and has no open-source licence (see [Licence](#data-licensing-and-limits)).
+> **Live:** [fairvalue.web.app](https://fairvalue.web.app), on Google Cloud Run behind Firebase Hosting.
+> It scales to zero when idle, so the first page after a quiet spell can take a few seconds while the
+> service wakes.
+> The code has no open-source licence yet (see [Licence](#data-licensing-and-limits)).
 
 ---
 

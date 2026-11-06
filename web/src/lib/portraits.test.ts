@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
-import { PORTRAITS, portraitProblems, type Portrait } from "./portraits";
+import { PORTRAITS, cardPortraitProblems, portraitFor, portraitProblems, type Portrait } from "./portraits";
+import flManifest from "@/data/generated/portrait_cards_fl.json";
 
 const ok: Portrait = {
   player_id: 1, src: "/players/portraits/1.webp", kind: "cutout", width: 1200, height: 1600, focus: { x: 0.5, y: 0.2 },
@@ -24,5 +25,50 @@ describe("portrait manifest", () => {
     expect(portraitProblems({ ...ok, attribution: " " })).toContain("attribution missing");
     expect(portraitProblems({ ...ok, src: "https://img.example.com/portrait.png" })).toContain("src must be a local file under /players/portraits/");
     expect(portraitProblems({ ...ok, height: 600 })).toContain("cutouts need at least 1400px of height");
+  });
+});
+
+// The FootyLogos manifest and images are git-ignored (D-044). On a clean checkout (CI) the manifest is
+// an empty stub, so the FootyLogos checks skip there and run wherever the real files exist.
+const hasFootyLogos = flManifest.footylogos.length > 0;
+
+describe("card portraits (D-053)", () => {
+  const cards = (hasFootyLogos ? [605184, 463618, 670681] : [670681]).map((id) => portraitFor(id));
+
+  it.skipIf(!hasFootyLogos)("serves a FootyLogos card portrait, credited and marked unlicensed", () => {
+    const todibo = portraitFor(605184);
+    expect(todibo?.unlicensed).toBe(true);
+    expect(todibo?.attribution).toBe("Image: FootyLogos");
+  });
+
+  it("serves a Berlin card portrait with its CC BY-SA credit", () => {
+    const neves = portraitFor(670681);
+    expect(neves?.unlicensed).toBeUndefined();
+    expect(neves?.attribution).toContain("background removed");
+    expect(neves?.source_url).toMatch(/^https:\/\/commons\.wikimedia\.org\/wiki\/File:/);
+  });
+
+  it("every card portrait passes its checks and its file exists", () => {
+    for (const p of cards) {
+      expect(p).not.toBeNull();
+      expect(cardPortraitProblems(p!)).toEqual([]);
+      expect(fs.existsSync(path.join(process.cwd(), "public", p!.src))).toBe(true);
+    }
+  });
+
+  it.skipIf(!hasFootyLogos)("an unlicensed image cannot claim a licence or live outside the FootyLogos folder", () => {
+    const fl = portraitFor(605184)!;
+    expect(cardPortraitProblems({ ...fl, licence: "CC-BY-4.0" })).toContain("unlicensed images must say so");
+    expect(cardPortraitProblems({ ...fl, src: "/players/portraits/cards/berlin/1.webp" })).toContain("only FootyLogos images may be unlicensed");
+  });
+
+  it("NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off removes every unlicensed image but keeps licensed ones", () => {
+    process.env.NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS = "off";
+    try {
+      expect(portraitFor(605184)).toBeNull();
+      expect(portraitFor(670681)).not.toBeNull();
+    } finally {
+      delete process.env.NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS;
+    }
   });
 });

@@ -15,6 +15,8 @@ import { Inspector } from "./Inspector";
 import { CompareToggle, useCompareTray, WatchButton } from "./PlayerActions";
 import styles from "./Explorer.module.css";
 import { LeagueFlag } from "@/components/brand/Flag";
+import { PlayerChip } from "@/components/players/PlayerChip";
+import { portraitFor } from "@/lib/portraits";
 
 const POSITIONS = [
   { value: "", label: "All" },
@@ -253,6 +255,9 @@ export function Explorer({ query, rows, count, total, page, pages, leagues }: Pr
                       </td>
                       <td>
                         <span className={styles.who}>
+                          <span className={styles.chipBox}>
+                            <PlayerChip name={r.name} tier={r.market_tier} portrait={portraitFor(r.id)} />
+                          </span>
                           <span className="fv-role">{r.role_code}</span>
                           <span>
                             <b>{r.name}</b>

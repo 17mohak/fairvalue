@@ -19,10 +19,12 @@ export class ApiError extends Error {
 }
 
 const TIMEOUT_MS = 15_000;
+/** Longer than the server's wait for a cold-starting API (20 s in app/api/health/route.ts). */
+export const HEALTH_TIMEOUT_MS = 25_000;
 
-async function request<T>(path: string, init?: RequestInit, fetchImpl: typeof fetch = fetch): Promise<T> {
+async function request<T>(path: string, init?: RequestInit, fetchImpl: typeof fetch = fetch, timeoutMs = TIMEOUT_MS): Promise<T> {
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), TIMEOUT_MS);
+  const timer = setTimeout(() => ctrl.abort(), timeoutMs);
   let res: Response;
   try {
     res = await fetchImpl(path, { ...init, signal: ctrl.signal, headers: { "Content-Type": "application/json", ...init?.headers } });
@@ -63,5 +65,5 @@ export function explain(req: PredictRequest, fetchImpl?: typeof fetch): Promise<
 }
 
 export function health(fetchImpl?: typeof fetch): Promise<HealthResponse> {
-  return request<HealthResponse>("/api/health", { method: "GET" }, fetchImpl);
+  return request<HealthResponse>("/api/health", { method: "GET" }, fetchImpl, HEALTH_TIMEOUT_MS);
 }

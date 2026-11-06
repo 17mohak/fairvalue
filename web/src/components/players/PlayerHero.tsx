@@ -6,7 +6,7 @@ import type { Portrait } from "@/lib/portraits";
 import { ModelMark, ObsMark, Residual, TierMark } from "@/components/brand/Marks";
 import type { Reading } from "@/lib/reading";
 import { DossierLane } from "./DossierLane";
-import { PortraitSlot } from "./PortraitSlot";
+import { PlayerCard } from "./PlayerCard";
 import styles from "./PlayerHero.module.css";
 import { Flag, LeagueFlag } from "@/components/brand/Flag";
 
@@ -39,16 +39,28 @@ export function PlayerHero({ player: p, portrait, valuedLabel, estimates, readin
   const w = p.window;
 
   return (
-    <section className={styles.card} aria-labelledby="player-name" data-portrait={portrait ? "" : undefined}>
+    <section className={styles.card} aria-labelledby="player-name" data-portrait="">
       <span className={styles.watermark} aria-hidden="true">
         {p.role_code}
       </span>
 
-      {portrait && (
-        <div className={styles.frame}>
-          <PortraitSlot portrait={portrait} name={p.name} roleCode={p.role_code} />
-        </div>
-      )}
+      <div className={styles.frame}>
+        <PlayerCard
+          id={p.id}
+          name={p.name}
+          firstName={p.first_name}
+          lastName={p.last_name}
+          roleCode={p.role_code}
+          club={p.club}
+          nationality={p.nationality}
+          tier={p.market_tier}
+          observed={p.market_value_eur}
+          modelA={estimates.find((e) => e.model === "A" && e.source === "heldout")?.value ?? null}
+          valuedLabel={valuedLabel}
+          portrait={portrait}
+        />
+        {portrait && <p className={styles.credit}>{portrait.attribution}</p>}
+      </div>
 
       <div className={styles.identity}>
         <p className={styles.crumbs}>
@@ -57,11 +69,6 @@ export function PlayerHero({ player: p, portrait, valuedLabel, estimates, readin
           <span>{league}</span>
         </p>
         <div className={styles.nameRow}>
-          {!portrait && (
-            <span className={styles.badge} title="No licensed portrait yet">
-              <PortraitSlot portrait={null} name={p.name} roleCode={p.role_code} size="card" />
-            </span>
-          )}
           <h1 id="player-name" className={styles.name}>
             {p.first_name && <span className={styles.first}>{p.first_name}</span>}
             <ViewTransition name={`name-${p.id}`} share="morph" default="none">

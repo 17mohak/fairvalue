@@ -3,11 +3,14 @@ import { notFound } from "next/navigation";
 import { ExpLink } from "@/components/site/ExpLink";
 import { Scrolly, type StoryStep } from "@/components/stories/Scrolly";
 import { StoryCover } from "@/components/stories/StoryCover";
+import { PlayerCard } from "@/components/players/PlayerCard";
 import { StoryEnd } from "@/components/stories/StoryEnd";
 import styles from "@/components/stories/story.module.css";
 import { leagueName } from "@/lib/football";
 import { formatEur, signed } from "@/lib/format";
 import { buildJourney, factor, toEur } from "@/lib/journey";
+import { playerById } from "@/lib/players.server";
+import { portraitFor } from "@/lib/portraits";
 import { research } from "@/lib/research";
 import { SHOWCASE, storyBySlug } from "@/lib/stories";
 
@@ -142,12 +145,22 @@ export default async function ValuationStory({ params }: Params) {
       <StoryCover
         story={story}
         visual={
-          <div className={styles.typeface} role="img" aria-label={`${p.name}: typographic cover; no licensed photograph`}>
-            <span className={styles.typefaceRole}>{p.role_code}</span>
-            <span className={styles.typefaceNote}>No licensed photograph</span>
-            <span className={styles.typefaceName} aria-hidden="true">
-              {p.last_name}
-            </span>
+          <div className={styles.cardCover}>
+            <PlayerCard
+              id={p.id}
+              name={p.name}
+              firstName={p.first_name}
+              lastName={p.last_name}
+              roleCode={p.role_code}
+              club={p.club}
+              nationality={p.nationality}
+              tier={p.market_tier}
+              observed={p.market_value_eur}
+              modelA={playerById(p.id)?.estimates.heldout.A ?? null}
+              valuedLabel={p.valuation_date ?? "2025–26"}
+              portrait={portraitFor(p.id)}
+            />
+            {portraitFor(p.id) && <p className={styles.cardCredit}>{portraitFor(p.id)!.attribution} · <ExpLink href="/credits">image credits</ExpLink></p>}
           </div>
         }
       >

@@ -1,5 +1,25 @@
 # Development changelog
 
+## 2026-11-06: Health check waits for a cold-starting API (PR 5)
+- **Fix:** on the live site `/api/health` answered 503 "unreachable" while the scaled-to-zero API was waking up: the route gave up after 4 s, and a cold start took 11.5 s to answer `/health` (Cloud Run logs). The route now waits 20 s; the browser's `health()` call waits 25 s so it always outlasts the server.
+- **Tests:** `app/api/health/route.test.ts`: an API answering after 11.5 s reads "ok" (fails on the old 4 s limit), one that never answers still gives 503. Web 181 pass. Not yet checked on the live site (needs a deploy).
+
+## 2026-11-06: Clean checkouts build without the FootyLogos files (PR 5)
+- **Fix:** CI failed because the app imports the git-ignored `portrait_cards_fl.json`. `web/scripts/ensure-portrait-manifest.mjs` now writes an empty manifest when it is missing (never overwrites), run before dev, build, typecheck and test. A build without the real file shows monograms instead of FootyLogos portraits, so a deploy must copy the file and images in first.
+- **Tests:** FootyLogos checks skip when the manifest is empty; the PlayerCard test uses a committed Berlin portrait. Web 179 pass with the real files; 177 pass and 2 skip with the stub (simulated clean checkout).
+
+## 2026-11-06: Player card on every player surface (branch `feat/portrait-cards`, D-053)
+- **Chip:** `PlayerChip`, the card's small slanted form (ink by tier, engraved monogram when there is no portrait), now in Explorer rows, Overview spotlights, the dossier's "near this valuation" list and Head-to-Head covers.
+- **Stories:** valuation story covers show the full card (held-out Model A from the full export) with its credit; the "no licensed photograph" typographic cover is gone. Head-to-Head covers link to `/credits`.
+- **Switch:** renamed to `NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` so client rows and server pages agree; it is read at build time, so rebuild after changing it.
+- **Checked:** web tests 177 pass, tsc passes; by eye at desktop width on Explorer, Overview, a valuation story and a head-to-head. Not checked: mobile, other browsers, Inspector panel, Comparison Studio, Watchlists (still monogram-free text).
+
+## 2026-11-06: Player cards, direction C (branch `feat/portrait-cards`, D-053)
+- **Card:** `PlayerCard` ("The Denomination") in the dossier hero: observed value as the denomination, ink by value tier, held-out Model A and residual on the foot, engraved monogram when there is no portrait. Guilloche background from `lib/guilloche.ts`.
+- **Portraits:** `portraitFor` now falls back to card portraits: 57 Berlin / WikiPortraits frames (CC BY-SA 4.0, background removed, committed) and 1,128 FootyLogos images (unlicensed, owner's risk per D-044, git-ignored). `scripts/portraits/build_card_assets.py` builds both from `research/portrait_sourcing/`.
+- **Safeguards:** `/credits` page and footer link, `NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` (build-time) removes every unlicensed image, `cardPortraitProblems` checks credit and source on each entry.
+- **Tests:** web 177 (+6). tsc and production build pass. Checked by eye on three dossiers (FootyLogos, Berlin, monogram) at desktop width only; mobile and other browsers not checked. Not yet on Explorer rows, Stories or the Overview.
+
 ## 2026-11-06: Pre-live deployed to Cloud Run (reviewers only)
 - Deployed with the owner's approval from main `fd16b8d` to Cloud Run `asia-south1`. The web app is
   behind a reviewer password and noindexed; the API is private; min-instances 0 on both.

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ViewTransition } from "react";
 import { PlayerHero, type HeroEstimate } from "@/components/players/PlayerHero";
-import { PortraitSlot } from "@/components/players/PortraitSlot";
+import { PlayerChip } from "@/components/players/PlayerChip";
 import { TraitsRadar } from "@/components/players/TraitsRadar";
 import { ValuationLab } from "@/components/players/ValuationLab";
 import { ValueHistory } from "@/components/players/ValueHistory";
@@ -285,7 +285,7 @@ export default async function PlayerPage({ params, searchParams }: Params) {
                   <li key={q.id}>
                     <ExpLink href={hrefIn(q.slug, seq)} className={styles.moreCard}>
                       <span className={styles.moreThumb}>
-                        <PortraitSlot portrait={portraitFor(q.id)} name={q.name} roleCode={q.role_code} size="thumb" />
+                        <PlayerChip name={q.name} tier={q.market_tier} portrait={portraitFor(q.id)} />
                       </span>
                       <span className={styles.moreText}>
                         <span className={styles.moreName}>

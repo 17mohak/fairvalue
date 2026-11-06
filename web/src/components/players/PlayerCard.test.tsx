@@ -7,7 +7,8 @@ const base = { id: 605184, name: "Jean-Clair Todibo", firstName: "Jean-Clair", l
 
 describe("PlayerCard", () => {
   it("prints the observed value as the denomination and the held-out Model A estimate", () => {
-    render(<PlayerCard {...base} portrait={portraitFor(605184)} />);
+    // A committed Berlin portrait (670681): FootyLogos files are git-ignored and absent in CI.
+    render(<PlayerCard {...base} portrait={portraitFor(670681)} />);
     expect(screen.getByLabelText(/observed value €22M/)).toBeInTheDocument();
     expect(screen.getByText("Todibo")).toBeInTheDocument();
     expect(screen.getByText("€15.7M")).toBeInTheDocument();

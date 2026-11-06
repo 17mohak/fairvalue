@@ -1,5 +1,9 @@
 # Development changelog
 
+## 2026-11-06: Clean checkouts build without the FootyLogos files (PR 5)
+- **Fix:** CI failed because the app imports the git-ignored `portrait_cards_fl.json`. `web/scripts/ensure-portrait-manifest.mjs` now writes an empty manifest when it is missing (never overwrites), run before dev, build, typecheck and test. A build without the real file shows monograms instead of FootyLogos portraits, so a deploy must copy the file and images in first.
+- **Tests:** FootyLogos checks skip when the manifest is empty; the PlayerCard test uses a committed Berlin portrait. Web 179 pass with the real files; 177 pass and 2 skip with the stub (simulated clean checkout).
+
 ## 2026-11-06: Player card on every player surface (branch `feat/portrait-cards`, D-053)
 - **Chip:** `PlayerChip`, the card's small slanted form (ink by tier, engraved monogram when there is no portrait), now in Explorer rows, Overview spotlights, the dossier's "near this valuation" list and Head-to-Head covers.
 - **Stories:** valuation story covers show the full card (held-out Model A from the full export) with its credit; the "no licensed photograph" typographic cover is gone. Head-to-Head covers link to `/credits`.

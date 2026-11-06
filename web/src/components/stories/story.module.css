@@ -493,6 +493,17 @@
   padding: 1.5rem 0;
 }
 
+/* Full size on wide screens; scaled to fit a phone's width (the card is a 360px board). */
+.cardCover > article {
+  --scale: 1;
+}
+
+@media (max-width: 440px) {
+  .cardCover > article {
+    --scale: 0.82;
+  }
+}
+
 .cardCredit {
   margin: 0;
   font-size: 0.68rem;

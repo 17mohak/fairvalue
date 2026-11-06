@@ -71,8 +71,8 @@ services:
 **Why the proxy:** Next.js compresses pages but not route-handler responses, and it strips a
 `Content-Encoding` header set by the handler. The `/api/players` index behind search, watchlists and
 compare is therefore 1.8 MB raw. Through the proxy it is 320 KB with gzip, measured 2026-11-05 on
-the full export (D-041). Any hosting platform must compress at its edge in the same way. Check the
-platform's compression or keep this proxy in front of `web`.
+the full export (D-041). Since D-052 Next.js compresses it as well, so the proxy is no longer
+required for this; compose keeps it.
 
 **Configuration:**
 
@@ -104,3 +104,36 @@ must never be pushed to a public registry. CI builds without it and uses the eig
 showcase.
 
 Details are in `docs/PRODUCT.md`. Hosting and image publishing still need owner approval.
+
+## Cloud Run (pre-live, D-052)
+`scripts/deploy_gcp.sh` deploys both services to Cloud Run in `asia-south1` (project
+`fairvalue-513904`). It is a **dry run by default**: it prints every command. `--execute` runs them,
+and needs the owner's approval, `gcloud` and `docker` logged in, and a clean working tree.
+
+```bash
+FAIRVALUE_REVIEW_PASSWORD=... bash scripts/deploy_gcp.sh             # print the plan
+FAIRVALUE_REVIEW_PASSWORD=... bash scripts/deploy_gcp.sh --execute   # build, push, deploy
+```
+
+| Service | Access | Scaling | Notes |
+|---|---|---|---|
+| `fairvalue-api` | private (IAM; only the web app's service account may invoke) | 0 to 2 instances, 1 GiB | port 8000 |
+| `fairvalue-web` | public URL, every page behind the reviewer password, noindexed | 0 to 3 instances, 512 MiB | port 3000, runs as `fairvalue-web@` |
+
+**Cost:** min-instances 0 on both, so nothing bills while idle. Requests rejected by IAM are not billed.
+The project budget is an enforced ₹1,000/month cap on Cloud Run. It pauses services, but not
+instantly, and it does not cover Artifact Registry storage (keep at most two images per service; the
+repository's cleanup policy does this).
+
+**Extra web variables on Cloud Run:**
+
+| Variable | Default | Meaning |
+|---|---|---|
+| `FAIRVALUE_REVIEW_PASSWORD` | unset (gate off) | reviewer password for HTTP Basic auth on every page. Set from the deployer's shell, never stored in the repo |
+| `FAIRVALUE_REVIEW_USER` | `fairvalue` | reviewer user name |
+| `FAIRVALUE_NOINDEX` | on (anything but `0`) | `X-Robots-Tag: noindex, nofollow` and a disallow-all `robots.txt` |
+| `FAIRVALUE_API_AUTH` | unset | `gcp-id-token`: send a Google identity token to the private API |
+
+`/api/ping` stays open for the container health check. Compression no longer needs Caddy: Next.js
+itself gzips `/api/players` (1.92 MB to 324 KB) because `next.config.ts` sets its `Content-Type` up
+front (D-052 explains why that matters).

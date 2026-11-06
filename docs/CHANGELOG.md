@@ -1,5 +1,16 @@
 # Development changelog
 
+## 2026-11-06: Pre-live deployment setup (branch `feat/pre-live`)
+- **Reviewer gate (D-052):** HTTP Basic auth on every page when `FAIRVALUE_REVIEW_PASSWORD` is set
+  (`web/src/proxy.ts`), `/api/ping` open for health checks; noindex header and disallow-all
+  `robots.txt` by default.
+- **Private API:** the web app sends a cached Google identity token when `FAIRVALUE_API_AUTH=gcp-id-token`.
+- **Compression:** Next.js now gzips `/api/players` itself (1.92 MB to 324 KB), so Cloud Run needs no
+  Caddy. Root cause: Next's compression filter rejected the route's array-valued `Content-Type`; a
+  `next.config.ts` header fixes it. Checked on the standalone server and the Docker image.
+- **Deploy script:** `scripts/deploy_gcp.sh`, dry run by default. Nothing pushed or deployed.
+- **Tests:** web 171 (+10: gate, identity token, player index). Build passes; Docker web image healthy behind the gate.
+
 ## 2026-11-05: Deployment URL wired through the build (branch `feat/multipage-experience`)
 - `FAIRVALUE_SITE_URL` (the public address used for canonical links and share cards) is now passed
   through the web Docker build and run stages and docker compose, and documented in DEPLOYMENT.md as

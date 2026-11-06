@@ -504,6 +504,20 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   for scale. That needs the owner's decision, including the personality-rights stance before any
   public deployment.
 
+## D-044 Owner accepts the risk of using FootyLogos player images; permission requests sent in parallel — Decided (2026-11-05)
+- **Decision (owner):** proceed with player images from footylogos.com/player-pngs for now, credit the
+  sources, and remove any image on request. Take-down will be handled if and when asked.
+- **What is known:** FootyLogos publishes no licence for the player photos ("Database and site content
+  rights reserved"; its rights page says it cannot authorize use on behalf of rights holders). Its FAQ says
+  images come from league, competition and club image libraries, with a source label per image. A credit is
+  not a licence, so this use is **unlicensed**. Personality rights are a separate issue and also open.
+- **Why recorded:** it overrides the PLAYER_ASSETS.md rule that club and agency images need a written licence.
+  The Wikimedia route (D-043, `research/portrait_sourcing/`, 190 CC BY-SA 4.0 portraits verified per file) remains
+  the licensed fallback.
+- **Mitigations:** keep the source label and credit per image in the manifest; keep a one-step removal path
+  (manifest entry to monogram); send permission requests to leagues and clubs and keep any written reply
+  outside the repository; do not deploy publicly without the owner's explicit go-ahead (CLAUDE.md).
+
 ## D-045 Valuation Theatre Overview, global player search, canonical dossier — Decided (2026-11-05)
 - **Scope:** a frontend sprint only. No model, feature, dataset, metric or residual definition changed;
   every figure comes from `research.json` or the player export, as before.
@@ -644,6 +658,17 @@ one zero valuation (2008, outside window; eligibility also requires value > 0);
   It refuses uncommitted code (the image tag is the commit), masks the password in its output, and
   bakes the deterministic `run.app` URL into the web build. Pushing images and deploying still need the
   owner's explicit approval each time.
+
+## D-053 Portrait card direction C ("The Denomination") locked; portraits go live under D-044 — Decided (2026-11-06)
+- **Direction:** C, the card printed like security paper with the observed value as its denomination. Chosen over A (Floodlit Plate) and B (Under the Lights) after the A/B/C comparison was rebuilt with real cutouts
+  (`research/portrait_sourcing/abc/`, not in the app). C handles every portrait type, including tight face close-ups, and has the best no-portrait fallback.
+- **Sources, in order, per player** (`research/portrait_sourcing/portrait_plan_all_players.csv`): FootyLogos head-and-shoulders cutout (866) > Berlin / WikiPortraits frame with background removed by us (57, CC BY-SA 4.0)
+  > FootyLogos close-up (262) > engraved monogram (4,635). FootyLogos images are unlicensed: the owner accepts the takedown risk (D-044) and wants them live. Permission emails (Premier League, Bundesliga, LaLiga,
+  Ligue 1, Eredivisie) are sent and unanswered.
+- **Conditions:** every image shows a credit; Berlin images carry "background removed" and CC BY-SA 4.0; a credits page and a takedown contact ship with the portraits; one flag turns FootyLogos images off at once if a
+  takedown arrives. Portraits are a presentation layer and say nothing about the model or the audit. Card faces show Transfermarkt value, club and league only.
+- **Known limits:** close-up flag is a heuristic checked on a sample; FootyLogos kits are often older than the current club; Berlin kits are national-team kits; personality-rights warnings on Berlin files remain open.
+- **Built (2026-11-06):** `PlayerCard` in the dossier hero, `portraitFor` serves Berlin and FootyLogos card portraits, `/credits` page, `NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` (build-time) switch. FootyLogos image files and their id list are git-ignored (`web/public/players/portraits/cards/fl/`, `web/src/data/generated/portrait_cards_fl.json`); regenerate with `scripts/portraits/build_card_assets.py`. Not yet on other screens (Explorer rows, Stories heroes, Overview). Deploying publicly still needs the owner's explicit go-ahead.
 
 ---
 

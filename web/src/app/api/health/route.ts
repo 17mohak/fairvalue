@@ -4,6 +4,11 @@ import { verifyHealth } from "@/lib/api/verify";
 
 export const dynamic = "force-dynamic";
 
+// The API scales to zero on Cloud Run, and a cold start took 11.5 s to answer /health
+// (2026-11-06 logs). A shorter wait reported a waking API as offline. Keep this below the
+// browser's own limit for this call (HEALTH_TIMEOUT_MS in lib/api/client.ts).
+const HEALTH_UPSTREAM_TIMEOUT_MS = 20_000;
+
 /**
  * Proxies FastAPI GET /health and adds a verdict: "online" only when the loaded models and the
  * dataset fingerprint match the research registry, "unverified" when something else answers,
@@ -11,7 +16,7 @@ export const dynamic = "force-dynamic";
  */
 export async function GET(): Promise<Response> {
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 4_000);
+  const timer = setTimeout(() => ctrl.abort(), HEALTH_UPSTREAM_TIMEOUT_MS);
   let status: number | null = null;
   let body: unknown = null;
   try {

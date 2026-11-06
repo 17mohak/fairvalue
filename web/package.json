@@ -4,10 +4,14 @@
   "private": true,
   "description": "FairValue product front end: valuation studio, explanations and the fairness research explorer.",
   "scripts": {
+    "predev": "node scripts/ensure-portrait-manifest.mjs",
     "dev": "next dev",
+    "prebuild": "node scripts/ensure-portrait-manifest.mjs",
     "build": "next build",
     "start": "next start",
+    "pretypecheck": "node scripts/ensure-portrait-manifest.mjs",
     "typecheck": "tsc --noEmit",
+    "pretest": "node scripts/ensure-portrait-manifest.mjs",
     "test": "vitest run",
     "test:watch": "vitest"
   },

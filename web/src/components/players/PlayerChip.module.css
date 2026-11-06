@@ -1,0 +1,17 @@
+/* The small form of the player card (D-053). Sized by its container: height 100%, 5:7 like the card. */
+.chip {
+  --ink: #7fb48d;
+  position: relative;
+  display: block;
+  height: 100%;
+  aspect-ratio: 5 / 7;
+  overflow: hidden;
+  background: #0a0e0b;
+  clip-path: polygon(0 0, 78% 0, 100% 14%, 100% 100%, 22% 100%, 0 86%);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.chip[data-ink="gold"] { --ink: #e9b949; }
+.chip[data-ink="silver"] { --ink: #d4dbd1; }
+.chip::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 8%; background: var(--ink); }
+.chip img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 14%; filter: grayscale(1) contrast(1.05); }
+.mono { position: absolute; inset: 0; display: grid; place-items: center; font: 900 1.1em/1 var(--font-display); color: transparent; -webkit-text-stroke: 1px var(--ink); font-size: 1.15rem; }

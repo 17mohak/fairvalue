@@ -1,0 +1,68 @@
+/* "The Denomination" (D-053). Designed on a 360 x 504 board; --scale shrinks it for the dossier column. */
+.card {
+  --ink: #cfd6cc; --ink-2: #fff; --ink-3: #8e998f; --paper: #0b0f0c;
+  --scale: 0.72;
+  position: relative;
+  width: 360px;
+  height: 504px;
+  zoom: var(--scale);
+  color: var(--chalk);
+  background: var(--paper);
+  overflow: hidden;
+  clip-path: polygon(0 0, 84% 0, 100% 8.5%, 100% 100%, 16% 100%, 0 91.5%);
+  box-shadow: inset 0 0 0 1px rgb(237 239 230 / 0.08);
+  font-family: var(--font-ui);
+}
+.card[data-ink="gold"] { --ink: #e9b949; --ink-2: #fbe7a8; --ink-3: #a37a24; }
+.card[data-ink="silver"] { --ink: #d4dbd1; --ink-2: #fff; --ink-3: #8b968d; }
+.card[data-ink="green"] { --ink: #7fb48d; --ink-2: #c4e2cc; --ink-3: #4c7a59; }
+
+.paper { position: absolute; inset: 0; background: radial-gradient(80% 60% at 60% 30%, rgb(255 255 255 / 0.035), transparent 70%), linear-gradient(160deg, #0f1511, #070a08); }
+.guil { position: absolute; inset: 0; width: 100%; height: 100%; }
+.guil path { fill: none; stroke: var(--ink); vector-effect: non-scaling-stroke; }
+.guil .f { stroke-width: 0.4; opacity: 0.11; }
+.guil .r { stroke-width: 0.45; opacity: 0.34; }
+
+.micro { position: absolute; left: 22px; right: 54px; top: 11px; margin: 0; font-size: 5.6px; font-weight: 600; line-height: 1; font-stretch: 112%; letter-spacing: 0.16em; color: var(--ink); opacity: 0.75; white-space: nowrap; overflow: hidden; }
+
+.arch { position: absolute; left: 76px; top: 30px; width: 248px; height: 290px; border-radius: 124px 124px 3px 3px; overflow: hidden; background: #0a0e0b; box-shadow: 0 0 0 1px var(--ink-3), 0 0 0 5px var(--paper), 0 0 0 6px rgb(255 255 255 / 0.1); }
+.arch[data-empty] { display: grid; place-items: center; }
+.arch[data-empty] .r { opacity: 0.5; }
+/* Transparent cutouts stand on the arch floor, tinted to the card's ink so every portrait reads as one set. */
+.photo { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; filter: grayscale(1) contrast(1.05) brightness(1.02); }
+.photo[data-ink="gold"] { filter: grayscale(1) sepia(0.55) saturate(1.6) hue-rotate(-8deg) contrast(1.05); }
+.screen { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, rgb(7 10 8 / 0.3) 0 1px, transparent 1px 3px); mix-blend-mode: multiply; }
+.screen::after { content: ""; position: absolute; inset: 0; background: radial-gradient(90% 70% at 50% 35%, transparent 55%, rgb(7 10 8 / 0.6)); }
+.mono { position: relative; font: 900 118px/1 var(--font-display); color: transparent; -webkit-text-stroke: 1.4px var(--ink); }
+
+.denom { position: absolute; left: 14px; top: 34px; bottom: 150px; width: 56px; display: flex; flex-direction: column; align-items: center; }
+.figure { order: 1; writing-mode: vertical-rl; transform: rotate(180deg); font: 900 126px/0.8 var(--font-display); letter-spacing: -0.01em; color: var(--ink);
+  background: linear-gradient(115deg, var(--ink-3) 10%, var(--ink-2) 30%, var(--ink) 45%, var(--ink-2) 60%, var(--ink-3) 85%); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+.cur, .unit { font: 800 22px/1 var(--font-display); color: var(--ink); }
+.cur { order: 2; margin-top: 6px; }
+.unit { order: 0; margin-bottom: 4px; }
+
+.thread { position: absolute; left: 22px; right: 22px; top: 336px; }
+.ruler { position: relative; height: 22px; }
+.rl { position: absolute; left: 0; right: 0; top: 7px; height: 1px; background: var(--ink-3); }
+.tk { position: absolute; top: 3px; width: 1px; height: 9px; background: var(--ink-3); }
+.tk em { position: absolute; top: 11px; left: 50%; transform: translateX(-50%); font-style: normal; font-size: 7.5px; color: var(--ink-3); white-space: nowrap; }
+.seg { position: absolute; top: 7px; height: 2px; background: var(--ink); }
+.mkO { position: absolute; top: 3px; width: 9px; height: 9px; margin-left: -4.5px; border-radius: 50%; background: var(--chalk); box-shadow: 0 0 0 1.5px var(--paper); }
+.mkA { position: absolute; top: 3px; width: 9px; height: 9px; margin-left: -4.5px; transform: rotate(45deg) scale(0.8); border: 1.6px solid var(--ink); background: var(--paper); }
+
+.id { position: absolute; left: 22px; right: 22px; top: 372px; }
+.first { font: italic 400 15px/1 var(--font-serif); color: var(--chalk-2); margin: 0; }
+.last { font: 900 50px/0.9 var(--font-display); text-transform: uppercase; margin: 2px 0 7px; letter-spacing: 0.005em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.meta { font-size: 10px; font-weight: 600; font-stretch: 112%; letter-spacing: 0.05em; text-transform: uppercase; color: var(--chalk-2); margin: 0; display: flex; align-items: center; gap: 6px; min-width: 0; }
+.meta span:last-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+.foot { position: absolute; left: 60px; right: 18px; bottom: 13px; display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 9px; font-weight: 600; font-stretch: 112%; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink); }
+.serial { font-variant-numeric: tabular-nums; }
+.model { color: var(--chalk-2); display: inline-flex; align-items: center; gap: 4px; }
+.note { position: absolute; right: 28px; top: 300px; margin: 0; font-size: 6.5px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-2); background: rgb(7 10 8 / 0.7); padding: 2px 5px; }
+
+@media (prefers-reduced-motion: no-preference) {
+  .figure { background-size: 100% 260%; transition: background-position 1.2s ease; }
+  .card:hover .figure { background-position: 0 100%; }
+}

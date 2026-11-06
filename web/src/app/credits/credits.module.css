@@ -1,0 +1,9 @@
+.page { max-width: 44rem; margin: 0 auto; padding: clamp(3rem, 6vw, 5rem) var(--gutter) clamp(4rem, 8vw, 6rem); color: var(--chalk); }
+.kicker { font-family: var(--font-label); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--flood); margin: 0 0 1rem; }
+.title { font-family: var(--font-display); font-size: var(--step-5); font-weight: 800; line-height: 0.95; text-transform: uppercase; margin: 0 0 1.25rem; }
+.lede { font-family: var(--font-serif); font-size: var(--step-1); line-height: 1.5; color: var(--chalk-2); margin: 0 0 2.5rem; }
+.page section { border-top: 1px solid var(--rule-strong); padding: 1.5rem 0; }
+.page h2 { font-family: var(--font-display); font-size: var(--step-2); font-weight: 800; text-transform: uppercase; margin: 0 0 0.6rem; }
+.page p { font-family: var(--font-serif); line-height: 1.6; color: var(--chalk-2); margin: 0; }
+.page a { color: var(--flood); }
+.small { font-size: var(--step--1); color: var(--fog); padding-top: 1.5rem; border-top: 1px solid var(--rule-strong); }

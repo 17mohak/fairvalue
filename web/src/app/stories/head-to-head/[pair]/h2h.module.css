@@ -399,3 +399,10 @@
     font-size: 0.62rem;
   }
 }
+
+/* Portrait chip above each side's tag (D-053). */
+.chip {
+  display: block;
+  height: 4.5rem;
+  margin-bottom: 0.75rem;
+}

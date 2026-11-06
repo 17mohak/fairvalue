@@ -29,9 +29,8 @@ Counts come from `research/portrait_sourcing/portrait_plan_all_players.csv` (5,8
 - **Takedown switch:** build with `NEXT_PUBLIC_FAIRVALUE_FOOTYLOGOS_PORTRAITS=off` to remove every
   unlicensed image at once (build-time, so rebuild and redeploy). To remove one player, delete their
   entry from `portrait_cards_fl.json`; they fall back to the monogram.
-- **Credits:** `/credits` lists every source, its terms and a takedown contact. **Open:** the
-  contact is GitHub issues on `17mohak/fairvalue`, which is a private repository, so people outside
-  it cannot use it; the owner needs to choose a reachable contact before any wider sharing.
+- **Credits:** `/credits` lists every source, its terms and a takedown contact: GitHub issues on
+  `17mohak/fairvalue`, public since 2026-11-06.
   `cardPortraitProblems` (tested) checks that every entry has a credit and source,
   and that unlicensed images claim no licence and live only in the FootyLogos folder.
 - **Checked by eye:** about 100 of the FootyLogos crops and 4 of the 57 Berlin cutouts. The

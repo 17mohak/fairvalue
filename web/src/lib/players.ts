@@ -1,0 +1,257 @@
+// Player profiles: types and pure helpers shared by server and client (see src/product/players.py).
+// The server-side loader that reads the files lives in lib/players.server.ts.
+
+import type { PlayerFeatures } from "@/lib/api/types";
+import type { ModelId, Position, TierName } from "@/lib/football";
+
+export interface TraitValue {
+  key: TraitKey;
+  value: number | null;
+  /** Mid-rank percentile among players in the same position, 0-100. */
+  percentile: number;
+}
+
+export interface PlayerProfile {
+  id: number;
+  slug: string;
+  name: string;
+  first_name: string;
+  last_name: string;
+  position: Position;
+  sub_position: string;
+  role_code: string;
+  foot: string | null;
+  height_cm: number | null;
+  age: number;
+  league_id: string;
+  club: string | null;
+  valuation_date: string | null;
+  /** First-listed citizenship, display only (D-037); null in the committed showcase. */
+  nationality: string | null;
+  /** Observed Transfermarkt value at the valuation date: the model's target, not an estimate. */
+  market_value_eur: number;
+  market_tier: TierName | null;
+  features: PlayerFeatures;
+  window: { appearances: number; minutes: number; goals: number | null; assists: number | null; started: number; yellow_cards: number | null; red_cards: number | null };
+  estimates: {
+    /** Served (full-data refit) models: the player was in their training data, so these are in-sample. */
+    served: Record<ModelId, number | null>;
+    /** Out-of-fold cross-validation predictions: the honest comparison with the market value. */
+    heldout: Record<ModelId, number | null>;
+  };
+  explanation: {
+    model: ModelId;
+    source: string;
+    base_log_value: number;
+    predicted_log_value: number;
+    contributions: { feature: string; value: number | string | null; contribution: number }[];
+  } | null;
+  traits: TraitValue[] | null;
+  history: { date: string; value_eur: number; club: string | null }[] | null;
+  /** Audit label for the audit-context panel only. Never a model input. */
+  audit: { group: "UEFA" | "non-UEFA" | null };
+}
+
+export interface PeerStats {
+  n: number;
+  traits: Partial<Record<TraitKey, { deciles: number[]; median: number }>>;
+}
+
+export interface PlayerSet {
+  source: "showcase" | "full";
+  generated_by: string;
+  selection: string;
+  heldout_algorithm?: string | null;
+  peers: Partial<Record<Position, PeerStats>> | null;
+  players: PlayerProfile[];
+}
+
+export type PlayerSummary = Pick<
+  PlayerProfile,
+  | "id" | "slug" | "name" | "first_name" | "last_name" | "position" | "sub_position" | "role_code" | "age" | "league_id" | "club"
+  | "nationality" | "market_value_eur" | "market_tier" | "window"
+> & {
+  /** The best model estimate the build has for Model A: held-out if exported, else the cached served result. */
+  estimate: { value: number; source: "heldout" | "cached" } | null;
+};
+
+export function summary(p: PlayerProfile): PlayerSummary {
+  const { id, slug, name, first_name, last_name, position, sub_position, role_code, age, league_id, club, nationality, market_value_eur, market_tier, window } = p;
+  const h = p.estimates.heldout.A;
+  const c = p.estimates.served.A;
+  return {
+    id, slug, name, first_name, last_name, position, sub_position, role_code, age, league_id, club, nationality, market_value_eur, market_tier, window,
+    estimate: h !== null ? { value: h, source: "heldout" } : c !== null ? { value: c, source: "cached" } : null,
+  };
+}
+
+/** "605184-jean-clair-todibo" or "605184" -> 605184 */
+export function idFromParam(param: string): number | null {
+  const m = /^(\d+)(?:-[a-z0-9-]*)?$/.exec(param);
+  return m ? Number(m[1]) : null;
+}
+
+// ---- Board filtering (URL state: ?q=&position=&league=&tier=&sort=) ----
+export type BoardSort = "value" | "name" | "age";
+export interface BoardQuery {
+  q: string;
+  position: Position | "";
+  league: string;
+  tier: TierName | "";
+  sort: BoardSort;
+  view: "cards" | "table";
+}
+
+const POSITIONS: Position[] = ["Goalkeeper", "Defender", "Midfield", "Attack"];
+const TIERS: TierName[] = ["Emerging", "Established", "Elite", "World Class"];
+
+export function parseBoardQuery(sp: Record<string, string | string[] | undefined>): BoardQuery {
+  const one = (k: string) => (Array.isArray(sp[k]) ? sp[k]![0] : sp[k]) ?? "";
+  const position = one("position") as Position;
+  const tier = one("tier") as TierName;
+  const sort = one("sort") as BoardSort;
+  return {
+    q: one("q").slice(0, 60),
+    position: POSITIONS.includes(position) ? position : "",
+    league: /^[A-Z0-9]{2,5}$/.test(one("league")) ? one("league") : "",
+    tier: TIERS.includes(tier) ? tier : "",
+    sort: ["value", "name", "age"].includes(sort) ? sort : "value",
+    view: one("view") === "table" ? "table" : "cards",
+  };
+}
+
+const fold = (s: string) => s.normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase();
+
+export function filterPlayers<T extends PlayerSummary>(players: T[], q: BoardQuery): T[] {
+  const needle = fold(q.q.trim());
+  const out = players.filter(
+    (p) =>
+      (!needle || fold(`${p.name} ${p.club ?? ""}`).includes(needle)) &&
+      (!q.position || p.position === q.position) &&
+      (!q.league || p.league_id === q.league) &&
+      (!q.tier || p.market_tier === q.tier),
+  );
+  // Sorting is by observed value, name or age only. Ranking players by the model's error would
+  // invite reading residuals as "undervalued", which the model card rules out.
+  return out.sort((a, b) =>
+    q.sort === "name" ? a.last_name.localeCompare(b.last_name) : q.sort === "age" ? a.age - b.age : b.market_value_eur - a.market_value_eur,
+  );
+}
+
+// ---- Traits ----
+export type TraitKey = "goals_p90" | "assists_p90" | "minutes" | "start_share" | "minutes_last_365" | "intl_club_minutes_share";
+
+export const TRAITS: Record<TraitKey, { label: string; short: string; definition: string; format: (v: number) => string }> = {
+  goals_p90: { label: "Goals per 90", short: "Goals", definition: "Club goals per 90 minutes played in the two years to the valuation date.", format: (v) => v.toFixed(2) },
+  assists_p90: { label: "Assists per 90", short: "Assists", definition: "Club assists per 90 minutes in the same window.", format: (v) => v.toFixed(2) },
+  minutes: { label: "Minutes, two years", short: "Minutes", definition: "Total club minutes in the two-year window: how much the player was used.", format: (v) => Math.round(v).toLocaleString("en-GB") },
+  start_share: { label: "Starts", short: "Starts", definition: "Share of appearances started rather than entered from the bench.", format: (v) => `${Math.round(v * 100)}%` },
+  minutes_last_365: { label: "Minutes, last 365 days", short: "Recent", definition: "Club minutes in the final year of the window: recent involvement, or the absence of it.", format: (v) => Math.round(v).toLocaleString("en-GB") },
+  intl_club_minutes_share: { label: "European club minutes", short: "Europe", definition: "Share of minutes played in UEFA club competitions.", format: (v) => `${Math.round(v * 100)}%` },
+};
+
+export const POSITION_PLURAL: Record<Position, string> = { Goalkeeper: "goalkeepers", Defender: "defenders", Midfield: "midfielders", Attack: "attackers" };
+
+/** The published research explanation of a showcase player, in the shape POST /explain returns. */
+export function publishedExplanation(p: PlayerProfile, version: string): import("@/lib/api/types").ExplainResponse | null {
+  const e = p.explanation;
+  if (!e) return null;
+  return {
+    model: e.model,
+    model_version: version,
+    base_log_value: e.base_log_value,
+    base_value_eur: Math.exp(e.base_log_value),
+    predicted_log_value: e.predicted_log_value,
+    predicted_value_eur: Math.exp(e.predicted_log_value),
+    contributions: e.contributions,
+    method: "SHAP TreeExplainer, from the published research run",
+    disclaimer: "",
+  };
+}
+
+// ---- Compact index (command palette, watchlists, comparison picker) ----
+export interface IndexRow {
+  id: number;
+  slug: string;
+  name: string;
+  role_code: string;
+  position: Position;
+  sub_position: string;
+  league_id: string;
+  club: string | null;
+  /** Display only (D-037): shown in search results, never a model input. */
+  nationality: string | null;
+  age: number;
+  market_value_eur: number;
+  market_tier: TierName | null;
+  minutes: number;
+  estimate: PlayerSummary["estimate"];
+}
+
+export function indexRow(p: PlayerProfile): IndexRow {
+  const s = summary(p);
+  return {
+    id: p.id, slug: p.slug, name: p.name, role_code: p.role_code, position: p.position, sub_position: p.sub_position,
+    league_id: p.league_id, club: p.club, nationality: p.nationality ?? null, age: p.age, market_value_eur: p.market_value_eur, market_tier: p.market_tier,
+    minutes: p.window.minutes, estimate: s.estimate,
+  };
+}
+
+export interface PlayerIndex {
+  source: PlayerSet["source"];
+  total: number;
+  players: IndexRow[];
+}
+
+/** Accent-insensitive search over name, club and role. */
+export function matchesQuery(p: Pick<IndexRow, "name" | "club" | "sub_position">, query: string): boolean {
+  const needle = fold(query.trim());
+  return !needle || fold(`${p.name} ${p.club ?? ""} ${p.sub_position}`).includes(needle);
+}
+
+// ---- Ranked player search (global search, comparison picker) ----
+export interface SearchHit<T> {
+  row: T;
+  score: number;
+}
+
+/**
+ * Ranks players for a typed query. Every word of the query must match the player's name, club,
+ * league or nationality; name matches rank first (exact, then surname or word start, then
+ * anywhere), and ties go to the higher observed value, so "saka" finds Bukayo Saka before
+ * Melih Kabasakal. Accent-insensitive. Pure and synchronous: 5,820 rows take well under a frame.
+ */
+export function searchPlayers<T extends Pick<IndexRow, "name" | "club" | "market_value_eur"> & { nationality?: string | null; league?: string }>(
+  rows: T[],
+  query: string,
+  limit = 8,
+): SearchHit<T>[] {
+  const words = fold(query).split(/\s+/).filter(Boolean);
+  if (!words.length) return [];
+  const full = words.join(" ");
+  const hits: SearchHit<T>[] = [];
+  for (const row of rows) {
+    const name = fold(row.name);
+    const nameWords = name.split(/[\s-]+/);
+    const other = fold(`${row.club ?? ""} ${row.league ?? ""} ${row.nationality ?? ""}`);
+    let score = 0;
+    let ok = true;
+    for (const w of words) {
+      if (nameWords.some((n) => n === w)) score += 60;
+      else if (nameWords.some((n) => n.startsWith(w))) score += 40;
+      else if (name.includes(w)) score += 15;
+      else if (other.includes(w)) score += 6;
+      else {
+        ok = false;
+        break;
+      }
+    }
+    if (!ok) continue;
+    if (name === full) score += 100;
+    else if (name.startsWith(full)) score += 30;
+    if (nameWords.at(-1) === words.at(-1)) score += 10; // surname
+    hits.push({ row, score });
+  }
+  hits.sort((a, b) => b.score - a.score || b.row.market_value_eur - a.row.market_value_eur);
+  return hits.slice(0, limit);
+}

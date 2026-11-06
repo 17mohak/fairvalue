@@ -24,7 +24,8 @@ import pandas as pd
 import shap
 
 from src.config import PROCESSED_DIR, RAW_DIR, REPORTS_DIR, get_logger
-from src.features.preprocess import feature_columns
+# original_feature lives in preprocess so the API can reuse it without training imports.
+from src.features.preprocess import feature_columns, original_feature  # noqa: F401
 from src.models.final import load_model
 from src.models.tiers import TIER_NAMES, assign_tier
 from src.models.train import load_training_data
@@ -32,17 +33,6 @@ from src.models.train import load_training_data
 log = get_logger(__name__)
 OUT = REPORTS_DIR / "explainability"
 LABEL = {"full": "Model A", "performance": "Model B"}
-
-
-def original_feature(transformed: str, originals: list[str]) -> str:
-    """Map a ColumnTransformer output name back to the raw feature it came from."""
-    kind, name = transformed.split("__", 1)
-    if kind == "num":
-        if name.startswith("missingindicator_"):
-            return name.removeprefix("missingindicator_")
-        return "age" if name == "age_squared" else name
-    matches = [o for o in originals if name.startswith(o + "_")]
-    return max(matches, key=len)
 
 
 def shap_by_feature(feature_set: str, df: pd.DataFrame):

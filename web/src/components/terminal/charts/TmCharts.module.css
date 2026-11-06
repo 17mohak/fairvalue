@@ -1,0 +1,239 @@
+.hbars,
+.pairs ul,
+.div ul {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.hbars li,
+.pairs li,
+.div li {
+  display: grid;
+  grid-template-columns: minmax(4.5rem, min(32%, 9.5rem)) minmax(0, 1fr) 4.75rem;
+  align-items: center;
+  column-gap: 0.75rem;
+  min-height: 1.85rem;
+}
+
+.hLabel {
+  display: grid;
+  overflow: hidden;
+  font-size: 0.8rem;
+  line-height: 1.15;
+  color: #c3cbc3;
+}
+
+.hLabel small {
+  font-size: 0.64rem;
+  color: #6c786f;
+}
+
+.hTrack,
+.pTrack,
+.dTrack {
+  position: relative;
+  height: 0.7rem;
+}
+
+.hTrack {
+  border-radius: 2px;
+  background: rgb(237 239 230 / 0.04);
+}
+
+.hBar {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: 0 3px 3px 0;
+  background: #e9b949;
+}
+
+.hVal {
+  display: grid;
+  justify-items: end;
+  font-size: 0.82rem;
+  font-weight: 600;
+  line-height: 1.1;
+  color: #edefe6;
+}
+
+.hVal small {
+  font-size: 0.64rem;
+  font-weight: 400;
+  color: #8f9b93;
+}
+
+/* ---- Pair dots ---- */
+.pTrack::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.pLink {
+  position: absolute;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: rgb(237 239 230 / 0.25);
+}
+
+.pA,
+.pB {
+  position: absolute;
+  top: 50%;
+  width: 0.7rem;
+  height: 0.7rem;
+  translate: -50% -50%;
+  border-radius: 50%;
+}
+
+.pA {
+  background: #e9b949;
+  box-shadow: 0 0 0 2px #0c110e;
+}
+
+.pB {
+  border: 2px solid #9fb7d9;
+  background: #0c110e;
+}
+
+.key {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  color: #8f9b93;
+}
+
+.key i {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+  border-radius: 50%;
+}
+
+.key i[data-k="a"] {
+  background: #e9b949;
+}
+
+.key i[data-k="b"] {
+  margin-left: 0.6rem;
+  border: 2px solid #9fb7d9;
+}
+
+/* ---- Diverging ---- */
+.divAxis {
+  display: grid;
+  grid-template-columns: minmax(4.5rem, min(32%, 9.5rem)) minmax(0, 1fr) 4.75rem;
+  column-gap: 0.75rem;
+  margin-bottom: 0.25rem;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #6c786f;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.divAxisMid {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.zero {
+  position: absolute;
+  left: 50%;
+  top: -0.3rem;
+  bottom: -0.3rem;
+  width: 1px;
+  background: rgb(237 239 230 / 0.35);
+}
+
+.dBar,
+.dGhost {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.dBar[data-sign="pos"] {
+  border-radius: 0 3px 3px 0;
+  background: #e9b949;
+}
+
+.dBar[data-sign="neg"] {
+  border-radius: 3px 0 0 3px;
+  background: #9fb7d9;
+}
+
+.dGhost {
+  top: -2px;
+  bottom: -2px;
+  border: 1px dashed rgb(237 239 230 / 0.35);
+}
+
+/* ---- Scatter ---- */
+.scatter {
+  width: 100%;
+  height: auto;
+  font-family: var(--font-ui);
+}
+
+.grid {
+  stroke: rgb(237 239 230 / 0.07);
+}
+
+.tick {
+  font-size: 10px;
+  fill: #6c786f;
+}
+
+.axisLabel {
+  font-size: 10px;
+  letter-spacing: 0.03em;
+  fill: #8f9b93;
+  text-transform: uppercase;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.diag {
+  stroke: rgb(233 185 73 / 0.5);
+  stroke-dasharray: 4 3;
+}
+
+.dot {
+  fill: #e9b949;
+  stroke: #0c110e;
+  stroke-width: 1.5;
+}
+
+/* Full-population scatter: overlapping round dots, translucent so density shows. */
+.dense {
+  fill: none;
+  stroke: #e9b949;
+  stroke-width: 3.5;
+  stroke-linecap: round;
+  stroke-opacity: 0.45;
+}
+
+.pointLabel {
+  font-size: 10px;
+  fill: #c3cbc3;
+}
+
+@media (max-width: 600px) {
+  .hbars li,
+  .pairs li,
+  .div li,
+  .divAxis {
+    grid-template-columns: 5.5rem minmax(0, 1fr) 4.5rem;
+  }
+}

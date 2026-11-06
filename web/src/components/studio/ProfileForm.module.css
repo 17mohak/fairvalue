@@ -1,0 +1,70 @@
+.form {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.group {
+  min-width: 0;
+  margin: 0;
+  padding: 0.85rem 0.95rem 1rem;
+  border: 1px solid rgb(237 239 230 / 0.07);
+  border-radius: 10px;
+  background: #0e1612;
+  transition: opacity 220ms var(--ease-out);
+}
+
+.group[data-inactive] {
+  opacity: 0.55;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.25rem 1rem;
+  width: 100%;
+  padding: 0;
+  margin-bottom: 0.75rem;
+  float: left; /* lets the legend sit inside the fieldset's top padding */
+}
+
+.legend + * {
+  clear: both;
+}
+
+.title {
+  font-family: var(--font-label);
+  font-size: 0.817rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--chalk);
+  font-variation-settings: var(--label-wdth);
+}
+
+.note {
+  font-size: 0.72rem;
+  color: var(--fog);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem 1rem;
+}
+
+.cell {
+  min-width: 0;
+}
+
+.gridPlayer .cell[data-field="position"],
+.gridPlayer .cell[data-field="foot"] {
+  grid-column: 1 / -1;
+}
+
+@media (max-width: 560px) {
+  .grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

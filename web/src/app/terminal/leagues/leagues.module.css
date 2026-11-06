@@ -1,0 +1,176 @@
+.board th[scope="row"] {
+  display: grid;
+  min-width: 9rem;
+  line-height: 1.2;
+}
+
+.board th[scope="row"] b {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: #edefe6;
+}
+
+.board th[scope="row"] small {
+  font-size: 0.68rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #6c786f;
+}
+
+.scale {
+  margin-left: 0.4rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #56625a;
+}
+
+.cell {
+  display: grid;
+  grid-template-columns: minmax(7rem, 1fr) 4.8rem;
+  align-items: center;
+  gap: 0.6rem;
+  min-width: 12rem;
+}
+
+.cell > :global(.num) {
+  text-align: right;
+}
+
+.cell small {
+  font-size: 0.64rem;
+  color: #8f9b93;
+}
+
+.bar {
+  height: 0.6rem;
+  border-radius: 0 3px 3px 0;
+  background: rgb(237 239 230 / 0.35);
+}
+
+.track {
+  position: relative;
+  height: 0.8rem;
+}
+
+.track::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  border-top: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.track i {
+  position: absolute;
+  top: -0.15rem;
+  bottom: -0.15rem;
+  border-left: 1px dashed rgb(237 239 230 / 0.28);
+}
+
+.dot,
+.a,
+.b {
+  position: absolute;
+  top: 50%;
+  width: 0.65rem;
+  height: 0.65rem;
+  translate: -50% -50%;
+  border-radius: 50%;
+}
+
+.dot {
+  background: #edefe6;
+}
+
+.a {
+  background: #e9b949;
+  box-shadow: 0 0 0 2px #0c110e;
+}
+
+.b {
+  border: 2px solid #9fb7d9;
+  background: #0c110e;
+}
+
+.link {
+  position: absolute;
+  top: calc(50% - 1px);
+  height: 2px;
+  background: rgb(237 239 230 / 0.22);
+}
+
+.res {
+  position: absolute;
+  top: 0.1rem;
+  bottom: 0.1rem;
+}
+
+.res[data-sign="pos"] {
+  background: #e9b949;
+}
+
+.res[data-sign="neg"] {
+  background: #9fb7d9;
+}
+
+.comp {
+  display: grid;
+  gap: 0.3rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.comp li {
+  display: grid;
+  grid-template-columns: 9rem minmax(0, 1fr) 3rem;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.8rem;
+}
+
+.stack {
+  display: flex;
+  gap: 2px;
+  height: 0.75rem;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1rem;
+  margin-top: 0.6rem;
+  font-size: 0.72rem;
+  color: #8f9b93;
+}
+
+.legend i {
+  display: inline-block;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 2px;
+  vertical-align: -0.1rem;
+}
+
+.legend i[data-pos="Goalkeeper"],
+.stack span[data-pos="Goalkeeper"] {
+  background: #3987e5;
+}
+.legend i[data-pos="Defender"],
+.stack span[data-pos="Defender"] {
+  background: #d95926;
+}
+.legend i[data-pos="Midfield"],
+.stack span[data-pos="Midfield"] {
+  background: #199e70;
+}
+.legend i[data-pos="Attack"],
+.stack span[data-pos="Attack"] {
+  background: #c98500;
+}

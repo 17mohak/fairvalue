@@ -1,0 +1,156 @@
+.inspector {
+  position: sticky;
+  top: calc(var(--header-h) + 0.75rem);
+  align-self: start;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - var(--header-h) - 3.5rem);
+  border: 1px solid rgb(237 239 230 / 0.1);
+  border-radius: 4px;
+  background: #0c110e;
+  animation: inspector-in 220ms var(--ease-out);
+}
+
+@keyframes inspector-in {
+  from {
+    opacity: 0;
+    translate: 12px 0;
+  }
+}
+
+.bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.45rem 0.6rem 0.45rem 0.85rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.08);
+}
+
+.close {
+  width: 1.8rem;
+  height: 1.8rem;
+  border: 0;
+  border-radius: 4px;
+  background: none;
+  color: #8f9b93;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+.close:hover {
+  background: rgb(237 239 230 / 0.06);
+  color: #edefe6;
+}
+
+.close:focus-visible {
+  outline: 2px solid #e9b949;
+}
+
+.body {
+  display: grid;
+  gap: 1rem;
+  padding: 0.85rem;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.who {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+}
+
+.who h2 {
+  font-size: 1.35rem;
+  line-height: 1.05;
+}
+
+.who p {
+  font-size: 0.78rem;
+  color: #8f9b93;
+}
+
+.values {
+  display: grid;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  border: 1px solid rgb(237 239 230 / 0.07);
+  border-radius: 4px;
+  background: #080b09;
+}
+
+.market {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+  color: #e9b949;
+}
+
+.estimates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.estimates dt {
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.estimates dd {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.estimates dd.src {
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: #8f9b93;
+}
+
+.section {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.record {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.25rem;
+  margin: 0;
+}
+
+.record dt {
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #6c786f;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.record dd {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 600;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.actions :global(.tm-btn)[data-on] {
+  border-color: #e9b949;
+  color: #e9b949;
+}
+
+.actions [data-box] {
+  display: none;
+}

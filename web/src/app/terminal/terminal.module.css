@@ -1,0 +1,34 @@
+/* Terminal: black ground, hairline structure, dense type. Panels are regions divided by rules,
+   not floating cards. Shared workspace primitives live here as :global(.tm-*) classes. */
+.terminal {
+  --tm-bg: #080b09;
+  --tm-panel: #0c110e;
+  --tm-line: rgb(237 239 230 / 0.08);
+  --tm-line-strong: rgb(237 239 230 / 0.16);
+  --surface: var(--tm-panel);
+  display: grid;
+  grid-template-columns: 15rem minmax(0, 1fr);
+  min-height: calc(100dvh - var(--header-h));
+  background: var(--tm-bg);
+  font-size: 0.875rem;
+}
+
+.main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.workspace {
+  flex: 1;
+  min-width: 0;
+  padding: 0 clamp(1rem, 2vw, 1.5rem) 2rem;
+}
+
+@media (max-width: 960px) {
+  .terminal {
+    grid-template-columns: minmax(0, 1fr);
+    /* Rail on top keeps its own height; spare height goes to the workspace, not the rail. */
+    grid-template-rows: auto 1fr;
+  }
+}

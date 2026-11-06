@@ -1,0 +1,139 @@
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem 1rem;
+  padding: 0.6rem 0 0.75rem;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #e9b949;
+  text-decoration: none;
+}
+
+.back:hover {
+  text-decoration: underline;
+}
+
+.context {
+  font-size: 0.75rem;
+  letter-spacing: 0.04em;
+  color: #6c786f;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2rem;
+  padding: 0 0.7rem;
+  border: 1px solid rgb(237 239 230 / 0.16);
+  border-radius: 4px;
+  background: rgb(0 0 0 / 0.2);
+  color: #edefe6;
+  font: inherit;
+  font-size: 0.8rem;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.btn:hover {
+  border-color: rgb(237 239 230 / 0.34);
+}
+
+.btn:focus-visible {
+  outline: 2px solid #e9b949;
+  outline-offset: 1px;
+}
+
+.btn[data-on] {
+  border-color: #e9b949;
+  color: #e9b949;
+}
+
+.btn[data-tone="gold"] {
+  border-color: #e9b949;
+  background: #e9b949;
+  color: #1b1505;
+}
+
+.btn [data-box] {
+  display: none;
+}
+
+.where {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.9rem;
+  min-width: 0;
+}
+
+.backBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  height: 2rem;
+  padding: 0 0.75rem 0 0.6rem;
+  border: 1px solid rgb(233 185 73 / 0.5);
+  border-radius: 4px;
+  background: none;
+  color: #e9b949;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.backBtn:hover {
+  background: rgb(233 185 73 / 0.1);
+}
+
+.crumbs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.2rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #8f9b93;
+}
+
+.crumbs li + li::before {
+  content: "/";
+  margin: 0 0.45rem 0 0.25rem;
+  color: #4d5852;
+}
+
+.crumbs a {
+  color: #c3cbc3;
+  text-decoration: none;
+}
+
+.crumbs a:hover {
+  color: #e9b949;
+}
+
+.crumbs [aria-current] {
+  color: #edefe6;
+}

@@ -1,0 +1,207 @@
+.rail {
+  position: sticky;
+  top: var(--header-h);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  height: calc(100dvh - var(--header-h));
+  padding: 1rem 0 0.75rem;
+  overflow-y: auto;
+  border-right: 1px solid rgb(237 239 230 / 0.08);
+  background: #070a08;
+  scrollbar-width: thin;
+}
+
+.group + .group {
+  margin-top: 0.85rem;
+}
+
+.groupLabel {
+  margin: 0 1rem 0.3rem;
+  font-family: var(--font-label);
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #6c786f;
+  font-variation-settings: var(--label-wdth);
+}
+
+.rail ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.38rem 1rem;
+  font-size: 0.86rem;
+  color: #a9b3ab;
+  text-decoration: none;
+  transition: background-color 120ms var(--ease-out), color 120ms var(--ease-out);
+}
+
+.link:hover {
+  background: rgb(237 239 230 / 0.04);
+  color: #edefe6;
+}
+
+.link[aria-current="page"] {
+  background: rgb(233 185 73 / 0.09);
+  color: #edefe6;
+  font-weight: 500;
+}
+
+.link[aria-current="page"]::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0.3rem;
+  bottom: 0.3rem;
+  width: 2px;
+  background: #e9b949;
+}
+
+.link:focus-visible {
+  outline: 2px solid #e9b949;
+  outline-offset: -2px;
+}
+
+.linkShort {
+  display: none;
+}
+
+.key {
+  font-family: var(--font-ui);
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  color: #56625a;
+}
+
+.local {
+  display: grid;
+  gap: 0.2rem;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.local .groupLabel:not(:first-child) {
+  margin-top: 0.7rem;
+}
+
+.mini {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.25rem 1rem;
+  font-size: 0.8rem;
+  color: #a9b3ab;
+  text-decoration: none;
+}
+
+.mini span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mini b {
+  font-family: var(--font-display);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #6c786f;
+}
+
+.mini:hover {
+  color: #edefe6;
+}
+
+.muted {
+  margin: 0 1rem;
+  font-size: 0.76rem;
+  color: #6c786f;
+}
+
+.localNote {
+  margin: 0.5rem 1rem 0;
+  font-size: 0.68rem;
+  color: #56625a;
+}
+
+.coverage {
+  display: grid;
+  gap: 0.45rem;
+  margin: auto 0 0;
+  padding: 0.9rem 1rem 0;
+  border-top: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.coverage dt {
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #56625a;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.coverage dd {
+  margin: 0;
+  font-size: 0.76rem;
+  color: #a9b3ab;
+}
+
+/* Below desktop the rail becomes a strip of workspace tabs under the bar. */
+@media (max-width: 960px) {
+  .rail {
+    position: sticky;
+    z-index: 30;
+    flex-direction: row;
+    height: auto;
+    padding: 0;
+    overflow: visible;
+    border-right: 0;
+    border-bottom: 1px solid rgb(237 239 230 / 0.08);
+  }
+  .nav {
+    display: flex;
+    width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .group,
+  .group + .group {
+    display: flex;
+    margin: 0;
+  }
+  .group ul {
+    display: flex;
+  }
+  .groupLabel,
+  .key,
+  .local,
+  .coverage,
+  .linkLabel {
+    display: none;
+  }
+  .linkShort {
+    display: inline;
+  }
+  .link {
+    padding: 0.7rem 0.85rem;
+    white-space: nowrap;
+  }
+  .link[aria-current="page"]::before {
+    left: 0.6rem;
+    right: 0.6rem;
+    top: auto;
+    bottom: 0;
+    width: auto;
+    height: 2px;
+  }
+}

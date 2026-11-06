@@ -1,0 +1,38 @@
+{
+  "generated": "2026-11-05",
+  "population": 5820,
+  "source": "full",
+  "nationality": {
+    "recorded": 5820,
+    "missing": 0,
+    "distinct": 136,
+    "players_with_flag": 5798,
+    "text_only": {
+      "Northern Ireland": 13,
+      "Guadeloupe": 4,
+      "French Guiana": 1,
+      "Bonaire": 1,
+      "Martinique": 3
+    },
+    "unmapped": {},
+    "note": "One recorded citizenship per player (first-listed); second nationalities are not in the data."
+  },
+  "league_flags": {
+    "leagues": 14,
+    "with_flag": 14,
+    "missing": []
+  },
+  "portraits": {
+    "players_with_portrait": 0,
+    "manifest_entries": 0
+  },
+  "shirt_numbers": {
+    "players_with_number": 0,
+    "reason": "Not in the acquired tables; the upstream match-level game_lineups table (126 MB) is not downloaded (D-001)."
+  },
+  "club_crests": {
+    "clubs": 330,
+    "with_crest": 0,
+    "reason": "No licensed source: club crests are trademarks and Transfermarkt images are not covered by the dataset licence."
+  }
+}

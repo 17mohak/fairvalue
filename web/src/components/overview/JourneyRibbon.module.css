@@ -1,0 +1,157 @@
+.ribbon {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.plot {
+  --lane: 0.8rem;
+  position: relative;
+  height: calc(var(--lane) * var(--lanes, 10));
+  margin-top: 1.1rem;
+}
+
+.grid {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.grid span {
+  position: absolute;
+  top: -1.15rem;
+  translate: -50% 0;
+  font-size: 0.66rem;
+  font-style: normal;
+  white-space: nowrap;
+  color: #6c786f;
+}
+
+.obsLine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 1px dashed rgb(237 239 230 / 0.45);
+}
+
+.lane {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 0.45rem;
+}
+
+.seg {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-radius: 2px;
+  transform-origin: left center;
+  animation: ribbon-grow 600ms var(--ease-out) both;
+}
+
+.seg[data-dir="up"] {
+  background: var(--raise);
+}
+
+.seg[data-dir="down"] {
+  background: var(--lower);
+  transform-origin: right center;
+}
+
+@keyframes ribbon-grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+
+.label {
+  position: absolute;
+  top: 50%;
+  translate: 0 -50%;
+  font-size: 0.66rem;
+  line-height: 1;
+  white-space: nowrap;
+  color: #c3cbc3;
+}
+
+.label b {
+  color: #edefe6;
+}
+
+.origin,
+.final,
+.obs {
+  position: absolute;
+  translate: -50% -25%;
+}
+
+.origin {
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 50%;
+  background: #edefe6;
+}
+
+.final {
+  width: 0.75rem;
+  height: 0.75rem;
+  rotate: 45deg;
+  border: 2px solid #e9b949;
+  background: #0a0f0c;
+}
+
+.obs {
+  z-index: 1;
+  width: 0.7rem;
+  height: 0.7rem;
+  border-radius: 50%;
+  background: #edefe6;
+  box-shadow: 0 0 0 2px #0a0f0c;
+}
+
+.cap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem 1.1rem;
+  font-size: 0.72rem;
+  color: #8f9b93;
+}
+
+.cap span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.cap i {
+  display: inline-block;
+  width: 0.6rem;
+  height: 0.6rem;
+}
+
+.cap i[data-k="origin"] {
+  border-radius: 50%;
+  background: #edefe6;
+}
+
+.cap i[data-k="up"] {
+  border-radius: 2px;
+  background: var(--raise);
+}
+
+.cap i[data-k="down"] {
+  border-radius: 2px;
+  background: var(--lower);
+}
+
+.cap i[data-k="final"] {
+  rotate: 45deg;
+  border: 2px solid #e9b949;
+}
+
+.cap i[data-k="obs"] {
+  border-radius: 50%;
+  background: #edefe6;
+}

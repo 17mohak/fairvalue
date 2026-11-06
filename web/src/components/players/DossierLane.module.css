@@ -1,0 +1,203 @@
+/* The dossier's valuation lane. Same build order as the Overview's theatre: pitch, lines, scale,
+   then each model's diamond, the arc and the residual. All animations fill backwards, so reduced
+   motion (globals.css) shows the finished graphic at once. */
+
+.lane {
+  /* Label scale on top of each lane's depth factor (--s); raised on phones. */
+  --k: 1;
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.env {
+  animation: fv-dl-fade 600ms var(--ease-out) both;
+}
+.stripe {
+  fill: rgb(237 239 230 / 0.022);
+}
+
+.lines path {
+  fill: none;
+  stroke: rgb(237 239 230 / 0.32);
+  stroke-width: 1.2;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: fv-dl-draw 900ms var(--ease-in-out) both;
+}
+.lines .goal {
+  stroke: rgb(237 239 230 / 0.2);
+  animation-delay: 500ms;
+}
+
+.ruler {
+  animation: fv-dl-fade 500ms var(--ease-out) 600ms both;
+}
+.tick {
+  stroke: rgb(237 239 230 / 0.5);
+  stroke-width: 1.2;
+}
+.tickLabel {
+  fill: var(--chalk-2);
+  font-size: 12px;
+  font-weight: 600;
+}
+.tier {
+  fill: none;
+  stroke: rgb(233 185 73 / 0.35);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+.tierLabel {
+  fill: rgb(233 185 73 / 0.75);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.market {
+  animation: fv-dl-fade 500ms var(--ease-out) 750ms both;
+}
+.marketLine {
+  fill: none;
+  stroke: rgb(237 239 230 / 0.55);
+  stroke-width: 1.2;
+  stroke-dasharray: 2 4;
+}
+.marketLabel {
+  fill: var(--chalk);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.model {
+  --d: 0ms;
+}
+.track {
+  fill: none;
+  stroke: rgb(237 239 230 / 0.09);
+  stroke-width: 1;
+  animation: fv-dl-fade 400ms var(--ease-out) calc(800ms + var(--d)) both;
+}
+.laneName {
+  font-size: calc(14px * var(--s, 1) * var(--k));
+  fill: var(--chalk-2);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  animation: fv-dl-fade 400ms var(--ease-out) calc(850ms + var(--d)) both;
+}
+.laneBasis {
+  fill: var(--fog);
+  font-weight: 600;
+}
+.model[data-model="A"] .laneName {
+  fill: var(--flood);
+}
+.floor {
+  fill: none;
+  stroke: rgb(233 185 73 / 0.25);
+  stroke-width: 3;
+  stroke-linecap: round;
+  animation: fv-dl-fade 400ms var(--ease-out) calc(1150ms + var(--d)) both;
+}
+.arc {
+  fill: none;
+  stroke: var(--flood);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  filter: drop-shadow(0 0 5px rgb(233 185 73 / 0.45));
+  animation: fv-dl-draw 600ms var(--ease-in-out) calc(1150ms + var(--d)) both;
+}
+.model[data-model="B"] .arc {
+  stroke: var(--chalk-2);
+  filter: none;
+  opacity: 0.75;
+}
+.diamond {
+  fill: #0b100d;
+  stroke: var(--flood);
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fv-dl-pop 480ms var(--ease-out) calc(950ms + var(--d)) both;
+}
+.model[data-model="B"] .diamond {
+  stroke: var(--chalk-2);
+}
+.disc {
+  fill: var(--chalk);
+  stroke: #0b100d;
+  transform-box: fill-box;
+  transform-origin: center;
+  animation: fv-dl-pop 480ms var(--ease-out) calc(1050ms + var(--d)) both;
+}
+.resid,
+.estLabel {
+  font-family: var(--font-display);
+  font-weight: 800;
+  paint-order: stroke;
+  stroke: #0b120e;
+  stroke-width: 5px;
+  stroke-linejoin: round;
+  animation: fv-dl-fade 400ms var(--ease-out) calc(1500ms + var(--d)) both;
+}
+.resid {
+  font-size: calc(15px * var(--s, 1) * var(--k));
+  fill: var(--chalk);
+}
+.estLabel {
+  font-size: calc(17px * var(--s, 1) * var(--k));
+  fill: var(--flood);
+}
+.model[data-model="B"] .estLabel {
+  fill: var(--chalk-2);
+}
+.estModel {
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.72em;
+  letter-spacing: 0.06em;
+}
+
+@media (max-width: 700px) {
+  .lane {
+    --k: 2.1;
+  }
+  .tickLabel {
+    font-size: 25px;
+  }
+  .tierLabel {
+    display: none;
+  }
+  .marketLabel {
+    font-size: 23px;
+  }
+}
+
+@keyframes fv-dl-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes fv-dl-draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+@keyframes fv-dl-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  70% {
+    transform: scale(1.12);
+  }
+}

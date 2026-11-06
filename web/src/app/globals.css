@@ -1,0 +1,790 @@
+/* FairValue design tokens and base styles.
+   Identity: a night match. Turf-dark ground, chalk-line text, sodium floodlight for value.
+   Data colours are validated for colour-vision deficiency against --turf-900 (dataviz validator):
+   groups  #4495DC / #D4609A, contributions #BF8622 (raises) / #13A096 (lowers). */
+
+:root {
+  /* Ground */
+  --turf-950: #0a110d;
+  --turf-900: #0f1713;
+  --turf-850: #131d18;
+  --turf-800: #18241e;
+  --turf-700: #213029;
+  --turf-600: #2c3d35;
+
+  /* Ink */
+  --chalk: #edefe6;
+  --chalk-2: #c3cbc3;
+  --fog: #8f9b93;
+  --fog-2: #6c786f;
+  --rule: rgb(237 239 230 / 0.09);
+  --rule-strong: rgb(237 239 230 / 0.17);
+
+  /* Floodlight: value, primary action, focus */
+  --flood: #e9b949;
+  --flood-soft: rgb(233 185 73 / 0.14);
+  --flood-ink: #1b1505;
+
+  /* Data roles */
+  --uefa: #4495dc;
+  --non-uefa: #d4609a;
+  --raise: #d4a03a;
+  --lower: #cf634c;
+  --tier-line: rgb(237 239 230 / 0.28);
+
+  /* Feedback (always paired with text, never colour alone) */
+  --error: #f0907f;
+  --error-soft: rgb(240 144 127 / 0.1);
+
+  /* Type */
+  --font-display: var(--font-big-shoulders), "Arial Narrow", sans-serif;
+  --font-ui: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  /* Broadcast labels: Archivo at its expanded width. Set font-variation-settings: var(--label-wdth). */
+  --font-label: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --label-wdth: "wdth" 125;
+  --font-serif: var(--font-source-serif), Georgia, serif;
+
+  --step--2: 0.75rem;
+  --step--1: 0.875rem;
+  --step-0: 1rem;
+  --step-1: 1.25rem;
+  --step-2: 1.625rem;
+  --step-3: 2.125rem;
+  --step-4: clamp(2.5rem, 4.6vw, 3.75rem);
+  --step-5: clamp(3.25rem, 8vw, 7.25rem);
+  --step-6: clamp(3.5rem, 9vw, 6.75rem);
+  --step-7: clamp(4rem, 11vw, 10rem);
+
+  /* Space and shape */
+  --gutter: clamp(1.25rem, 4vw, 3rem);
+  --measure: 66ch;
+  --page: 1240px;
+  --page-wide: 1480px;
+  --header-h: 3.5rem;
+  --radius-s: 4px;
+  --radius-m: 8px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+
+  /* Semantic aliases used by newer modules; the paper scope redefines the raw tokens below. */
+  --surface: var(--turf-900);
+  --surface-raised: var(--turf-850);
+  --accent: var(--flood);
+  --accent-ink: var(--flood-ink);
+
+  color-scheme: dark;
+}
+
+/* Paper: the methods publication is printed on chalk-white stock with turf-green ink.
+   Raw tokens are remapped so every shared component reads correctly on it. Data colours are
+   darkened to keep at least 3:1 against the paper. */
+.paper {
+  --turf-950: #dedbcf;
+  --turf-900: #f1efe6;
+  --turf-850: #e9e6db;
+  --turf-800: #e2dfd2;
+  --turf-700: #d3cfc0;
+  --turf-600: #bdb8a7;
+  --chalk: #142019;
+  --chalk-2: #2f3c35;
+  --fog: #5b665f;
+  --fog-2: #606b64;
+  --rule: rgb(20 32 25 / 0.12);
+  --rule-strong: rgb(20 32 25 / 0.26);
+  --flood: #865c00;
+  --flood-soft: rgb(134 92 0 / 0.1);
+  --flood-ink: #fdf7e6;
+  --uefa: #2f6fb0;
+  --non-uefa: #b23f7c;
+  --raise: #93620c;
+  --lower: #a8432f;
+  --tier-line: rgb(20 32 25 / 0.3);
+  --surface: var(--turf-900);
+  color-scheme: light;
+  background: var(--turf-900);
+  color: var(--chalk);
+}
+.paper ::selection {
+  background: #142019;
+  color: #f1efe6;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  scroll-padding-top: calc(var(--header-h) + 1.5rem);
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--turf-900);
+  color: var(--chalk);
+  font-family: var(--font-ui);
+  font-size: var(--step-0);
+  line-height: 1.5;
+  font-feature-settings: "kern", "liga";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Faint mown-stripe texture on the ground; static, so no motion cost. */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, rgb(255 255 255 / 0.012) 0 120px, transparent 120px 240px);
+}
+
+h1,
+h2,
+h3,
+h4 {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 800;
+  line-height: 0.96;
+  letter-spacing: 0;
+  text-wrap: balance;
+}
+
+p {
+  margin: 0;
+  text-wrap: pretty;
+}
+
+a {
+  color: inherit;
+  text-decoration-color: var(--rule-strong);
+  text-underline-offset: 0.2em;
+  text-decoration-thickness: 1px;
+  transition: text-decoration-color 160ms var(--ease-out), color 160ms var(--ease-out);
+}
+
+a:hover {
+  text-decoration-color: var(--flood);
+}
+
+:focus-visible {
+  outline: 2px solid var(--flood);
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+::selection {
+  background: var(--flood);
+  color: var(--flood-ink);
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+  color: inherit;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+.num {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.page {
+  width: 100%;
+  max-width: var(--page);
+  margin-inline: auto;
+  padding-inline: var(--gutter);
+}
+
+/* Editorial prose: serif, comfortable measure. */
+.prose {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.68;
+  color: var(--chalk-2);
+  max-width: var(--measure);
+}
+
+.prose p + p {
+  margin-top: 0.9em;
+}
+
+.prose strong {
+  color: var(--chalk);
+  font-weight: 600;
+}
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--gutter);
+  top: -100px;
+  z-index: 100;
+  padding: 0.5rem 0.875rem;
+  background: var(--flood);
+  color: var(--flood-ink);
+  font-weight: 600;
+  border-radius: var(--radius-s);
+}
+
+.skip-link:focus {
+  top: 0.75rem;
+}
+
+/* ---- Environment transitions (components/site/PageTransition.tsx, lib/experiences.ts) ----
+   Each environment has its own entrance, so crossing between them is felt:
+   Terminal boots in with a top-down wipe, Stories fades up out of black like a broadcast cut,
+   Overview and the dossier rise into place. Inside the Terminal, workspaces swap quickly.
+   The global bar is anchored throughout; the lit switcher segment glides. Reduced motion: none. */
+::view-transition-old(.to-terminal),
+::view-transition-old(.to-overview),
+::view-transition-old(.to-dossier) {
+  animation: 200ms ease-in both vt-out;
+}
+::view-transition-new(.to-terminal) {
+  animation: 460ms var(--ease-out) 60ms both vt-wipe;
+}
+::view-transition-old(.to-stories) {
+  animation: 260ms ease-in both vt-to-black;
+}
+::view-transition-new(.to-stories) {
+  animation: 640ms var(--ease-out) 180ms both vt-from-black;
+}
+::view-transition-new(.to-overview),
+::view-transition-new(.to-dossier) {
+  animation: 380ms var(--ease-out) 80ms both vt-rise;
+}
+::view-transition-old(.ws) {
+  animation: 120ms ease-in both vt-fade reverse;
+}
+::view-transition-new(.ws) {
+  animation: 220ms var(--ease-out) 60ms both vt-ws;
+}
+::view-transition-old(.chapter) {
+  animation: 220ms ease-in both vt-fade reverse;
+}
+::view-transition-new(.chapter) {
+  animation: 420ms var(--ease-out) 120ms both vt-fade;
+}
+::view-transition-group(site-header) {
+  animation: none;
+  z-index: 50;
+}
+::view-transition-group(exp-indicator) {
+  animation-duration: 420ms;
+  animation-timing-function: var(--ease-out);
+  z-index: 51;
+}
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+}
+@keyframes vt-fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    scale: 0.985;
+  }
+}
+@keyframes vt-wipe {
+  from {
+    clip-path: inset(0 0 100% 0);
+    opacity: 0.4;
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes vt-to-black {
+  to {
+    opacity: 0;
+    filter: brightness(0.3);
+  }
+}
+@keyframes vt-from-black {
+  from {
+    opacity: 0;
+    scale: 1.03;
+    filter: brightness(0.4);
+  }
+}
+@keyframes vt-rise {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+}
+@keyframes vt-ws {
+  from {
+    opacity: 0;
+    translate: 0 6px;
+  }
+}
+
+/* Shared eyebrow: the room index and name above each page title. */
+.eyebrow {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  font-family: var(--font-label);
+  font-size: 0.806rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: var(--fog);
+  font-variation-settings: var(--label-wdth);
+}
+.eyebrow b {
+  color: var(--flood);
+  font-weight: 600;
+}
+
+/* Scroll reveal (components/overview/Reveal.tsx): hidden only after hydration and only while
+   still below the fold; children marked data-stagger follow one after another. */
+.fv-reveal[data-reveal="waiting"] {
+  opacity: 0;
+  translate: 0 28px;
+}
+.fv-reveal[data-reveal="in"] {
+  opacity: 1;
+  translate: 0 0;
+  transition:
+    opacity 700ms var(--ease-out) var(--reveal-delay, 0ms),
+    translate 900ms var(--ease-out) var(--reveal-delay, 0ms);
+}
+.fv-reveal[data-reveal="waiting"] [data-stagger] {
+  opacity: 0;
+  translate: 0 18px;
+}
+.fv-reveal[data-reveal="in"] [data-stagger] {
+  transition:
+    opacity 600ms var(--ease-out) calc(var(--reveal-delay, 0ms) + var(--i, 0) * 90ms + 150ms),
+    translate 800ms var(--ease-out) calc(var(--reveal-delay, 0ms) + var(--i, 0) * 90ms + 150ms);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fv-reveal[data-reveal="waiting"],
+  .fv-reveal[data-reveal="waiting"] [data-stagger] {
+    opacity: 1;
+    translate: none;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-delay: 0ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    transition-delay: 0ms !important;
+  }
+}
+
+/* ===================================================================== Console primitives
+   Shared by the analytical rooms (players, studio, observatory). One vocabulary, used at
+   different densities: a panel with a header row, chips, and a source badge that always says
+   whether a figure is live, unverified, a cached research result or unavailable. */
+.fv-panel {
+  position: relative;
+  min-width: 0;
+  border: 1px solid rgb(237 239 230 / 0.075);
+  border-radius: 10px;
+  background: linear-gradient(180deg, rgb(237 239 230 / 0.018), transparent 120px), #0e1612;
+}
+
+.fv-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  flex-wrap: wrap;
+  min-height: 3rem;
+  padding: 0.7rem 1.1rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.06);
+}
+
+.fv-panel-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.6rem;
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  line-height: 1.1;
+  text-transform: uppercase;
+  color: #edefe6;
+}
+
+.fv-panel-title small {
+  font-family: var(--font-ui);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #8f9b93;
+}
+
+.fv-panel-body {
+  padding: 1rem 1.1rem 1.15rem;
+}
+
+.fv-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.12rem 0.5rem;
+  border: 1px solid rgb(237 239 230 / 0.14);
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 500;
+  line-height: 1.4;
+  white-space: nowrap;
+  color: #c3cbc3;
+}
+
+.fv-chip[data-tone="flood"] {
+  border-color: rgb(233 185 73 / 0.5);
+  color: #e9b949;
+}
+
+/* The player ID plate: a gold broadcast tab carrying the position code (D-039). */
+.fv-role {
+  display: inline-grid;
+  place-items: center;
+  min-width: 2.3rem;
+  height: 1.5rem;
+  padding: 0 0.6rem 0 0.4rem;
+  background: #e9b949;
+  clip-path: polygon(0 0, 100% 0, calc(100% - 0.38rem) 100%, 0 100%);
+  font-family: var(--font-display);
+  font-size: 1.02rem;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.03em;
+  color: #120d02;
+}
+
+/* Source badge: where a number came from. */
+.fv-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #8f9b93;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.fv-source::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.fv-source[data-source="live"] {
+  color: #3fb68b;
+}
+
+.fv-source[data-source="unverified"] {
+  color: #e9b949;
+}
+
+.fv-source[data-source="cached"] {
+  color: #9fb7d9;
+}
+
+.fv-source[data-source="offline"] {
+  color: #f0907f;
+}
+
+.fv-label {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #8f9b93;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.fv-skeleton {
+  border-radius: 6px;
+  background: linear-gradient(90deg, rgb(237 239 230 / 0.04) 0%, rgb(237 239 230 / 0.09) 50%, rgb(237 239 230 / 0.04) 100%);
+  background-size: 200% 100%;
+  animation: fv-shimmer 1.3s linear infinite;
+}
+
+@keyframes fv-shimmer {
+  to {
+    background-position: -200% 0;
+  }
+}
+
+/* Compact page header for the app rooms: a title bar, not a poster. */
+.fv-pagehead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 0.75rem 2rem;
+  padding-block: 1.5rem 1.25rem;
+}
+
+.fv-pagehead h1 {
+  font-size: clamp(1.9rem, 2.6vw, 2.6rem);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
+
+.fv-pagehead p {
+  max-width: 60ch;
+  font-size: 0.92rem;
+  color: #8f9b93;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fv-skeleton {
+    animation: none;
+  }
+}
+
+/* ===================================================================== Terminal primitives
+   Flat, hairline, dense. Regions divided by rules rather than floating cards; numbers are
+   tabular; gold marks the selection and nothing else. */
+.tm-panel {
+  min-width: 0;
+  border: 1px solid rgb(237 239 230 / 0.08);
+  border-radius: 4px;
+  background: #0c110e;
+}
+
+.tm-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.35rem 1rem;
+  padding: 0.6rem 0.85rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.tm-title {
+  font-family: var(--font-label);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #edefe6;
+  font-variation-settings: var(--label-wdth);
+}
+
+.tm-sub {
+  font-size: 0.74rem;
+  color: #8f9b93;
+}
+
+.tm-panel-body {
+  padding: 0.85rem;
+}
+
+.tm-note {
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: #8f9b93;
+}
+
+.tm-note b {
+  color: #c3cbc3;
+  font-weight: 500;
+}
+
+.tm-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  height: 2rem;
+  padding: 0 0.75rem;
+  border: 1px solid rgb(237 239 230 / 0.16);
+  border-radius: 4px;
+  background: #101712;
+  color: #edefe6;
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: border-color 120ms var(--ease-out), background-color 120ms var(--ease-out);
+}
+
+.tm-btn:hover:not(:disabled) {
+  border-color: rgb(237 239 230 / 0.34);
+}
+
+.tm-btn[data-tone="gold"] {
+  border-color: #e9b949;
+  background: #e9b949;
+  color: #1b1505;
+}
+
+.tm-btn[data-tone="gold"]:hover:not(:disabled) {
+  background: #f1c765;
+}
+
+.tm-btn:disabled,
+.tm-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.tm-btn:focus-visible,
+.tm-input:focus-visible,
+.tm-select:focus-visible {
+  outline: 2px solid #e9b949;
+  outline-offset: 1px;
+}
+
+.tm-input,
+.tm-select {
+  height: 2rem;
+  min-width: 0;
+  padding: 0 0.6rem;
+  border: 1px solid rgb(237 239 230 / 0.14);
+  border-radius: 4px;
+  background: #070a08;
+  color: #edefe6;
+  font: inherit;
+  font-size: 0.82rem;
+}
+
+.tm-select {
+  padding-right: 1.6rem;
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #8f9b93 50%), linear-gradient(135deg, #8f9b93 50%, transparent 50%);
+  background-position: calc(100% - 0.85rem) 55%, calc(100% - 0.55rem) 55%;
+  background-size: 0.3rem 0.3rem;
+  background-repeat: no-repeat;
+}
+
+.tm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.82rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.tm-table th {
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.14);
+  background: #0c110e;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  text-align: left;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: #8f9b93;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.tm-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
+
+/* Row headers read as data, not as labels. */
+.tm-table tbody th {
+  font-family: var(--font-ui);
+  font-variation-settings: normal;
+  font-size: 0.84rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+  color: #c3cbc3;
+  border-bottom: 1px solid rgb(237 239 230 / 0.055);
+  background: transparent;
+}
+
+.tm-table td {
+  padding: 0.55rem 0.65rem;
+  border-bottom: 1px solid rgb(237 239 230 / 0.055);
+  white-space: nowrap;
+  color: #c3cbc3;
+}
+
+.tm-table td[data-num],
+.tm-table th[data-num] {
+  text-align: right;
+}
+
+.tm-table tbody tr:hover td {
+  background: rgb(237 239 230 / 0.03);
+}
+
+.tm-table tbody tr[data-focus] td {
+  background: rgb(233 185 73 / 0.07);
+}
+
+.tm-empty {
+  display: grid;
+  gap: 0.4rem;
+  place-items: center;
+  padding: 3rem 1rem;
+  text-align: center;
+  color: #8f9b93;
+}
+
+.tm-empty b {
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #edefe6;
+}

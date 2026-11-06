@@ -1,0 +1,7 @@
+.studio {
+  /* Inside the Terminal the studio's full-bleed bars match the workspace padding, and its two
+     scrolling columns stop above the workspace header and the status strip. */
+  --gutter: clamp(1rem, 2vw, 1.5rem);
+  --studio-head: calc(7.9rem + 1.9rem);
+  width: 100%;
+}

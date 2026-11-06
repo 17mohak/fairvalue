@@ -1,0 +1,135 @@
+.frame {
+  position: relative;
+  margin: 0;
+  height: 100%;
+  border-radius: 8px;
+  background:
+    radial-gradient(ellipse 80% 60% at 60% 0%, rgb(233 185 73 / 0.1), transparent 70%),
+    repeating-linear-gradient(90deg, rgb(237 239 230 / 0.025) 0 18px, transparent 18px 36px),
+    #121c17;
+  box-shadow: inset 0 0 0 1px rgb(237 239 230 / 0.08);
+  isolation: isolate;
+}
+
+/* Cutouts stand on the frame's floor and break out of its top edge. */
+.frame[data-kind="cutout"] {
+  overflow: visible;
+}
+
+.cutout {
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  height: 116%;
+  width: auto;
+  max-width: none;
+  transform: translateX(-50%);
+  object-fit: contain;
+  filter: drop-shadow(10px -4px 18px rgb(233 185 73 / 0.18)) drop-shadow(0 18px 24px rgb(0 0 0 / 0.5));
+}
+
+.frame[data-kind="photo"] {
+  overflow: hidden;
+}
+
+.frame[data-kind="photo"] .cutout {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+.credit {
+  position: absolute;
+  left: 0.6rem;
+  right: 0.6rem;
+  bottom: 0.5rem;
+  z-index: 2;
+  font-size: 0.62rem;
+  line-height: 1.3;
+  color: rgb(237 239 230 / 0.6);
+  text-shadow: 0 1px 4px #000;
+}
+
+/* No licence: monogram and role, plainly labelled. */
+.frame[data-kind="none"] {
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+
+/* An empty slot, drawn as one: a dashed inner frame with crop marks, so it can never pass for a
+   finished portrait treatment. */
+.frame[data-kind="none"][data-size="hero"]::after {
+  content: "";
+  position: absolute;
+  inset: 0.9rem 0.9rem 2.2rem;
+  border: 1px dashed rgb(237 239 230 / 0.16);
+  border-radius: 3px;
+  pointer-events: none;
+}
+
+.monogram {
+  font-family: var(--font-display);
+  font-size: clamp(3rem, 6vw, 5rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: transparent;
+  -webkit-text-stroke: 1.5px rgb(237 239 230 / 0.2);
+}
+
+.role {
+  position: absolute;
+  top: 0.75rem;
+  left: 0.75rem;
+  font-family: var(--font-display);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #e9b949;
+}
+
+.none {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0.7rem;
+  text-align: center;
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #6c786f;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.frame[data-size="card"] .monogram {
+  font-size: 2.6rem;
+  -webkit-text-stroke-width: 1px;
+}
+
+.frame[data-size="card"] .role,
+.frame[data-size="thumb"] .role {
+  display: none;
+}
+
+.frame[data-size="thumb"] .monogram {
+  font-size: 1.1rem;
+  -webkit-text-stroke: 0;
+  color: #c3cbc3;
+}
+
+@media (max-width: 700px) {
+  .frame[data-size="hero"] .monogram {
+    font-size: 2.75rem;
+    margin-top: -1rem;
+  }
+  .frame[data-size="hero"] .none {
+    bottom: 0.45rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.06em;
+  }
+  .frame[data-size="hero"] .role {
+    display: none;
+  }
+}

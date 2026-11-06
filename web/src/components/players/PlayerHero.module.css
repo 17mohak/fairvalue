@@ -1,0 +1,494 @@
+/* Dossier header card: frame | identity | valuation, with the record strip along the bottom. */
+.card {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(19rem, 23rem);
+  grid-template-areas:
+    "identity value"
+    "read read"
+    "strip strip";
+  gap: 0 2rem;
+  padding: 1.5rem 1.5rem 0;
+  overflow: hidden;
+  isolation: isolate;
+  border: 1px solid rgb(237 239 230 / 0.08);
+  border-radius: 12px;
+  background:
+    radial-gradient(ellipse 50% 70% at 12% 0%, rgb(233 185 73 / 0.07), transparent 70%),
+    linear-gradient(180deg, #111b16, #0c1410);
+  color: #edefe6;
+}
+
+.watermark {
+  position: absolute;
+  z-index: -1;
+  right: 24rem;
+  top: -2.5rem;
+  font-family: var(--font-display);
+  font-size: 15rem;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.04em;
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(237 239 230 / 0.05);
+  user-select: none;
+}
+
+/* With a licensed portrait the frame gets its own column again. */
+.card[data-portrait] {
+  grid-template-columns: 17.5rem minmax(0, 1fr) minmax(19rem, 23rem);
+  grid-template-areas:
+    "frame identity value"
+    "frame read read"
+    "frame strip strip";
+}
+
+.frame {
+  grid-area: frame;
+  align-self: end;
+  height: 21rem;
+  margin-bottom: 1.5rem;
+}
+
+.nameRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 1.1rem;
+}
+
+/* Without a portrait: the monogram, small, as an identity mark rather than an empty frame. */
+.badge {
+  flex: none;
+  width: 5.25rem;
+  height: 5.25rem;
+  margin-bottom: 0.2rem;
+}
+
+/* ---- Reading + lane ---- */
+.read {
+  grid-area: read;
+  display: grid;
+  grid-template-columns: minmax(0, 0.72fr) minmax(0, 1.6fr);
+  gap: 1.25rem 2.5rem;
+  align-items: center;
+  margin-top: 1.1rem;
+  padding-top: 1.1rem;
+  border-top: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.reading {
+  display: grid;
+  gap: 0.55rem;
+  font-family: var(--font-serif);
+  font-size: 0.94rem;
+  line-height: 1.5;
+  color: #c3cbc3;
+}
+
+.readLabel {
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #e9b949;
+}
+
+.readLead {
+  font-size: 1.06rem;
+  line-height: 1.45;
+  color: #edefe6;
+}
+
+.readCaveat {
+  font-family: var(--font-ui);
+  font-size: 0.74rem;
+  color: #8f9b93;
+}
+
+.laneFig {
+  margin: 0;
+  min-width: 0;
+}
+
+.laneCap {
+  margin-top: 0.5rem;
+  font-size: 0.7rem;
+  color: #6c786f;
+}
+
+/* ---- Identity ---- */
+.identity {
+  grid-area: identity;
+  display: grid;
+  align-content: start;
+  gap: 0.7rem;
+  min-width: 0;
+  padding-top: 0.25rem;
+}
+
+.crumbs {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: #8f9b93;
+}
+
+.crumbs a {
+  color: #e9b949;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.crumbs a:hover {
+  text-decoration: underline;
+}
+
+.crumbLabel {
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #e9b949;
+}
+
+.name {
+  display: grid;
+  gap: 0.15rem;
+  margin-top: 0.25rem;
+}
+
+.first {
+  font-family: var(--font-ui);
+  font-size: 1.25rem;
+  font-weight: 400;
+  color: #c3cbc3;
+}
+
+.last {
+  font-size: clamp(3.2rem, 6vw, 5.6rem);
+  font-weight: 900;
+  line-height: 0.82;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  overflow-wrap: anywhere;
+}
+
+.role {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem;
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  font-weight: 500;
+  color: #c3cbc3;
+}
+
+.sep {
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #6c786f;
+}
+
+.facts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+  gap: 0.85rem 1.5rem;
+  margin: 0.6rem 0 0;
+  padding-top: 0.9rem;
+  border-top: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.facts dt {
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #8f9b93;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.facts dd {
+  margin: 0.2rem 0 0;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.facts dd[data-muted] {
+  font-weight: 400;
+  color: #6c786f;
+}
+
+/* ---- Valuation card ---- */
+.value {
+  grid-area: value;
+  align-self: start;
+  display: grid;
+  gap: 0.55rem;
+  padding: 1.1rem 1.2rem 1.15rem;
+  border: 1px solid rgb(237 239 230 / 0.09);
+  border-radius: 10px;
+  background: rgb(7 12 9 / 0.65);
+}
+
+/* Observed value: chalk, as the solid half of the market/model grammar. */
+.market {
+  font-family: var(--font-display);
+  font-size: 4rem;
+  font-weight: 900;
+  line-height: 0.85;
+  color: #edefe6;
+}
+
+.valueLabel {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.tierRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.55rem;
+  margin-bottom: 0.35rem;
+  font-size: 0.75rem;
+  color: #8f9b93;
+}
+
+.estimates {
+  display: grid;
+  margin: 0.35rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.estimates li {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto auto;
+  align-items: baseline;
+  gap: 0.6rem;
+  padding: 0.5rem 0;
+  border-top: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.estModel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.estSource {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 0.7rem;
+  color: #8f9b93;
+}
+
+.estValue {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: #e9b949;
+}
+
+.estRatio {
+  min-width: 4rem;
+  text-align: right;
+  font-size: 0.8rem;
+}
+
+.estimates li[data-missing] .estValue {
+  color: #6c786f;
+}
+
+/* ---- Record strip ---- */
+.strip {
+  grid-area: strip;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin: 1.25rem 0 0;
+  padding: 0.9rem 0 1.1rem;
+  border-top: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.stripList {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  margin: 0;
+}
+
+.stripList > div {
+  padding-right: 1.6rem;
+  margin-right: 1.6rem;
+  border-right: 1px solid rgb(237 239 230 / 0.07);
+}
+
+.stripList > div:last-of-type {
+  border-right: 0;
+}
+
+.strip dt {
+  font-size: 0.62rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  color: #8f9b93;
+  font-family: var(--font-label);
+  font-variation-settings: var(--label-wdth);
+}
+
+.strip dd {
+  margin: 0.15rem 0 0;
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.strip small {
+  margin-left: 0.1rem;
+  font-size: 0.5em;
+  color: #8f9b93;
+}
+
+.stripNote {
+  margin-left: auto;
+  font-size: 0.72rem;
+  color: #6c786f;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 1180px) {
+  .card {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "identity"
+      "value"
+      "read"
+      "strip";
+  }
+  .card[data-portrait] {
+    grid-template-columns: 14rem minmax(0, 1fr);
+    grid-template-areas:
+      "frame identity"
+      "value value"
+      "read read"
+      "strip strip";
+  }
+  .frame {
+    height: 17rem;
+  }
+  .value {
+    margin-top: 1rem;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    column-gap: 1.5rem;
+  }
+  .value > :nth-child(-n + 3) {
+    grid-column: 1;
+  }
+  .value > :nth-child(4) {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    align-self: center;
+  }
+  .read {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  /* Stacked: the picture first, then the words that explain it. */
+  .laneFig {
+    order: -1;
+  }
+  .watermark {
+    right: 1rem;
+  }
+}
+
+@media (max-width: 700px) {
+  .card,
+  .card[data-portrait] {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "frame"
+      "identity"
+      "value"
+      "read"
+      "strip";
+    padding: 1rem 1rem 0;
+  }
+  .frame {
+    height: 13rem;
+    margin-bottom: 1rem;
+  }
+  .badge {
+    width: 3.6rem;
+    height: 3.6rem;
+  }
+  .nameRow {
+    gap: 0.8rem;
+  }
+  /* The narrow column fits the role code and sub-position; the broad group is implied by it. */
+  .role .sep,
+  .role .group {
+    display: none;
+  }
+  /* Source labels get their own line instead of being cut off. */
+  .estimates li {
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    grid-template-areas:
+      "model value ratio"
+      "source source source";
+    row-gap: 0.15rem;
+  }
+  .estModel {
+    grid-area: model;
+  }
+  .estSource {
+    grid-area: source;
+    white-space: normal;
+  }
+  .estValue {
+    grid-area: value;
+  }
+  .estRatio {
+    grid-area: ratio;
+  }
+  .facts {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .last {
+    font-size: 2.6rem;
+  }
+  .value {
+    grid-template-columns: 1fr;
+  }
+  .value > * {
+    grid-column: 1 !important;
+    grid-row: auto !important;
+  }
+  .readLead {
+    font-size: 1.04rem;
+  }
+  .stripList > div {
+    padding-right: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 0.6rem;
+  }
+  .strip dd {
+    font-size: 1.5rem;
+  }
+  .stripNote {
+    margin-left: 0;
+    flex-basis: 100%;
+  }
+  .watermark {
+    display: none;
+  }
+}

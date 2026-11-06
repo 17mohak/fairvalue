@@ -1,0 +1,726 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "FairValue market value API",
+    "description": "Research prototype. Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit.",
+    "version": "0.2.0"
+  },
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/predict": {
+      "post": {
+        "summary": "Predict",
+        "operationId": "predict_predict_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PredictRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PredictResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/explain": {
+      "post": {
+        "summary": "Explain",
+        "description": "Why the regressor produced this estimate: per-feature SHAP contributions (log scale).",
+        "operationId": "explain_explain_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/PredictRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExplainResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/metadata": {
+      "get": {
+        "summary": "Metadata",
+        "description": "What the served models accept and how they were validated (for building client forms).",
+        "operationId": "metadata_metadata_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MetadataResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ExplainResponse": {
+        "properties": {
+          "model": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B"
+            ],
+            "title": "Model"
+          },
+          "model_version": {
+            "type": "string",
+            "title": "Model Version"
+          },
+          "base_log_value": {
+            "type": "number",
+            "title": "Base Log Value",
+            "description": "Model's average output over training data, ln(EUR)"
+          },
+          "base_value_eur": {
+            "type": "number",
+            "title": "Base Value Eur"
+          },
+          "predicted_log_value": {
+            "type": "number",
+            "title": "Predicted Log Value"
+          },
+          "predicted_value_eur": {
+            "type": "number",
+            "title": "Predicted Value Eur"
+          },
+          "contributions": {
+            "items": {
+              "$ref": "#/components/schemas/FeatureContribution"
+            },
+            "type": "array",
+            "title": "Contributions",
+            "description": "Sorted by absolute contribution"
+          },
+          "method": {
+            "type": "string",
+            "title": "Method",
+            "default": "SHAP TreeExplainer (path-dependent) on the served gradient-boosting regressor, log-value scale. One-hot, missing-indicator and age-squared columns are summed back to the input feature. Contributions add up exactly to the prediction: base + sum = predicted log value. They describe how this model arrived at this estimate, not what causes market value."
+          },
+          "disclaimer": {
+            "type": "string",
+            "title": "Disclaimer",
+            "default": "Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
+          }
+        },
+        "type": "object",
+        "required": [
+          "model",
+          "model_version",
+          "base_log_value",
+          "base_value_eur",
+          "predicted_log_value",
+          "predicted_value_eur",
+          "contributions"
+        ],
+        "title": "ExplainResponse"
+      },
+      "FeatureContribution": {
+        "properties": {
+          "feature": {
+            "type": "string",
+            "title": "Feature"
+          },
+          "value": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Value",
+            "description": "Input value the model saw (derived features included)"
+          },
+          "contribution": {
+            "type": "number",
+            "title": "Contribution",
+            "description": "SHAP value on the ln(EUR) scale; + raises the estimate"
+          }
+        },
+        "type": "object",
+        "required": [
+          "feature",
+          "value",
+          "contribution"
+        ],
+        "title": "FeatureContribution"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "HealthResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "enum": [
+              "ok",
+              "degraded"
+            ],
+            "title": "Status"
+          },
+          "models_loaded": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Models Loaded"
+          },
+          "model_versions": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Model Versions"
+          },
+          "dataset_sha256_16": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dataset Sha256 16"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "models_loaded",
+          "model_versions",
+          "dataset_sha256_16"
+        ],
+        "title": "HealthResponse"
+      },
+      "MetadataResponse": {
+        "properties": {
+          "leagues": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Leagues"
+          },
+          "sub_positions_by_position": {
+            "additionalProperties": {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            "type": "object",
+            "title": "Sub Positions By Position"
+          },
+          "tier_names": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Tier Names"
+          },
+          "tier_boundaries_eur": {
+            "items": {
+              "type": "number"
+            },
+            "type": "array",
+            "title": "Tier Boundaries Eur"
+          },
+          "models": {
+            "additionalProperties": {
+              "$ref": "#/components/schemas/ModelInfo"
+            },
+            "type": "object",
+            "title": "Models"
+          },
+          "explain_available": {
+            "type": "boolean",
+            "title": "Explain Available"
+          },
+          "dataset_sha256_16": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Dataset Sha256 16"
+          },
+          "n_training_rows": {
+            "anyOf": [
+              {
+                "type": "integer"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "N Training Rows"
+          },
+          "disclaimer": {
+            "type": "string",
+            "title": "Disclaimer",
+            "default": "Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
+          }
+        },
+        "type": "object",
+        "required": [
+          "leagues",
+          "sub_positions_by_position",
+          "tier_names",
+          "tier_boundaries_eur",
+          "models",
+          "explain_available",
+          "dataset_sha256_16",
+          "n_training_rows"
+        ],
+        "title": "MetadataResponse"
+      },
+      "ModelInfo": {
+        "properties": {
+          "label": {
+            "type": "string",
+            "title": "Label"
+          },
+          "version": {
+            "type": "string",
+            "title": "Version"
+          },
+          "algorithm": {
+            "type": "string",
+            "title": "Algorithm"
+          },
+          "feature_set": {
+            "type": "string",
+            "title": "Feature Set"
+          },
+          "features": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Features"
+          },
+          "cv_heldout_metrics": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Cv Heldout Metrics"
+          }
+        },
+        "type": "object",
+        "required": [
+          "label",
+          "version",
+          "algorithm",
+          "feature_set",
+          "features",
+          "cv_heldout_metrics"
+        ],
+        "title": "ModelInfo"
+      },
+      "PlayerFeatures": {
+        "properties": {
+          "age": {
+            "type": "number",
+            "maximum": 44.0,
+            "minimum": 16.0,
+            "title": "Age",
+            "description": "Age in years at the valuation date (training range 16.4-43.4)"
+          },
+          "height_in_cm": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 206.0,
+                "minimum": 160.0
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Height In Cm",
+            "description": "Missing allowed (imputed as in training)"
+          },
+          "position": {
+            "type": "string",
+            "enum": [
+              "Attack",
+              "Midfield",
+              "Defender",
+              "Goalkeeper"
+            ],
+            "title": "Position"
+          },
+          "sub_position": {
+            "type": "string",
+            "title": "Sub Position",
+            "description": "Transfermarkt sub-position, e.g. 'Centre-Forward' (never missing in training)"
+          },
+          "foot": {
+            "anyOf": [
+              {
+                "type": "string",
+                "enum": [
+                  "left",
+                  "right",
+                  "both"
+                ]
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Foot"
+          },
+          "valuation_league_id": {
+            "type": "string",
+            "enum": [
+              "BE1",
+              "DK1",
+              "ES1",
+              "FR1",
+              "GB1",
+              "GR1",
+              "IT1",
+              "L1",
+              "NL1",
+              "PO1",
+              "RU1",
+              "SC1",
+              "TR1",
+              "UKR1"
+            ],
+            "title": "Valuation League Id",
+            "description": "League of the club at valuation (Model A only)"
+          },
+          "club_ppg": {
+            "anyOf": [
+              {
+                "type": "number",
+                "maximum": 2.7,
+                "minimum": 0.2
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Club Ppg",
+            "description": "Club league points per game, last 365 days (Model A only; missing allowed)"
+          },
+          "appearances": {
+            "type": "integer",
+            "maximum": 113.0,
+            "minimum": 5.0,
+            "title": "Appearances"
+          },
+          "minutes": {
+            "type": "number",
+            "maximum": 9650.0,
+            "minimum": 450.0,
+            "title": "Minutes",
+            "description": "Club minutes; >= 450 is the approved population"
+          },
+          "start_share": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Start Share"
+          },
+          "goals_p90": {
+            "type": "number",
+            "maximum": 1.2,
+            "minimum": 0.0,
+            "title": "Goals P90"
+          },
+          "assists_p90": {
+            "type": "number",
+            "maximum": 0.75,
+            "minimum": 0.0,
+            "title": "Assists P90"
+          },
+          "yellow_p90": {
+            "type": "number",
+            "maximum": 0.91,
+            "minimum": 0.0,
+            "title": "Yellow P90",
+            "description": "Default 0",
+            "default": 0.0
+          },
+          "red_p90": {
+            "type": "number",
+            "maximum": 0.2,
+            "minimum": 0.0,
+            "title": "Red P90",
+            "description": "Default 0",
+            "default": 0.0
+          },
+          "intl_club_minutes_share": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Intl Club Minutes Share",
+            "description": "Default 0 (no European club minutes)",
+            "default": 0.0
+          },
+          "minutes_last_365": {
+            "type": "number",
+            "maximum": 4970.0,
+            "minimum": 0.0,
+            "title": "Minutes Last 365"
+          },
+          "days_since_last_match": {
+            "type": "integer",
+            "maximum": 620.0,
+            "minimum": 0.0,
+            "title": "Days Since Last Match"
+          },
+          "valuation_club_minutes_share": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Valuation Club Minutes Share",
+            "description": "Default 1 (all minutes at current club)",
+            "default": 1.0
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "age",
+          "position",
+          "sub_position",
+          "valuation_league_id",
+          "appearances",
+          "minutes",
+          "start_share",
+          "goals_p90",
+          "assists_p90",
+          "minutes_last_365",
+          "days_since_last_match"
+        ],
+        "title": "PlayerFeatures",
+        "description": "Match statistics are for club competitions in the 730 days up to the valuation date.",
+        "example": {
+          "age": 24.5,
+          "appearances": 60,
+          "assists_p90": 0.15,
+          "club_ppg": 1.6,
+          "days_since_last_match": 7,
+          "foot": "right",
+          "goals_p90": 0.45,
+          "height_in_cm": 181,
+          "intl_club_minutes_share": 0.1,
+          "minutes": 4200,
+          "minutes_last_365": 2300,
+          "position": "Attack",
+          "red_p90": 0.0,
+          "start_share": 0.8,
+          "sub_position": "Centre-Forward",
+          "valuation_club_minutes_share": 1.0,
+          "valuation_league_id": "ES1",
+          "yellow_p90": 0.1
+        }
+      },
+      "PredictRequest": {
+        "properties": {
+          "player": {
+            "$ref": "#/components/schemas/PlayerFeatures"
+          },
+          "model": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B"
+            ],
+            "title": "Model",
+            "description": "A = full features (default), B = performance-only ablation",
+            "default": "A"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "player"
+        ],
+        "title": "PredictRequest"
+      },
+      "PredictResponse": {
+        "properties": {
+          "predicted_value_eur": {
+            "type": "number",
+            "title": "Predicted Value Eur"
+          },
+          "predicted_tier": {
+            "type": "string",
+            "title": "Predicted Tier",
+            "description": "Tier of the regression estimate (€2M / €10M / €30M boundaries)"
+          },
+          "classifier_tier": {
+            "type": "string",
+            "title": "Classifier Tier",
+            "description": "Most likely tier from the separate tier classifier"
+          },
+          "tier_probabilities": {
+            "additionalProperties": {
+              "type": "number"
+            },
+            "type": "object",
+            "title": "Tier Probabilities"
+          },
+          "model": {
+            "type": "string",
+            "enum": [
+              "A",
+              "B"
+            ],
+            "title": "Model"
+          },
+          "model_version": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Model Version"
+          },
+          "disclaimer": {
+            "type": "string",
+            "title": "Disclaimer",
+            "default": "Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt community valuations, which may themselves be biased, for players at clubs in 14 European first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any decision about a person. Nationality is not used by the model; see the project's fairness audit."
+          }
+        },
+        "type": "object",
+        "required": [
+          "predicted_value_eur",
+          "predicted_tier",
+          "classifier_tier",
+          "tier_probabilities",
+          "model",
+          "model_version"
+        ],
+        "title": "PredictResponse"
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      }
+    }
+  }
+}

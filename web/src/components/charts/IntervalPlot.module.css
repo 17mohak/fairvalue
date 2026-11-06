@@ -1,0 +1,296 @@
+.figure {
+  margin: 0;
+}
+
+.rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.row,
+.axisRow,
+.sides {
+  display: grid;
+  grid-template-columns: minmax(8rem, 30%) minmax(0, 1fr) 4.25rem;
+  align-items: center;
+  gap: 0 1rem;
+}
+
+.row {
+  min-height: 2.5rem;
+  border-bottom: 1px solid var(--rule);
+  outline: none;
+  transition: background-color 140ms var(--ease-out);
+}
+
+.row[data-active] {
+  background: rgb(237 239 230 / 0.035);
+}
+
+.row:focus-visible {
+  box-shadow: inset 2px 0 0 var(--flood);
+}
+
+.label {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.25;
+  padding-block: 0.3rem;
+}
+
+.name {
+  font-size: var(--step--1);
+  color: var(--chalk);
+}
+
+.row[data-emphasis] .name {
+  font-weight: 600;
+}
+
+.sub {
+  font-size: var(--step--2);
+  color: var(--fog);
+}
+
+.track {
+  position: relative;
+  height: 2.2rem;
+}
+
+.zero {
+  position: absolute;
+  top: -1px;
+  bottom: -1px;
+  width: 1px;
+  background: var(--rule-strong);
+}
+
+.whisker {
+  position: absolute;
+  top: 50%;
+  height: 2px;
+  margin-top: -1px;
+  background: var(--chalk-2);
+  transform-origin: center;
+}
+
+.row[data-emphasis] .whisker {
+  height: 3px;
+  margin-top: -1.5px;
+  background: var(--chalk);
+}
+
+.dot {
+  position: absolute;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  margin: -5.5px 0 0 -5.5px;
+  border-radius: 50%;
+  background: var(--flood);
+  box-shadow: 0 0 0 2px var(--turf-900);
+}
+
+.uefa {
+  background: var(--uefa);
+}
+
+.non-uefa {
+  background: var(--non-uefa);
+}
+
+.hollow {
+  background: var(--turf-900);
+  box-shadow:
+    inset 0 0 0 2px var(--flood),
+    0 0 0 2px var(--turf-900);
+}
+
+.tip {
+  position: absolute;
+  bottom: calc(50% + 10px);
+  transform: translateX(-50%);
+  z-index: 3;
+  padding: 0.25rem 0.55rem;
+  border: 1px solid var(--rule-strong);
+  border-radius: var(--radius-s);
+  background: var(--turf-800);
+  font-size: var(--step--2);
+  color: var(--chalk);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+.tipCi {
+  color: var(--fog);
+}
+
+.value {
+  font-family: var(--font-display);
+  font-size: 1.0625rem;
+  font-weight: 600;
+  text-align: right;
+  color: var(--chalk);
+}
+
+.axis {
+  position: relative;
+  height: 1.5rem;
+  margin-top: 0.4rem;
+}
+
+.tick {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 0.6875rem;
+  color: var(--fog);
+  white-space: nowrap;
+}
+
+.axisLabel {
+  margin-top: 0.25rem;
+  font-size: var(--step--2);
+  color: var(--fog);
+  text-align: center;
+}
+
+.sides {
+  margin-bottom: 0.35rem;
+}
+
+.sideTrack {
+  position: relative;
+  height: 1.1rem;
+  font-size: 0.6875rem;
+  color: var(--fog);
+}
+
+.sideLeft,
+.sideRight {
+  position: absolute;
+  top: 0;
+  white-space: nowrap;
+}
+
+.sideLeft {
+  padding-right: 0.5rem;
+  text-align: right;
+}
+
+.sideRight {
+  padding-left: 0.5rem;
+}
+
+.caption {
+  margin-top: 0.9rem;
+  max-width: 70ch;
+  font-size: var(--step--1);
+  line-height: 1.55;
+  color: var(--fog);
+}
+
+.table {
+  margin-top: 0.9rem;
+  font-size: var(--step--1);
+  color: var(--chalk-2);
+}
+
+.table summary {
+  cursor: pointer;
+  color: var(--fog);
+  width: fit-content;
+}
+
+.table summary:hover {
+  color: var(--chalk);
+}
+
+.table table {
+  margin-top: 0.75rem;
+  width: 100%;
+  max-width: 640px;
+}
+
+.table th,
+.table td {
+  padding: 0.35rem 0.75rem 0.35rem 0;
+  border-bottom: 1px solid var(--rule);
+  text-align: left;
+  font-weight: 400;
+}
+
+.table thead th {
+  color: var(--fog);
+  font-size: var(--step--2);
+}
+
+@media (max-width: 560px) {
+  .row,
+  .axisRow,
+  .sides {
+    grid-template-columns: minmax(6.5rem, 36%) minmax(0, 1fr) 3.5rem;
+    gap: 0 0.6rem;
+  }
+}
+
+/* Comparison model: thin and hollow, offset below the selected model's mark. */
+.figure[data-ghost] .whisker,
+.figure[data-ghost] .dot {
+  top: 38%;
+}
+
+.ghostWhisker {
+  position: absolute;
+  top: 72%;
+  height: 1px;
+  background: var(--fog);
+  transition: left 420ms var(--ease-out), width 420ms var(--ease-out);
+}
+
+.ghostDot {
+  position: absolute;
+  top: 72%;
+  width: 9px;
+  height: 9px;
+  margin: -4.5px 0 0 -4.5px;
+  border-radius: 50%;
+  background: var(--turf-900);
+  box-shadow: inset 0 0 0 1.5px var(--fog);
+  transition: left 420ms var(--ease-out);
+}
+
+.dot,
+.whisker {
+  transition: left 420ms var(--ease-out), width 420ms var(--ease-out);
+}
+
+.legend {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 0.75rem;
+  font-size: var(--step--2);
+  color: var(--fog);
+}
+
+.legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+
+.legendPrimary,
+.legendGhost {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+
+.legendPrimary {
+  background: var(--flood);
+}
+
+.legendGhost {
+  box-shadow: inset 0 0 0 1.5px var(--fog);
+}

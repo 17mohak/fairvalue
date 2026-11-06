@@ -6,8 +6,9 @@ _Last updated: 2026-11-06_
 - All eight milestones are implemented, tested and run on the full data. The research design is
   **locked** (`docs/RESEARCH_DESIGN.md`).
 - Every reported number was regenerated from the committed code with `scripts/run_pipeline.sh` (D-028).
-- **Pre-live, reviewers only (D-052):** deployed on 2026-11-06 with the owner's approval to Google
-  Cloud Run (`asia-south1`, project `fairvalue-513904`) from main `fd16b8d`.
+- **Pre-live, reviewers only (D-052):** deployed with the owner's approval to Google Cloud Run
+  (`asia-south1`, project `fairvalue-513904`). Last deploy: 2026-11-06 from main `0488e4c`, with
+  player cards and FootyLogos portraits (D-053), and the cold-start health fix.
   - Site: `https://fairvalue-web-111067737818.asia-south1.run.app`, behind a reviewer password and
     noindexed.
   - The API is private; only the web app's service account can call it.
@@ -28,7 +29,7 @@ _Last updated: 2026-11-06_
 | CI | Private repo [17mohak/fairvalue](https://github.com/17mohak/fairvalue). First run (2026-11-04, about 6 min) **passed**: 79 unit tests (+10 data tests skipped as designed); data re-downloaded with an unchanged manifest; 9 data/leakage tests; quick-run gate with numbers identical to the local run (0.851 / 0.581 / 0.718); refit; Docker build, health and predict smoke test. No image pushed | `.github/workflows/ci.yml`, GitHub Actions |
 | Product (branch `feat/product-experience`) | Next.js app in `web/`: landing, valuation studio (live predict + per-prediction SHAP), fairness explorer, methods. `POST /explain`, `GET /metadata`. Compose stack built and smoke-tested locally. Not pushed or deployed | `docs/PRODUCT.md`, D-032, D-033 |
 | Responsible AI | Model card, data card, EU AI Act assessment | `docs/MODEL_CARD.md`, `docs/DATA_CARD.md`, `docs/EU_AI_ACT_ASSESSMENT.md` |
-| Tests | Python 137 passing with data present; web 171 (`npm test`) | `pytest -q`, `web/` vitest |
+| Tests | Python 138 collected (data tests skip without the dataset); web 181 (`npm test`) | `pytest -q`, `web/` vitest |
 | Reviews | Three independent read-only reviews; all findings addressed | DECISIONS D-015, D-023, D-028 |
 
 ## Key results (held-out, within the selected population)
@@ -49,8 +50,17 @@ _Last updated: 2026-11-06_
   27/27 with the local API. The export is git-ignored and must be regenerated on each machine.
 - **Product plan:** `docs/ROADMAP.md` (Sprints 0–6) is authoritative. Sprint 0 is done apart from
   the merge into `main`; Sprint 1 has flags and the coverage report (D-041, D-042).
-- **Portraits:** candidate search done for all 5,820 players (D-043). 2,765 have an allowed image
-  of at least 800 px. The rendering approach at scale (S2-03) needs the owner's decision.
+- **Player cards and portraits (D-044, D-053): live on the reviewer site.** PlayerCard in the dossier
+  hero and on valuation story covers; PlayerChip in Explorer rows, Overview spotlights, dossier
+  neighbours and Head-to-Head covers. Portraits: 1,128 FootyLogos (unlicensed, git-ignored), 57
+  Berlin (CC BY-SA 4.0), 4,635 monograms (`docs/PLAYER_ASSETS.md`). Open:
+  - the card or chip on the Inspector, Comparison Studio, Watchlists, Market, Leagues and the
+    Stories index;
+  - Safari, Firefox and screen-reader checks; long names, goalkeepers, close-ups at phone width;
+  - by-eye review of the remaining FootyLogos crops (about 100 of 1,128 seen) and Berlin cutouts
+    (4 of 57);
+  - valuation stories say Model A is "served, in-sample" beside a held-out card figure (owner call);
+  - the `/credits` takedown contact points at a private repository (owner call).
 - **Sprint 2:** audited and planned (ROADMAP S2-01 to S2-10). S2-02 is done and S2-07 partial, through
   the product-experience sprint below.
 - **Product-experience sprint (D-045, 2026-11-05, uncommitted):** Valuation Theatre Overview in five
@@ -79,7 +89,6 @@ _Last updated: 2026-11-06_
   and collaborators are the owner's call.
 - **Hosting (Railway/Render) and GHCR image publishing:** not done; needs approval, and free-tier terms
   must be checked first.
-- **Academic report:** already submitted by the owner; no update planned from this repository.
 
 ## How to resume
 - Start Docker Desktop first if you need the container (the engine runs after enabling virtualization).

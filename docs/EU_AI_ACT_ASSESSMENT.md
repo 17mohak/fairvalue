@@ -1,6 +1,6 @@
 # EU AI Act risk classification (Regulation (EU) 2024/1689)
 
-**Status:** reasoned academic assessment by the project owner, not legal advice. Article references
+**Status:** reasoned assessment by the project owner, not legal advice. Article references
 are to the Regulation as adopted. Application dates and any later amendments must be checked
 against the current official text before any real-world deployment.
 

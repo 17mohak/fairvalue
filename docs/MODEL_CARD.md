@@ -17,7 +17,7 @@ held-out (out-of-fold) evaluation unless stated otherwise. Sources: `docs/report
 | Interface | `POST /predict` (FastAPI): value in EUR, tier, tier probabilities, model version, disclaimer |
 
 ## Intended use
-- **Intended:** academic research and teaching about the ML lifecycle and fairness auditing, and
+- **Intended:** research and teaching about the ML lifecycle and fairness auditing, and
   illustrating how a nationality-blind model can still produce group-differentiated errors.
 - **Users:** the project owner, course reviewers, other researchers.
 - **Out of scope (must not be used for):** scouting, recruitment, transfer or contract negotiation,

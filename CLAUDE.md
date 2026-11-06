@@ -1,7 +1,7 @@
 # CLAUDE.md: project instructions
 
 Football player market value prediction with a nationality-based fairness audit
-(BTECH CAP 501, ATLAS SkillTech University, solo project by Mohak Mandwani).
+(by Mohak Mandwani).
 The fairness audit is the main contribution.
 
 ## Read first when resuming

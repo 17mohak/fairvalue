@@ -18,7 +18,7 @@ export default function CreditsPage() {
         <p className={styles.kicker}>FairValue · Image credits</p>
         <h1 className={styles.title}>Where the portraits come from</h1>
         <p className={styles.lede}>
-          FairValue is a non-commercial university research and portfolio project. It carries no advertising and earns no money. Portraits are a
+          FairValue is a non-commercial research and portfolio project. It carries no advertising and earns no money. Portraits are a
           presentation layer: they say nothing about the model or the fairness audit, and a player without one gets an engraved monogram.
         </p>
 

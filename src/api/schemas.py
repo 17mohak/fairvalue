@@ -16,7 +16,7 @@ COVERED_LEAGUES = Literal["BE1", "DK1", "ES1", "FR1", "GB1", "GR1", "IT1", "L1",
                           "PO1", "RU1", "SC1", "TR1", "UKR1"]
 
 DISCLAIMER = (
-    "Research use only (BTECH CAP 501 academic project). Estimates reproduce Transfermarkt "
+    "Research use only. Estimates reproduce Transfermarkt "
     "community valuations, which may themselves be biased, for players at clubs in 14 European "
     "first divisions (2025-26 snapshot). Not suitable for scouting, recruitment, contract or any "
     "decision about a person. Nationality is not used by the model; see the project's fairness audit."

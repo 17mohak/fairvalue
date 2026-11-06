@@ -25,7 +25,7 @@ though the model is about equally accurate for both groups.
 > **Live:** [fairvalue.web.app](https://fairvalue.web.app), on Google Cloud Run behind Firebase Hosting.
 > It scales to zero when idle, so the first page after a quiet spell can take a few seconds while the
 > service wakes.
-> The code has no open-source licence yet (see [Licence](#data-licensing-and-limits)).
+> The code is MIT-licensed; data and images keep their own terms (see [Licence](#data-licensing-and-limits)).
 
 ---
 
@@ -300,8 +300,10 @@ Layout: `src/` research and API code · `web/` Next.js product · `reports/` gen
 - **Images.** Player portraits and their terms are listed on the product's credits page. Public
   availability of an image does not establish a licence to reuse it; unlicensed images are not committed
   to this repository, and none appear in this README.
-- **Code licence.** No open-source licence has been chosen. Until one is, no
-  licence to reuse the code is granted.
+- **Code licence.** [MIT](LICENSE), for the source code and documentation written for FairValue. It
+  does not cover the data (Transfermarkt-derived, licensing uncertain), the Berlin / WikiPortraits
+  portraits (CC BY-SA 4.0, credited per image), the flag icons (their own MIT licence) or third-party
+  fonts and packages.
 - **Scope.** Findings describe players at clubs in 14 European first divisions, valued June 2025 to June
   2026, and are not the global market. Asian and North American players are barely represented in the
   non-UEFA group (mostly African and South American players in Europe).

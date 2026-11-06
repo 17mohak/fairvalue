@@ -6,10 +6,13 @@ _Last updated: 2026-11-06_
 - All eight milestones are implemented, tested and run on the full data. The research design is
   **locked** (`docs/RESEARCH_DESIGN.md`).
 - Every reported number was regenerated from the committed code with `scripts/run_pipeline.sh` (D-028).
-- Nothing has been pushed, published or deployed.
-- Pre-live deployment is prepared but not run (D-052): Cloud Run in `asia-south1`, private API,
-  reviewer password gate and noindex on the web app, `scripts/deploy_gcp.sh` (dry run by default).
-  Pushing images and deploying need the owner's approval.
+- **Pre-live, reviewers only (D-052):** deployed on 2026-11-06 with the owner's approval to Google
+  Cloud Run (`asia-south1`, project `fairvalue-513904`) from main `fd16b8d`.
+  - Site: `https://fairvalue-web-111067737818.asia-south1.run.app`, behind a reviewer password and
+    noindexed.
+  - The API is private; only the web app's service account can call it.
+  - Images are only in the private Artifact Registry repository. No public registry, no public launch.
+  - A public launch waits on the owner's data-rights decision.
 
 | Area | State | Evidence |
 |---|---|---|

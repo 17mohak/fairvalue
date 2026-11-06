@@ -6,14 +6,14 @@ _Last updated: 2026-11-06_
 - All eight milestones are implemented, tested and run on the full data. The research design is
   **locked** (`docs/RESEARCH_DESIGN.md`).
 - Every reported number was regenerated from the committed code with `scripts/run_pipeline.sh` (D-028).
-- **Pre-live, reviewers only (D-052):** deployed with the owner's approval to Google Cloud Run
-  (`asia-south1`, project `fairvalue-513904`). Last deploy: 2026-11-06 from main `0488e4c`, with
-  player cards and FootyLogos portraits (D-053), and the cold-start health fix.
-  - Site: `https://fairvalue-web-111067737818.asia-south1.run.app`, behind a reviewer password and
-    noindexed.
-  - The API is private; only the web app's service account can call it.
-  - Images are only in the private Artifact Registry repository. No public registry, no public launch.
-  - A public launch waits on the owner's data-rights decision.
+- **Public (D-054, 2026-11-06):** on Google Cloud Run (`asia-south1`, project `fairvalue-513904`),
+  opened by the owner's decision for a LinkedIn launch. The reviewer password and noindex were
+  removed; image from main `a2f4f92`.
+  - Site: `https://fairvalue-web-111067737818.asia-south1.run.app`, public and indexable.
+  - The API stays private; only the web app's service account can call it.
+  - Images are only in the private Artifact Registry repository.
+  - Open data-rights questions (Transfermarkt terms, unlicensed FootyLogos portraits) are accepted
+    by the owner (D-044, D-054), not resolved.
 
 | Area | State | Evidence |
 |---|---|---|
@@ -60,7 +60,6 @@ _Last updated: 2026-11-06_
   - by-eye review of the remaining FootyLogos crops (about 100 of 1,128 seen) and Berlin cutouts
     (4 of 57);
   - valuation stories say Model A is "served, in-sample" beside a held-out card figure (owner call);
-  - the `/credits` takedown contact points at a private repository (owner call).
 - **Sprint 2:** audited and planned (ROADMAP S2-01 to S2-10). S2-02 is done and S2-07 partial, through
   the product-experience sprint below.
 - **Product-experience sprint (D-045, 2026-11-05, uncommitted):** Valuation Theatre Overview in five
@@ -85,7 +84,8 @@ _Last updated: 2026-11-06_
   Open: Safari, Firefox and screen-reader testing.
 - **Product branch:** `feat/product-experience` is local only. Pushing it (and running its CI) and any
   merge into `main` need owner approval.
-- **GitHub:** private repository created and CI green (owner-approved 2026-11-05). Visibility changes
+- **GitHub:** public since 2026-11-06 (owner's decision; history scanned first: no secrets, data or
+  FootyLogos images; commit author emails are visible). Earlier: private, CI green (2026-11-05). Visibility changes
   and collaborators are the owner's call.
 - **Hosting (Railway/Render) and GHCR image publishing:** not done; needs approval, and free-tier terms
   must be checked first.

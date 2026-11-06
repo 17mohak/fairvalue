@@ -159,7 +159,6 @@ export default async function ValuationStory({ params }: Params) {
               modelA={playerById(p.id)?.estimates.heldout.A ?? null}
               valuedLabel={p.valuation_date ?? "2025–26"}
               portrait={portraitFor(p.id)}
-              scale={1}
             />
             {portraitFor(p.id) && <p className={styles.cardCredit}>{portraitFor(p.id)!.attribution} · <ExpLink href="/credits">image credits</ExpLink></p>}
           </div>

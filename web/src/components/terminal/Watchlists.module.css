@@ -167,6 +167,12 @@
   gap: 0.5rem;
 }
 
+.chipBox {
+  flex: none;
+  display: block;
+  height: 2.1rem;
+}
+
 .who :global(.fv-role),
 .addList :global(.fv-role) {
   min-width: 1.8rem;

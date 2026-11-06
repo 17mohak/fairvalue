@@ -1,5 +1,10 @@
 # Development changelog
 
+## 2026-11-06: Player chip on the remaining player surfaces (branch `feat/card-everywhere`, D-053)
+- **Chip:** `PlayerChip` now in the Terminal Inspector header, Comparison Studio slot tags, Watchlist rows, and the Stories index (Head-to-Head pairs and Valuation cards). Market and League pages show players only as chart points or not at all, so they get none.
+- **Checked:** web tests 181, tsc and the production build pass. By eye on the local production build with the full export, at desktop and 375 px: FootyLogos, Berlin and monogram chips render, no horizontal scroll, no console errors. Not checked: Safari, Firefox, screen readers.
+- **Docs:** PLAYER_ASSETS describes the card portraits that ship; DEPLOYMENT lists the git-ignored files a deploy must copy in; PROJECT_STATE updated. Remaining "academic" wording replaced.
+
 ## 2026-11-06: Health check waits for a cold-starting API (PR 5)
 - **Fix:** on the live site `/api/health` answered 503 "unreachable" while the scaled-to-zero API was waking up: the route gave up after 4 s, and a cold start took 11.5 s to answer `/health` (Cloud Run logs). The route now waits 20 s; the browser's `health()` call waits 25 s so it always outlasts the server.
 - **Tests:** `app/api/health/route.test.ts`: an API answering after 11.5 s reads "ok" (fails on the old 4 s limit), one that never answers still gives 503. Web 181 pass. Not yet checked on the live site (needs a deploy).
